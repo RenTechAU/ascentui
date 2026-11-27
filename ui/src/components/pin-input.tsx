@@ -42,6 +42,9 @@ export function PinInput({
   const [inner, setInner] = useState(defaultValue.replace(/\D/g, "").slice(0, length));
   const code = value !== undefined ? value : inner;
   const boxes = useRef<(HTMLInputElement | null)[]>([]);
+  // The newest code, for focus moves that happen before React re-renders
+  const latest = useRef(code);
+  latest.current = code;
 
   const focus = (i: number) => {
     const el = boxes.current[Math.max(0, Math.min(length - 1, i))];
@@ -51,6 +54,7 @@ export function PinInput({
   const set = (next: string) => {
     next = next.replace(/\D/g, "").slice(0, length);
     if (next === code) return;
+    latest.current = next;
     if (value === undefined) setInner(next);
     onChange?.(next);
     if (next.length === length) onComplete?.(next);
@@ -119,7 +123,7 @@ export function PinInput({
                   aria-invalid={c["aria-invalid"]}
                   aria-required={c["aria-required"]}
                   aria-describedby={c["aria-describedby"]}
-                  onFocus={() => (i > code.length ? focus(code.length) : boxes.current[i]?.select())}
+                  onFocus={() => (i > latest.current.length ? focus(latest.current.length) : boxes.current[i]?.select())}
                   onChange={(e) => {
                     const digits = e.target.value.replace(/\D/g, "");
                     // Two digits means the box still held its old one: keep the new one

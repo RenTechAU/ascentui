@@ -155,8 +155,6 @@ export function ComboBox({
       e.preventDefault();
       e.stopPropagation();
       close();
-    } else if (e.key === "Tab" && open) {
-      close();
     }
   };
 

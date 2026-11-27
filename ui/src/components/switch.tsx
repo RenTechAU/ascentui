@@ -10,7 +10,7 @@ import { ChoiceField, ids } from "./field";
 const css = `@layer asc {
 .asc-choice:has(.asc-sw){--asc-choice-w:calc(var(--asc-control-sm) * 1.17)}
 .asc-sw{--th:calc(var(--asc-control-sm) * .67);--tw:calc(var(--th) * 1.75);--gap:calc(var(--th) * .125);position:relative;display:inline-grid;width:var(--tw);height:var(--th);flex:none}
-.asc-sw__input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:inherit}
+.asc-sw__input{position:absolute;inset:0;z-index:1;width:100%;height:100%;margin:0;opacity:0;cursor:inherit}
 .asc-sw__track{position:relative;box-sizing:border-box;width:100%;height:100%;border-radius:var(--asc-radius-full);background:var(--asc-placeholder);transition:background-color var(--asc-duration)}
 .asc-sw__thumb{position:absolute;top:var(--gap);left:var(--gap);width:calc(var(--th) - var(--gap) * 2);height:calc(var(--th) - var(--gap) * 2);border-radius:var(--asc-radius-full);background:var(--asc-surface);box-shadow:var(--asc-shadow-control);transition:transform var(--asc-duration-slow) var(--asc-ease),background-color var(--asc-duration)}
 .asc-choice__row:hover .asc-sw__input:not(:disabled):not(:checked)+.asc-sw__track{background:var(--asc-faint)}

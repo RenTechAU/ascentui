@@ -115,7 +115,7 @@ function NewCaseForm() {
   return (
     <Card as="section" title="New case" description="Book a visit for a customer." style={col(520)}>
       <form noValidate onSubmit={save} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-        <FormSection title="Customer">
+        <FormSection title="Booking" description="Who the visit is for, and when.">
           <ComboBox
             label="Customer"
             required
@@ -126,15 +126,13 @@ function NewCaseForm() {
             placeholder="Search by name, suburb or phone"
             error={tried && missing.customer && 'Choose a customer, or type a new name to add one.'}
           />
-        </FormSection>
-        <FormSection title="Visit">
           <div style={pair}>
             <DatePicker label="Date" required min={today()} value={date} onChange={setDate} error={tried && missing.date && 'Pick the day of the visit.'} />
             <DatePicker label="Arrive at" kind="time" step={900} value={time} onChange={setTime} />
           </div>
           <Select label="Technician" placeholder="Not assigned yet" options={TECHS} value={tech} onChange={(e) => setTech(e.target.value)} description="You can assign one later from the schedule." />
         </FormSection>
-        <FormSection title="Details">
+        <FormSection title="Job" description="What the technician needs to know.">
           <TextArea label="Notes for the technician" minRows={2} maxLength={280} showCount value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Gate code, parking, what the customer reported" />
           <NumberInput label="Call-out price" prefix="$" min={0} step={10} format={{ minimumFractionDigits: 2, maximumFractionDigits: 2 }} value={price} onChange={setPrice} />
           <Switch label="Send reminder" description="Texts the customer the day before the visit." checked={remind} onChange={(e) => setRemind(e.target.checked)} />
@@ -150,13 +148,19 @@ function NewCaseForm() {
 
 function FieldDemo() {
   return (
-    <div style={{ ...col(520), gap: 32, alignItems: 'center' }}>
+    <div style={{ ...col(720), gap: 32, alignItems: 'center' }}>
       <NewCaseForm />
-      <div style={{ ...col(520) }}>
-        <p style={label}>Field around your own control</p>
-        <Field label="Colour" description="Field gives your control the ids it needs." required>
-          {(c) => <input {...c} type="color" defaultValue="#2b7fff" style={{ width: 48, height: 28, border: 0, padding: 0, background: 'none' }} />}
-        </Field>
+      <div style={col(720)}>
+        <p style={label}>A settings section, heading beside the fields when there is room</p>
+        <Card>
+          <FormSection layout="split" title="Billing" description="Where invoices go, and when they are due.">
+            <TextField label="Billing email" type="email" autoComplete="email" defaultValue="accounts@harbourpools.com" />
+            <Select label="Payment terms" defaultValue="14" options={[{ value: '7', label: '7 days' }, { value: '14', label: '14 days' }, { value: '30', label: '30 days' }]} />
+            <Field label="Brand colour" description="Your own control, labelled the kit’s way.">
+              {(c) => <input {...c} type="color" defaultValue="#1e8a4f" style={{ width: 44, height: 28, padding: 0, border: 0, background: 'none' }} />}
+            </Field>
+          </FormSection>
+        </Card>
       </div>
     </div>
   );

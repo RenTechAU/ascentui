@@ -10,7 +10,7 @@ import { ChoiceField, ids } from "./field";
 const css = `@layer asc {
 .asc-choice:has(.asc-cb){--asc-choice-w:calc(var(--asc-control-sm) * .67)}
 .asc-cb{--s:calc(var(--asc-control-sm) * .67);position:relative;display:inline-grid;width:var(--s);height:var(--s);flex:none}
-.asc-cb__input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:inherit}
+.asc-cb__input{position:absolute;inset:0;z-index:1;width:100%;height:100%;margin:0;opacity:0;cursor:inherit}
 .asc-cb__box{display:grid;place-items:center;box-sizing:border-box;width:100%;height:100%;border-radius:calc(var(--asc-radius-sm) - 1px);background:var(--asc-surface);color:var(--asc-on-primary);box-shadow:inset 0 0 0 1px var(--asc-border-strong),var(--asc-shadow-control);transition:background-color var(--asc-duration),box-shadow var(--asc-duration)}
 .asc-cb__box svg{grid-area:1/1;width:75%;height:75%;opacity:0;transform:scale(.6);transition:opacity var(--asc-duration),transform var(--asc-duration) var(--asc-ease)}
 .asc-choice__row:hover .asc-cb__input:not(:disabled):not(:checked):not(:indeterminate)+.asc-cb__box{box-shadow:inset 0 0 0 1px var(--asc-faint),var(--asc-shadow-control-hover)}

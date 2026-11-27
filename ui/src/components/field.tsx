@@ -49,7 +49,7 @@ const css = `@layer asc {
 .asc-choice[data-placement="end"] .asc-choice__row{flex-direction:row-reverse;justify-content:space-between}
 .asc-choice__control{display:inline-flex;flex:none}
 .asc-choice__label{display:flex;align-items:baseline;gap:var(--asc-space-2);min-width:0}
-.asc-choice .asc-field__msgs{padding-left:calc(var(--asc-choice-w, 16px) + var(--asc-space-8))}
+.asc-choice .asc-field__msgs{padding-bottom:var(--asc-space-6);padding-left:calc(var(--asc-choice-w, 16px) + var(--asc-space-8))}
 .asc-choice[data-placement="end"] .asc-field__msgs{padding-left:0}
 .asc-choice[data-disabled] .asc-choice__row{cursor:not-allowed;opacity:.45}
 }`;
