@@ -5,7 +5,8 @@ import { Card } from '@/components/ui/card';
 import { CodeBlock } from '@/components/ui/code-block';
 import { SegmentedControl } from '@/components/ui/segmented-control';
 import { TextReveal } from '@/components/ui/text-reveal';
-import { MODULES, PARTS, PITCH, REGISTRY_BASE, type Tier } from '../content';
+import { CATALOG, LAYERS, countItems, type Tier } from '../catalog';
+import { PARTS, PITCH, REGISTRY_BASE } from '../content';
 import { Plans } from '../Plans';
 import { goTo } from '../router';
 
@@ -89,7 +90,10 @@ function Previews() {
 
 export function Home() {
   const [tier, setTier] = useState<'all' | Tier>('all');
-  const shown = MODULES.filter((m) => tier === 'all' || m.tier === tier);
+  const layers = LAYERS.map((l) => ({ ...l, counts: countItems(CATALOG.filter((i) => i.layer === l.id)) })).filter(
+    (l) => tier === 'all' || (tier === 'free' ? l.counts.free > 0 : l.counts.pro > 0),
+  );
+  const totals = countItems(CATALOG);
   const install = `npx shadcn@latest add ${REGISTRY_BASE ?? 'https://<your-domain>'}/r/data-table.json`;
 
   return (
@@ -107,7 +111,7 @@ export function Home() {
           <div className="wrap hero-in">
             <a className="pill" href="#pricing">
               <b>Free tier</b>
-              Building blocks free, business modules Pro →
+              Every component is free. Screens that work are Pro →
             </a>
             <TextReveal as="h1" className="h1" text="UI for businesses" />
             <p className="lede">Business-ready React components for CRM, services, finance and AI.</p>
@@ -131,10 +135,10 @@ export function Home() {
         <div className="band" id="how">
           <section className="wrap sec">
             <div className="sec-head">
-              <h2>A block, not a screen</h2>
+              <h2>Screens that work, not just screens</h2>
               <p>
-                Component libraries stop at the pixels. Every AscentUI module ships the whole working
-                piece, copied from an engine that runs a real service business.
+                Component libraries stop at the pixels. Every Pro screen comes with a backend recipe your
+                coding agent follows, with rules taken from a system a real service business runs on.
               </p>
             </div>
             <div className="parts">
@@ -164,22 +168,24 @@ export function Home() {
               value={tier}
               onChange={setTier}
               options={[
-                { value: 'all', label: 'All', count: MODULES.length },
+                { value: 'all', label: 'All', count: totals.total },
                 { value: 'free', label: 'Free' },
                 { value: 'pro', label: 'Pro' },
               ]}
             />
           </div>
           <div className="mods">
-            {shown.map((m) => (
-              <Card key={m.name}>
+            {layers.map((l) => (
+              <Card key={l.id}>
                 <div className="mod">
                   <div className="mod-top">
-                    <h3>{m.name}</h3>
-                    <Badge tone={m.tier === 'free' ? 'success' : 'purple'}>{m.tier === 'free' ? 'Free' : 'Pro'}</Badge>
+                    <h3>{l.label}</h3>
+                    <span className="mod-tags">
+                      {l.counts.free > 0 && <Badge tone="success">{l.counts.free} free</Badge>}
+                      {l.counts.pro > 0 && <Badge tone="purple">{l.counts.pro} Pro</Badge>}
+                    </span>
                   </div>
-                  <p>{m.body}</p>
-                  <code>{m.parts}</code>
+                  <p>{l.blurb}</p>
                 </div>
               </Card>
             ))}

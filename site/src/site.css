@@ -78,6 +78,7 @@ h1,h2,h3,p{margin:0}
 .mod{display:flex;flex-direction:column;gap:10px;height:100%}
 .mod-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
 .mod h3{font-weight:500;font-size:1.1rem;letter-spacing:-.02em}
+.mod-tags{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
 .mod p{color:var(--muted);font-size:.95rem}
 .mod code{color:var(--dim);font-size:.82rem;font-family:var(--mono)}
 

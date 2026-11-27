@@ -17,50 +17,12 @@ export const PRICES: {
 
 export type Tier = 'free' | 'pro';
 
-export const MODULES: { name: string; tier: Tier; body: string; parts: string }[] = [
-  {
-    name: 'Building blocks',
-    tier: 'free',
-    body: 'Data table with saved views, combo box, charts, month grid and a form kit.',
-    parts: 'ui',
-  },
-  {
-    name: 'Foundations',
-    tier: 'pro',
-    body: 'Staff, sign-in, roles and tab access, a history ledger with undo, archive and trash.',
-    parts: 'ui + schema + server + demo',
-  },
-  {
-    name: 'Dispatch + field app',
-    tier: 'pro',
-    body: 'Cases board, case drawer, resolve form and a partner app for jobs and invoices.',
-    parts: 'ui + schema + server + demo',
-  },
-  {
-    name: 'CRM',
-    tier: 'pro',
-    body: 'Leads, contacts and companies, a deals pipeline and a timeline.',
-    parts: 'ui + schema + server + demo',
-  },
-  {
-    name: 'Quotes + payments',
-    tier: 'pro',
-    body: 'Line items, a quote page customers can accept, payments, tax by region config.',
-    parts: 'ui + schema + server + demo',
-  },
-  {
-    name: 'Assets + warranty',
-    tier: 'pro',
-    body: 'Products, serial number lifecycle, warranty and a parts ledger.',
-    parts: 'ui + schema + server + demo',
-  },
-];
-
+// What travels with every Pro screen: the backend recipe (docs/CATALOG.md section 3).
 export const PARTS: { title: string; body: string }[] = [
-  { title: 'Screen', body: 'React components that take a typed client. No hidden fetches.' },
-  { title: 'Database schema', body: 'One clean SQL file per module, with what it requires spelled out.' },
-  { title: 'Server logic', body: 'A router you mount in your app, with the business rules already in it.' },
-  { title: 'Demo data', body: 'A fictional company seeded in, so the first run looks like a business.' },
+  { title: 'Contract', body: 'The exact list of calls the screen makes and what comes back.' },
+  { title: 'Mock client', body: 'Answers those calls from demo data, so the screen works the minute it is installed.' },
+  { title: 'Agent guide', body: 'Instructions for your coding agent: tables to create, rules to enforce, mistakes to avoid.' },
+  { title: 'Checks', body: 'Tests the agent runs on its own work until they pass.' },
 ];
 
 // The selling pitch, in the owner's words (2026-11-27).

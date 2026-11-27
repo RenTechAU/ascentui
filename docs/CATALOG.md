@@ -105,13 +105,14 @@ What this changes in the catalog:
 | Phase | Theme | What ships | Free | Pro |
 | --- | --- | --- | --- | --- |
 | **1. Core** | The parts of the loop | Theme, 31 components (desk and phone), built-in motion, 2 layout blocks, agent kit, website and install | 40 | 0 |
-| **2. The working loop** | Sign in, list, record, form, states, on desk and phone | Sign-in and account screens, dashboard, admin basics, phone list and record, 6 data blocks. **Launch and the first-100 offer start here** | 2 | 18 |
-| **3. Business screens** | The reason people come | Dispatch, field app, CRM, quotes + payments, assets + warranty, 8 more blocks | 0 | 32 |
+| **2. The working loop** | Sign in, list, record, form, states, on desk and phone | Sign-in and account screens, dashboard, admin basics, phone list and record, 6 data blocks | 2 | 18 |
+| **3. Business screens** | The reason people come | Dispatch, field app, CRM, quotes + payments, assets + warranty, 8 more blocks. **Pro launches, and the first-100 offer starts, when Dispatch and the field app are done** | 0 | 32 |
 | **4. Secondary** | Polish and reach | Illustrations, standalone motion, Brand Studio, AI activity screen | 11 | 9 |
 | **5. Deployable app** | The whole thing running | Reference server, 2 starter apps, one-command setup | 0 | 2 |
 | | | **Total: 114** | **53** | **61** |
 
-At launch (end of phase 2) the catalog is 60 items: 42 free, 18 Pro. Every Pro buyer gets later
+At Pro launch (phase 2 plus Dispatch and the field app) the catalog is 73 items: 42 free, 31 Pro.
+The free tier goes public earlier, at the end of phase 1. Every Pro buyer gets later
 phases at no extra cost.
 
 ## 6. Phase 1: core (all free)
@@ -146,7 +147,7 @@ MCP server for docs. Counted as one item; it is what an agent reads before it wr
 
 **Also in phase 1:** the website and the install registry.
 
-## 7. Phase 2: the working loop (launch)
+## 7. Phase 2: the working loop
 
 Everything here ships with its backend recipe (§3).
 
@@ -246,11 +247,19 @@ because by then every contract has been proven by buyers on their own stacks.
 | Organised around | Breadth: a component for everything | The loop an agent repeats to build an app |
 | Whole deployable app | No | Phase 5 |
 
-## 13. Open questions
+## 13. Decisions and open questions
 
-1. **Data Table free or Pro?** Recommendation: free. Revisit if early sales are slow.
-2. **Is Sign in the right free screen?** It gets installs, but it is also the first thing a buyer needs. Recommendation: free.
-3. **Launch at the end of phase 2 or wait for Dispatch?** Phase 2 is the whole loop on desk and phone, which is a real product, but it has no industry screens yet. Option: launch when phase 2 plus Dispatch are done.
-6. **Is a free App Shell too generous?** It follows from the rule and the 80/20. The risk is that free alone becomes enough for some buyers. Recommendation: free, and watch conversion.
-4. **Which stacks do the agent guides name first?** Recommendation: Supabase, then plain Postgres.
-5. **Code ownership** (from `PLAN.md`): Hutch is Chill Bunny's. To be settled in writing before launch.
+Decided on 28 Nov 2026:
+
+- **Data Table is free.**
+- **App Shell is free.** Every component is free; watch free-to-paid conversion.
+- **Sign in and Dashboard are the two free screens.**
+- **Pro launches with Dispatch and the field app,** not straight after phase 2.
+- **Payments: Stripe.**
+
+Still open:
+
+1. **Which stacks do the agent guides name first?** Recommendation: Supabase, then plain Postgres.
+2. **Illustrations:** which twelve scenes, and which eight are free.
+3. **Is the reference server its own catalog item?** Counted inside the starter apps today. If separate, totals become 115 items, 62 Pro.
+4. **Code ownership** (from `PLAN.md`): Hutch is Chill Bunny's. To be settled in writing before launch.
