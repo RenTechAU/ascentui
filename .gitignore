@@ -16,3 +16,4 @@ dist-packs/
 site/public/r/
 site/public/llms.txt
 site/public/llms-full.txt
+.build/

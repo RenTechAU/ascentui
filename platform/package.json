@@ -1,0 +1,16 @@
+{
+  "name": "platform",
+  "version": "0.0.0",
+  "private": true,
+  "description": "AscentUI sales and delivery systems: checkout, purchases, seats, access keys and the key-gated registry. Mock-first; not deployed.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "build": "rm -rf .build && tsc -p tsconfig.json",
+    "test": "npm run build && node --test .build/*.test.js"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0"
+  }
+}
