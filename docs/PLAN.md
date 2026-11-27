@@ -3,7 +3,7 @@
 **What it is:** pre-built business components for people vibe-coding their own platform — a
 demo or MVP in an afternoon instead of a month. Same model as affectUI (free MIT tier + one-time
 Pro), but where affectUI sells *looks* for AI products, AscentUI sells **working business blocks**:
-screen + database schema + server logic, extracted from Hutch, which runs a real business.
+screen + database schema + server logic, copied from Hutch, which runs a real business.
 
 **The gap it fills:** component libraries (affectUI, shadcn) have no business logic; internal-tool
 builders (Retool, Softr, Zite) make the owner design every rule; suites (Odoo, ERPNext) are heavy
@@ -14,14 +14,14 @@ and need a specialist; vertical SaaS (ServiceM8, Jobber) can't be built on. Nobo
 
 ## 1. Principles
 
-1. **Extract, don't fork.** A component moves *out* of Hutch into AscentUI and Hutch installs it
-   back as a package (`@ascentui/*`). One copy. A fork drifts within a month and the
-   "battle-tested in a real business" claim stops being true. Because AscentUI is its own repo,
-   a change ships here first, gets published, then Hutch bumps the version.
+1. **Hutch stays separate and independent.** AscentUI *copies* from Hutch, one way. Hutch never
+   installs, imports or waits on AscentUI, and nothing here may require a change in Hutch.
+   AscentUI owns its copy from then on: it can rename, restyle and generalise freely. When
+   Hutch improves a component, porting it across is a deliberate choice, not an obligation.
 2. **A module is a block, not a screen.** UI + clean SQL schema + server routes + demo data,
    installed together. That bundle is the product.
 3. **Data comes in through props or a client interface, never a hidden fetch.** Hutch's big
-   drawers call `../api` directly (CaseDrawer: 33 calls) — that's the main refactor.
+   drawers call `../api` directly (CaseDrawer: 33 calls) — the AscentUI copy is what gets refactored, never Hutch.
 4. **Agent-first install.** Every item installs via the shadcn CLI *and* via an MCP server, so
    Claude / Cursor / v0 can add it from a sentence. Each item ships an `llms.txt`-style usage note.
 5. **Nothing Chill-Bunny-specific ships.** No ice-bath/sauna types, no legacy-import columns, no
@@ -53,7 +53,7 @@ ascentui/                        # its own repo (RenTechAU), npm-workspaces mono
 | --- | --- |
 | `schema/` | One clean SQL file per module (squashed — no replay of Hutch's 161 migrations), plus `requires:` other modules |
 | `server/` | A Hono router factory: `dispatchRoutes({ db, withActor, auth })` |
-| `ui/` | Components taking a typed client (`DispatchClient`) — Hutch passes its real API, demos pass a mock |
+| `ui/` | Components taking a typed client (`DispatchClient`) — an app passes its real API, demos pass a mock |
 | `demo/` | Seed data for a fictional company (an HVAC/pool-service business) |
 | `README` + `AGENTS.md` | What it does, what it requires, how an AI should wire it |
 
@@ -71,14 +71,14 @@ Resolve the open decisions in §5. Blocking: **IP ownership** and **name**.
 - Move into `@ascentui/ui`: `DataTable`, `ComboBox`, `Chart`, `MonthGrid`, form kit
   (`FieldLabel`/`Req`/`FormHeading`), `Drawer`, `Switch`, `Avatar`, `Lightbox`; field app's
   `Sheet`, toast, pull-to-refresh. Domain chips (`StagePill`, `WarrantyChip`…) stay behind.
-- Hutch admin + field switched to import them.
+- A demo page renders each one with mock data.
 - shadcn registry build + a docs site with live demos.
-- **Done when:** Hutch's `npm run check` and both app builds pass on `@ascentui/ui`, and
+- **Done when:** the package builds and typechecks, every component renders in the demo, and
   `npx shadcn add <registry>/data-table` works in a blank Vite app.
 
 ### Phase 2 — foundations module (≈3 weeks)
 Everything else depends on it: staff/auth (PIN + password), roles and tab access, the history
-ledger with undo, archive vs delete, trash. Clean schema file; server factory; Hutch adopts it.
+ledger with undo, archive vs delete, trash. Clean schema file; server factory.
 - **Done when:** a fresh app from `create-ascentui --modules foundations` logs in, edits a
   record, and undoes it.
 
@@ -116,7 +116,7 @@ server (Hutch's `/mcp` + undo) as the premium hook.
 | --- | --- |
 | **Who owns the code?** Hutch is Chill Bunny's internal engine | Settle in writing before Phase 1 ships publicly — this blocks launch, not building |
 | Name | **Decided: AscentUI.** npm names + `@ascentui` scope free (checked 2026-11-27). Still to do: domain, and a trademark search — Ascent ERP and Ascent Business Systems (field service) exist |
-| Repo | **Decided: its own repo under RenTechAU.** Private until launch; Hutch consumes published `@ascentui/*` packages |
+| Repo | **Decided: its own repo under RenTechAU.** Private until launch. **Hutch stays independent** and never depends on AscentUI |
 | License | Free tier MIT; Pro = commercial EULA allowing unlimited client projects, banning resale as a kit |
 | Pricing | Mirror affectUI: one-time, all-access — Individual / Team — rather than per-module |
 | Hosting target for starter | Railway first (Hutch already deploys there), Supabase second |
@@ -127,8 +127,8 @@ server (Hutch's `/mcp` + undo) as the premium hook.
 
 - **Support load** — every owner's build becomes a ticket. Mitigate: strong `AGENTS.md` per
   module so their AI answers first; paid tier includes community support only.
-- **Hutch slows down** — extraction refactors touch the busiest files. Mitigate: one module at a
-  time, Hutch must stay green after each move.
+- **The copies drift from Hutch** — by design, since Hutch stays independent. Port worthwhile
+  Hutch fixes across deliberately; AscentUI is free to diverge.
 - **Genericising dilutes the edge** — the value is the opinionated rules. Keep them; make only
   locale/brand configurable.
 - **A competitor adds business blocks first** (Odoo + AI builders are closest). Ship Phase 1–3

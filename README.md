@@ -2,7 +2,8 @@
 
 Pre-built business components for people vibe-coding their own platform. Not just how a
 screen looks: each module is the **screen + database schema + server logic + demo data**,
-extracted from Hutch, the system that runs a real business (Chill Bunny).
+copied from Hutch, the system that runs a real business (Chill Bunny). Hutch itself stays
+separate and doesn't depend on AscentUI.
 
 - **Free tier (MIT):** building blocks such as tables, pickers, charts, calendars and forms.
 - **Pro:** business modules such as dispatch with a field app, CRM, quotes and payments,
