@@ -7,9 +7,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run check && vite build",
+    "build": "npm run check && npm run registry && vite build",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "check": "node ../scripts/check-catalog.mjs"
+    "check": "node ../scripts/check-catalog.mjs",
+    "registry": "node ../scripts/build-registry.mjs"
   },
   "dependencies": {
     "react": "^19.0.0",

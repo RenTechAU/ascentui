@@ -12,7 +12,7 @@ Each item has an address in the registry. Add one by its address:
 npx shadcn@latest add {{REGISTRY}}/r/data-table.json
 ```
 
-Add the theme first. The components read its CSS variables:
+Add the theme first. It puts `tokens.css` and `base.css` under `styles/ascentui/` (inside `src/` if your app has one), and the components read its CSS variables. Import both files once, at your app's entry:
 
 ```bash
 npx shadcn@latest add {{REGISTRY}}/r/theme.json

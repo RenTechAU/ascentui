@@ -98,7 +98,7 @@ const PHASE_1: CatalogItem[] = [
   // Data and overlays (5)
   comp('Data and overlays', 'Toaster', 'Brief messages that say what just happened.', 'planned', 'engine'),
   comp('Data and overlays', 'Dialog + Drawer', 'A centred dialog and a side panel.', 'planned', 'mixed'),
-  comp('Data and overlays', 'Chart', 'Line, bar, area and pie charts from one component.', 'built', 'repo'),
+  comp('Data and overlays', 'Chart', 'Bars, lines, pie, sparkline and more from one component.', 'built', 'repo'),
   comp('Data and overlays', 'Data Table', 'A table with sorting, grouping, column choices and saved views.', 'built', 'repo'),
   comp('Data and overlays', 'Month Grid', 'A month calendar that shows items on each day.', 'built', 'repo'),
 
