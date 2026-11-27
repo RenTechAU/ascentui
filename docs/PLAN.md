@@ -118,10 +118,10 @@ server (Hutch's `/mcp` + undo) as the premium hook.
 | Name | **Decided: AscentUI.** npm names + `@ascentui` scope free (checked 2026-11-27). Still to do: domain, and a trademark search — Ascent ERP and Ascent Business Systems (field service) exist |
 | Repo | **Decided: its own repo under RenTechAU.** Private until launch. **Hutch stays independent** and never depends on AscentUI |
 | License | Free tier MIT; Pro = commercial EULA allowing unlimited client projects, banning resale as a kit |
-| Pricing | Mirror affectUI: one-time, all-access — Individual / Team — rather than per-module |
+| Pricing | One-time, all-access, lifetime. **Individual: USD 149 for the first 100 buyers, then USD 299** (set 2026-11-28). **Team (10 seats): USD 399 for the first 100 buyers, then USD 699.** The first 100 is one pool shared by both plans |
 | Hosting target for starter | Railway first (Hutch already deploys there), Supabase second |
 | Multi-tenant hosted version | Not now. Self-hosted code kit only; revisit after 50 paying users |
-| affectUI components inside AscentUI | Don't. Check their licence's "doesn't allow" list first if ever needed |
+| affectUI components inside AscentUI | **Kit: no.** The kit is our own code from Hutch, written in affectUI's one-file style. **Website: free MIT items only**, with their notice kept (`site/THIRD-PARTY-NOTICES.md`). Pro items never: their licence bans kits, templates and libraries. See `docs/AFFECTUI-RESEARCH.md` |
 
 ## 6. Risks
 

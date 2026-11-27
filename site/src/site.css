@@ -1,0 +1,108 @@
+/* AscentUI website. Sets the host variables the adapted affectUI components read
+   (--aui-*), so they pick up AscentUI's palette, then lays out the page. */
+:root{
+  /* Neutral near-black, one typeface, no colour accent: the reference look. */
+  --bg:#0c0c0d; --bg2:#101011; --panel:#141415; --line:#262628; --line2:#353538;
+  --ink:#ededed; --muted:#8f8f8f; --dim:#7f7f7f;
+  --accent:#ededed; --accent-ink:#0c0c0d; --accent-soft:#ffffff14; --accent-text:#ededed;
+  --display:'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+
+  --aui-font:'Inter',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;
+  --aui-font-mono:var(--mono);
+  --aui-ink:var(--ink); --aui-muted:var(--muted); --aui-subtle:#1a1a1c;
+  --aui-surface:var(--panel); --aui-border:var(--line); --aui-border-strong:var(--line2);
+  --aui-focus:rgba(255,255,255,.6); --aui-radius:12px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--aui-font);font-size:1rem;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--muted);text-decoration:none}
+a:hover{color:#fff}
+a:focus-visible{outline:2px solid var(--aui-focus);outline-offset:3px;border-radius:6px}
+h1,h2,h3,p{margin:0}
+.wrap{max-width:1160px;margin:0 auto;padding-inline:24px}
+
+.nav{display:flex;flex-wrap:wrap;align-items:center;gap:8px 28px;padding-block:18px}
+.brand{display:flex;align-items:center;gap:10px;color:var(--ink);font-family:var(--display);font-weight:600;font-size:1.15rem;letter-spacing:-.02em}
+.nav-links{display:flex;flex-wrap:wrap;gap:4px 26px;font-size:.95rem;font-weight:500}
+.nav-links a{padding:10px 0}
+.nav-cta{margin-left:auto}
+
+.hero{position:relative;overflow:hidden}
+.hero-in{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:22px;padding-block:120px 72px}
+.pill{display:inline-flex;align-items:center;gap:10px;background:#161617;border:1px solid var(--line);border-radius:999px;padding:6px 16px 6px 6px;font-size:.9rem;color:var(--muted)}
+.pill b{background:#ededed;color:#0c0c0d;font-weight:600;font-size:.82rem;border-radius:999px;padding:3px 12px}
+.hero h1,.hero .h1{font-family:var(--display);font-weight:500;font-size:clamp(2.6rem,6.6vw,5.25rem);line-height:1.04;letter-spacing:-.045em;color:var(--ink)}
+.lede{max-width:600px;text-wrap:balance;font-size:1.125rem;color:var(--muted)}
+.cta{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:6px}
+/* The page's main button is light on dark, like the reference style; the adapted
+   Button's own variables are re-pointed here rather than editing its file. */
+.ui-button.light{--ui-btn-dark-top:#ffffff;--ui-btn-dark-bottom:#e9e9e4;--ui-btn-dark-hover-top:#ffffff;--ui-btn-dark-hover-bottom:#f4f4f0;--ui-btn-edge-top:#ffffff;--ui-btn-edge-mid:#dcdcd6;--ui-btn-edge-bottom:#bdbdb6;--ui-btn-on-ink:#0c0e0e;--ui-btn-ring:#0c0e0e;--radius:999px}
+.ui-button.round{--radius:999px}
+
+.previews{position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;padding-bottom:88px;text-align:left}
+.pv{display:flex;flex-direction:column;gap:14px;height:100%}
+.previews>.ui-crd,.mods>.ui-crd{height:100%}
+.pv-top{display:flex;justify-content:space-between;align-items:center;font-size:.78rem;color:var(--dim);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.pv-top code{font-family:var(--mono);letter-spacing:0;text-transform:none}
+.pv-title{font-weight:600;font-size:1.05rem}
+.pv-tags{display:flex;flex-wrap:wrap;gap:8px}
+.pv-rows{border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:9px;font-size:.9rem;color:var(--muted)}
+.pv-rows>div{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.pv-rows span:last-child{color:var(--ink)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.pv-total{border-top:1px solid var(--line);padding-top:12px;display:flex;justify-content:space-between;align-items:center;font-weight:600}
+.pv-note{margin-top:auto;font-size:.85rem;color:var(--dim)}
+.hist>div span:first-child{color:var(--muted)}
+.hist b{color:var(--ink);font-weight:600}
+
+.pitch{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:28px 40px;padding-block:8px 80px}
+.pitch h2{font-weight:500;font-size:1.35rem;letter-spacing:-.03em;margin-bottom:6px}
+.pitch p{color:var(--muted);font-size:.98rem}
+.band{border-top:1px solid #1c1c1e;background:var(--bg2)}
+.sec{display:flex;flex-direction:column;gap:40px;padding-block:88px}
+.sec-head{max-width:680px;display:flex;flex-direction:column;gap:12px}
+.sec h2{font-family:var(--display);font-weight:500;font-size:clamp(1.75rem,3.4vw,2.4rem);letter-spacing:-.035em;line-height:1.12}
+.sec-head p{color:var(--muted);font-size:1.1rem}
+.sec-row{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px}
+.parts{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px}
+.part{border-top:1px solid var(--line2);padding-top:16px;display:flex;flex-direction:column;gap:6px}
+.part h3{font-size:1.1rem;font-weight:600}
+.part p,.small{color:var(--muted);font-size:.95rem}
+.small{color:var(--dim)}
+.works{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;color:var(--dim);font-size:.95rem}
+.works span{border:1px solid var(--line);border-radius:999px;padding:5px 14px;color:var(--muted)}
+
+.mods{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px}
+.mod{display:flex;flex-direction:column;gap:10px;height:100%}
+.mod-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.mod h3{font-weight:500;font-size:1.1rem;letter-spacing:-.02em}
+.mod p{color:var(--muted);font-size:.95rem}
+.mod code{color:var(--dim);font-size:.82rem;font-family:var(--mono)}
+
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.plan{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:14px}
+.plan.best{border-color:#ffffff59;background:#19191b}
+.plan-name{font-weight:600;color:var(--muted)}
+.plan.best .plan-name{color:var(--accent-text)}
+.plan-price{font-weight:500;font-size:2.4rem;letter-spacing:-.04em;line-height:1.1}
+.plan-price small{font-family:var(--aui-font);font-size:.95rem;font-weight:500;color:var(--dim);margin-left:6px}
+.plan-price.tbc{font-size:1.5rem;color:var(--dim);border:1px dashed var(--line2);border-radius:10px;padding:10px 14px;align-self:flex-start}
+.plan-launch{display:flex;align-items:center;gap:10px;color:var(--dim);font-size:.9rem;margin-top:-6px}
+.plan p{color:var(--muted);font-size:.95rem}
+.plan .ui-button{margin-top:auto;width:100%}
+
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding-block:40px;color:var(--dim);font-size:.9rem}
+.todo{border:1px dashed var(--line2);border-radius:6px;padding:0 6px;color:var(--dim)}
+/* Wide screens: the previews flank the headline, tilted and faded, as scenery.
+   Narrower: the same cards sit under the hero as a readable row. */
+.flank{display:none}
+@media (min-width:1180px){
+  .hero-in{min-height:640px;justify-content:center;padding-block:96px}
+  .previews{display:none}
+  .flank{display:flex;flex-direction:column;gap:18px;position:absolute;top:50%;width:400px;pointer-events:none;opacity:.55}
+  .flank.l{left:max(24px,calc(50% - 760px));transform:translateY(-50%) perspective(1400px) rotateY(22deg) rotateX(4deg);-webkit-mask-image:linear-gradient(90deg,transparent,#000 55%);mask-image:linear-gradient(90deg,transparent,#000 55%)}
+  .flank.r{right:max(24px,calc(50% - 760px));transform:translateY(-50%) perspective(1400px) rotateY(-22deg) rotateX(4deg);-webkit-mask-image:linear-gradient(270deg,transparent,#000 55%);mask-image:linear-gradient(270deg,transparent,#000 55%)}
+}
+@media (max-width:520px){.hero-in{padding-block:64px 48px}.nav-cta{margin-left:0}}
