@@ -65,6 +65,6 @@ The values follow affectUI's clean style, so AscentUI and affectUI components si
 
 One `brand` object that sets the colours, font and corners for light and dark in one place is planned. Until then, override the variables as above.
 
-## The five older components
+## The three older components
 
-The data table, combo box, chart, month grid and form kit came from an earlier system and still read older variable names. Until they are rebuilt on this theme, also import `legacy.css` and `base.css` from the same folder.
+The data table, chart and month grid came from an earlier system and still read older variable names. Until they are rebuilt on this theme, also import `legacy.css` and `base.css` from the same folder.

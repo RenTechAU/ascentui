@@ -19,7 +19,7 @@ Two screens are free on purpose: **Sign in**, because every app needs one, and *
 
 AscentUI is in pre-release. Nothing is published yet.
 
-- **Built:** the token file and five components: Data Table, Combo Box, Chart, Month Grid and the form kit.
+- **Built:** the theme, the ten action and display components, the nine form components, and three older components (Data Table, Chart and Month Grid) that are still to move onto the theme.
 - **Planned:** everything else in the [library](#library). Each item there is marked built, part-built or planned.
 
 These docs describe what exists and say "planned" where something does not exist yet.

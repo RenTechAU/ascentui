@@ -38,8 +38,12 @@ function packagesOf(source) {
   return [...found].sort().map((name) => (UI_PEERS[name] ? `${name}@${UI_PEERS[name]}` : name));
 }
 
+// Files whose name does not match their catalog slug. Without this, field would match text-field.
+const CATALOG_SLUG = { field: 'form-kit', 'date-picker': 'date-and-time-picker' };
 const catalogEntry = (name) =>
-  CATALOG.find((i) => i.layer === 'component' && (i.slug === name || i.slug.startsWith(`${name}-`) || i.slug.endsWith(`-${name}`)));
+  CATALOG_SLUG[name]
+    ? CATALOG.find((i) => i.slug === CATALOG_SLUG[name])
+    : CATALOG.find((i) => i.layer === 'component' && (i.slug === name || i.slug.startsWith(`${name}-`) || i.slug.endsWith(`-${name}`)));
 
 const dir = 'ui/src/components/';
 const all = readdirSync(root + dir);
@@ -84,7 +88,7 @@ items.unshift({
     { path: 'styles/legacy.css', type: 'registry:file', target: 'styles/ascentui/legacy.css', content: read('tokens/src/legacy.css') },
     { path: 'styles/base.css', type: 'registry:file', target: 'styles/ascentui/base.css', content: read('ui/src/base.css') },
   ],
-  docs: "Import styles/ascentui/tokens.css once at your app's entry. legacy.css and base.css are only for the data table, combo box, chart, month grid and form kit until they are rebuilt.",
+  docs: "Import styles/ascentui/tokens.css once at your app's entry. legacy.css and base.css are only for the data table, chart and month grid until they are rebuilt.",
   meta: { tier: 'free', license: 'MIT', catalog: 'tokens-and-brand-config' },
 });
 
@@ -127,7 +131,7 @@ const rules = [
   '## Rules for agents',
   '',
   '- Install items with the shadcn CLI, or copy the files. Do not rewrite a component that exists here.',
-  '- Each new component is one `.tsx` file with its styles inside (React 19). The five older ones (data table, combo box, chart, month grid, form kit) have a `.css` file beside them; keep those together.\n- Install the theme once. Components read only its `--asc-*` variables, which handle light and dark, touch-screen sizing and reduced motion. Change the look there, not in a component.',
+  '- Each new component is one `.tsx` file with its styles inside (React 19). The three older ones (data table, chart, month grid) have a `.css` file beside them; keep those together.\n- Install the theme once. Components read only its `--asc-*` variables, which handle light and dark, touch-screen sizing and reduced motion. Change the look there, not in a component.',
   '- Data comes in through props or a typed client. Do not add a fetch inside a component.',
   '- Pro source needs an access key sent as `Authorization: Bearer <key>`. Never write a key into source code or commit it.',
 ].join('\n');

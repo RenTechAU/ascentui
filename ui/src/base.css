@@ -22,7 +22,7 @@ button{font-family:inherit;cursor:pointer}
 }
 /* A select is a dropdown, not a different species of field: strip the native
    control so it sits at exactly the height of the input above it, and draw the
-   same caret the ComboBox uses. */
+   same caret the old combo box used. */
 :where(select){appearance:none;-webkit-appearance:none;cursor:pointer;
   padding-right:calc(var(--ctl-px) + 16px);
   background-image:var(--ctl-caret);background-repeat:no-repeat;

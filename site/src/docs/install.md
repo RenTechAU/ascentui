@@ -18,7 +18,7 @@ Add the theme first. It puts `tokens.css` and `base.css` under `styles/ascentui/
 npx shadcn@latest add {{REGISTRY}}/r/theme.json
 ```
 
-The items in the registry today are `theme`, `data-table`, `combo-box`, `chart`, `month-grid` and `form`. Chart also needs the `recharts` package, which the CLI installs for you.
+Every component marked built in the [library](#library) is in the registry under its file name, such as `button`, `text-field` or `combo-box`, along with `theme`. Installing one brings the parts it is built from, such as `field` for every form component. Chart also needs the `recharts` package, which the CLI installs for you.
 
 ## 2. A registry namespace
 

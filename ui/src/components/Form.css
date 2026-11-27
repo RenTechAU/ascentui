@@ -1,8 +1,0 @@
-/* Form kit (FieldLabel, Req, FormHeading) — @ascentui/ui. Reads the variables in @ascentui/tokens. */
-/* Labels are styled inside a .ncf form block, as in Hutch; wrap fields in one. */
-.ncf .ncl{display:block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--dim);margin-bottom:7px}
-.ncf .ncl .ncopt{font-weight:600;text-transform:none;letter-spacing:0;color:var(--border2)}
-.ncf .ncsub{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:5px}
-.ncf .ncsub .ncopt{font-weight:600;color:var(--border2)}
-.ncreq{color:var(--danger);font-weight:800;margin-left:3px}
-:where(.ncf,.lostbox) .nchead{display:block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--dim);margin:4px 0 7px}

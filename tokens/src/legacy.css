@@ -1,5 +1,5 @@
-/* Legacy variable names for the five components copied from Hutch (data table, combo box, chart,
-   month grid, form kit). Kept unchanged until those are rebuilt on tokens.css in batch 3, then deleted.
+/* Legacy variable names for the three components copied from Hutch (data table, chart and
+   month grid). Kept unchanged until those are rebuilt on tokens.css in batch 3, then deleted.
    New components never read these. */
 /* @ascentui/tokens — the design variables every AscentUI component reads.
    Lifted from Hutch's admin console. Override any of these on :root to theme. */
