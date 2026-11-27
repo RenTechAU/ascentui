@@ -9,6 +9,7 @@
     "LICENSE"
   ],
   "exports": {
-    "./tokens.css": "./src/tokens.css"
+    "./tokens.css": "./src/tokens.css",
+    "./legacy.css": "./src/legacy.css"
   }
 }

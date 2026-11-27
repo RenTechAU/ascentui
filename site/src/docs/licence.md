@@ -51,6 +51,5 @@ This page says in plain words what you can and cannot do with AscentUI Pro items
 ## Still to be decided
 
 - The legal entity that grants the licence.
-- The refund terms.
 - The governing law, warranty and liability wording.
 - Whether open-source apps may include Pro items, and with what notice.

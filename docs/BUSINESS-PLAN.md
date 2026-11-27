@@ -5,7 +5,7 @@ Drafted 2026-11-28, updated the same day after decisions (§8). Status: working 
 
 ## 1. The goal
 
-**100 paying customers by 30 June 2027.**
+**100 paying customers by 30 April 2027.**
 
 That is the whole launch offer sold: the first 100 buyers at USD 149 (Individual) or USD 399 (Team).
 At an assumed 85 Individual and 15 Team, that is about **USD 18,600**.
@@ -17,8 +17,8 @@ things that matter before investing further: people find it, and people pay for 
 | --- | --- | --- |
 | Free tier public | 22 Dec 2026 | Site live, every free item installs with one command |
 | Pro launch and first sale | 29 Mar 2027 | The loop plus Dispatch and field app are done; one stranger pays |
-| **100 customers** | **30 Jun 2027** | **Launch offer sold out** |
-| 400 customers | 31 Jan 2028 | Target for the first ten months of sales, about USD 126,000 in total (§5) |
+| **100 customers** | **30 Apr 2027** | **Launch offer sold out**, about one month after Pro launches |
+| 400 customers | 30 Nov 2027 | About USD 126,000 in total (§5) |
 
 ## 2. What we sell
 
@@ -64,9 +64,9 @@ smaller, cheaper at launch, and aimed at operations software instead of AI produ
 
 | | Customers | Mix assumed | Revenue |
 | --- | --- | --- | --- |
-| Launch offer (29 Mar to 30 Jun 2027) | 100 | 85 Individual, 15 Team | 18,650 |
-| Regular price (Jul 2027 to Jan 2028) | 300 | 255 Individual, 45 Team | 107,700 |
-| **To 31 Jan 2028** | **400** | | **126,350** |
+| Launch offer (29 Mar to 30 Apr 2027) | 100 | 85 Individual, 15 Team | 18,650 |
+| Regular price (May to Nov 2027) | 300 | 255 Individual, 45 Team | 107,700 |
+| **To 30 Nov 2027** | **400** | | **126,350** |
 
 Assumption behind 300 more: about 43 sales a month for seven months. At a 2% visitor-to-buyer
 rate that needs roughly 2,150 pricing-page visitors a month. That traffic is the thing to build,
@@ -104,7 +104,7 @@ upgrades for major versions). That is a decision for mid-2027, noted in §9.
 | 6 to 22 Dec | **Phase 1: core** | 31 components, theme, agent kit, website with docs. Free tier public on 22 Dec |
 | 4 Jan to 12 Feb 2027 | **Phase 2: the working loop** | Sign-in, list, record, form, dashboard, on desk and phone. Checkout tested |
 | 15 Feb to 26 Mar | **Phase 3a: dispatch and field app** | The first industry screens. **Pro launches 29 Mar** |
-| Apr to Jun | **Phase 3b: CRM, quotes + payments, assets** + selling | 100 customers by 30 Jun |
+| Apr to Jun | **Phase 3b: CRM, quotes + payments, assets** + selling | 100 customers by 30 Apr |
 | Jul to Aug | **Phase 4: illustration, motion, Brand Studio, AI screen** | Regular price in effect. Reach and polish |
 | Sep to Oct | **Phase 5: deployable app** | Reference server and starter apps |
 
@@ -139,7 +139,8 @@ affectUI uses. Steps are in `docs/SETUP.md`.
 
 **Yours: still to decide**
 
-- [ ] Refund policy
+- [x] Refunds: full refund if a Pro item doesn't work as described and isn't fixed within 14 days (as affectUI)
+- [x] Goal stays 100 customers by 30 April 2027, about a month after the Pro launch
 - [ ] Which illustrations to make, and which are free (phase 4)
 - [ ] Licence gaps: open-source apps that include Pro items, seat transfers, more than 10 seats
 
@@ -174,5 +175,6 @@ affectUI uses. Steps are in `docs/SETUP.md`.
 | **Agents get good enough** to build the loop unaided | Our value moves to the checks and the business rules, which are knowledge, not code |
 | **A bigger kit adds backends** | Stay narrow: operations software, desk plus phone, rules from a real business |
 | **One-time pricing runs dry** | Decide the second product by mid-2027 |
+| **One month to sell 100** after a 29 March launch is tight | Line up beta users and the launch post before launch day; the free tier is public from December to build an audience first |
 | **Design reviews slow the build** | Keep each review small and visual; agents continue on agreed parts meanwhile |
 | **Traffic** never reaches about 2,000 pricing visits a month | Free tier is the marketing; if installs are low by February, the problem is reach, not price |

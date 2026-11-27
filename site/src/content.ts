@@ -63,7 +63,7 @@ export const PRICING_FAQ: { q: string; a: string; tbc?: boolean }[] = [
     q: 'How do I get the Pro code after paying?',
     a: 'You sign in with the email you paid with, create a personal access key, and install Pro items from the registry with the shadcn CLI. This is planned for the Pro launch.',
   },
-  { q: 'Can I get a refund?', a: 'To be confirmed.', tbc: true },
+  { q: 'Can I get a refund?', a: 'Yes, if a Pro item does not work as its page describes and we cannot fix it within 14 days, you get a full refund. Projects you have already shipped may keep the code.' },
 ];
 
 export const PRO_STATUS =

@@ -160,3 +160,44 @@ h1,h2,h3,p{margin:0}
 .prose a,.small a,.note a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--line2);text-underline-offset:3px}
 .prose :not(pre)>code,.note code{font-family:var(--mono);font-size:.88em;background:var(--aui-subtle);border:1px solid var(--line);border-radius:6px;padding:1px 5px;color:var(--ink);overflow-wrap:anywhere}
 .faq .part p{font-size:.95rem}
+
+/* Component previews. The stage carries the AscentUI theme (data-theme), so the components show in
+   their own light or dark look inside the dark site. */
+.stage,.g-stage{background:var(--asc-page);color:var(--asc-ink);font-family:var(--asc-font);font-size:var(--asc-text-sm);line-height:var(--asc-leading-sm);-webkit-font-smoothing:antialiased}
+.stage{min-height:340px;display:grid;place-items:center;padding:48px 24px;border-radius:14px;border:1px solid var(--line)}
+.gallery-wrap{display:flex;flex-direction:column;gap:16px}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.g-card{display:flex;flex-direction:column;min-width:0;border:1px solid var(--line);border-radius:14px;background:var(--panel);overflow:hidden;transition:border-color .14s}
+.g-card:hover{border-color:var(--line2)}
+.g-stage{height:180px;display:grid;place-items:center;padding:16px;overflow:hidden}
+.g-meta{display:flex;flex-direction:column;gap:2px;padding:12px 14px 14px;min-width:0}
+.g-meta span{color:var(--ink);font-weight:500}
+.g-meta small{color:var(--muted);font-size:.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lib-name a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--line2);text-underline-offset:3px}
+.comp{display:grid;grid-template-columns:200px minmax(0,1fr);gap:24px 56px;padding-block:48px 88px;align-items:start}
+.comp-nav{display:flex;flex-direction:column;gap:18px;position:sticky;top:24px;max-height:calc(100vh - 48px);overflow:auto;font-size:.9rem}
+.comp-nav-group{display:flex;flex-direction:column}
+.comp-nav-group p{color:var(--dim);font-size:.78rem;font-weight:600;margin-bottom:4px}
+.comp-nav a,.comp-nav span{padding:4px 0}
+.comp-nav span{color:#5f5f62}
+.comp-nav a[aria-current="page"]{color:var(--ink)}
+.comp-body{display:flex;flex-direction:column;gap:24px;min-width:0;max-width:880px}
+.crumbs{color:var(--dim);font-size:.88rem}
+.comp-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.comp-code{display:flex;flex-direction:column;gap:16px}
+.comp-when{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
+.comp-sec h2{font-size:1.25rem;font-weight:500;letter-spacing:-.02em}
+.comp-sec h3{font-size:1rem;font-weight:500;margin-top:8px}
+.comp-sec ul{margin:0;padding-left:1.2em;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+.comp-sec ul.checks{list-style:none;padding:0}
+.comp-sec ul.checks li{position:relative;padding-left:26px}
+.comp-sec ul.checks li::before{content:"";position:absolute;left:2px;top:.35em;width:12px;height:7px;border-left:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(-45deg)}
+.comp-example{display:flex;flex-direction:column;gap:8px}
+.comp-sec kbd{font:500 .82rem var(--mono);border:1px solid var(--line2);border-radius:6px;padding:1px 6px;color:var(--ink)}
+@media (max-width:860px){
+  .comp{grid-template-columns:minmax(0,1fr)}
+  .comp-nav{position:static;max-height:none;flex-direction:row;flex-wrap:wrap;gap:0 20px;border-bottom:1px solid var(--line);padding-bottom:10px}
+  .comp-nav-group{flex-direction:row;flex-wrap:wrap;gap:0 14px}
+  .comp-nav-group p,.comp-nav span{display:none}
+  .stage{padding:32px 16px}
+}

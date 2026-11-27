@@ -6,7 +6,7 @@
     "noUncheckedIndexedAccess": false,
     "noEmit": true,
     "baseUrl": ".",
-    "paths": { "@/*": ["src/*"] },
+    "paths": { "@/*": ["src/*"], "@kit/*": ["../ui/src/components/*"] },
     "types": ["vite/client"]
   },
   "include": ["src"]

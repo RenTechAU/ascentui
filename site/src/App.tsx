@@ -10,6 +10,7 @@ import loop from './docs/loop.md?raw';
 import theming from './docs/theming.md?raw';
 import { Docs, type DocPage } from './pages/Docs';
 import { Home } from './pages/Home';
+import { ComponentPage } from './pages/Component';
 import { Library } from './pages/Library';
 import { Licence } from './pages/Licence';
 import { Pricing } from './pages/Pricing';
@@ -55,7 +56,7 @@ export function App() {
         </a>
         <nav className="nav-links" aria-label="Pages">
           {NAV.map((n) => (
-            <a key={n.page} href={n.href} aria-current={route.page === n.page ? 'page' : undefined}>{n.label}</a>
+            <a key={n.page} href={n.href} aria-current={route.page === n.page || (n.page === 'library' && route.page === 'component') ? 'page' : undefined}>{n.label}</a>
           ))}
         </nav>
         <div className="nav-cta">
@@ -65,6 +66,7 @@ export function App() {
 
       {route.page === 'home' && <Home />}
       {route.page === 'library' && <Library items={CATALOG} />}
+      {route.page === 'component' && <ComponentPage slug={route.component} registry={registry} />}
       {route.page === 'docs' && <Docs pages={DOCS} current={route.doc} registryBase={REGISTRY_BASE} />}
       {route.page === 'pricing' && <Pricing checkout={checkout} />}
       {route.page === 'licence' && <Licence source={licence} company={COMPANY} />}

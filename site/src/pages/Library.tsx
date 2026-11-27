@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { SegmentedControl } from '@/components/ui/segmented-control';
 import { LAYERS, PHASES, countItems, type CatalogItem, type Phase, type Status, type Tier } from '../catalog';
+import { previewBySlug, PREVIEWS } from '../previews';
+import { Stage } from './Component';
 
 const STATUS: Record<Status, string> = { built: 'Built', 'part-built': 'Part built', planned: 'Planned' };
 
@@ -9,7 +11,7 @@ function Row({ item }: { item: CatalogItem }) {
   return (
     <li className="lib-row">
       <div className="lib-name">
-        <span>{item.name}</span>
+        {previewBySlug(item.slug) ? <a href={`#c-${item.slug}`}>{item.name}</a> : <span>{item.name}</span>}
         {(item.module ?? item.group) && <small>{item.module ?? item.group}</small>}
       </div>
       <p>{item.description}</p>
@@ -44,6 +46,32 @@ export function Library({ items }: { items: CatalogItem[] }) {
             AscentUI is in pre-release. {built} of {all.total} items are built or part built today; the rest are planned.
           </p>
         </div>
+
+        <section className="gallery-wrap" aria-labelledby="ready">
+          <div className="lib-layer-head">
+            <h2 id="ready">Ready to use</h2>
+            <span>{PREVIEWS.length} components, live. Open one for code, props and install.</span>
+          </div>
+          <div className="gallery">
+            {PREVIEWS.map((p) => {
+              const Thumb = p.Thumb ?? p.Demo;
+              return (
+                <a key={p.slug} className="g-card" href={`#c-${p.slug}`}>
+                  {/* inert: the preview inside is for looking at; the whole card is the link */}
+                  <div inert>
+                    <Stage className="g-stage">
+                      <Thumb />
+                    </Stage>
+                  </div>
+                  <div className="g-meta">
+                    <span>{p.name}</span>
+                    <small>{p.description}</small>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </section>
 
         <div className="lib-filters">
           <SegmentedControl

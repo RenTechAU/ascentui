@@ -1,58 +1,70 @@
 # Theming
 
-The look of every component comes from one file of CSS variables, `tokens.css`. Change a variable and every component that reads it changes with it.
+The look of every component comes from one file, `tokens.css`. Components never contain a colour, size or speed of their own; they only read its `--asc-*` variables. Change a value there and every component follows.
 
-## The variables
+Install it once, at your app's entry:
 
-These are set on `:root`. Override any of them in your own stylesheet, after `tokens.css`.
+```tsx
+import "./styles/ascentui/tokens.css";
+```
 
-| Variable | What it controls |
-| --- | --- |
-| `--bg`, `--page` | The app and page backgrounds |
-| `--surface`, `--surface2`, `--surface3` | Cards, panels and raised areas |
-| `--border`, `--border2` | Lines and outlines |
-| `--text`, `--muted`, `--dim` | Text, from strongest to faintest |
-| `--accent`, `--accent-dim` | The one brand colour and its tint |
-| `--danger`, `--warn`, `--ok` | Status colours, each with a `-dim` tint |
-| `--radius` | Corner radius |
-| `--ctl-h`, `--ctl-px`, `--ctl-r`, `--ctl-fs` | Height, padding, radius and text size of form controls |
-| `--mono` | The monospace font |
-| `--ease` | The one easing curve for motion |
+## What the theme does for you
+
+Four things are handled in that one file, so no component has to repeat them and you never have to remember them:
+
+| | What happens | Why it matters |
+| --- | --- | --- |
+| **Light and dark** | Put `class="dark"` or `data-theme="dark"` on `<html>`, or on any wrapper | Every component switches together. You can even show a light panel inside a dark page |
+| **Phones** | On touch screens, controls grow to 44px and text to 15px | Easy to hit with a thumb. Nothing else changes, so the design stays the same |
+| **Less motion** | If someone has asked their device for less motion, transitions stop | Some people get dizzy or distracted by movement. This respects their setting everywhere |
+| **Native parts** | Scrollbars, checkboxes and date pickers are told which theme is on | No white scrollbar in the middle of a dark app |
+
+## Change the look
+
+Override any variable in your own stylesheet:
 
 ```css
 :root {
-  --accent: #2456d6;
-  --accent-dim: #e6edfc;
-  --radius: 6px;
+  --asc-primary: #2456d6;   /* your brand colour for main buttons */
+  --asc-radius: 4px;        /* sharper corners */
+}
+.dark {
+  --asc-primary: #7aa2ff;
 }
 ```
 
-The variable names may change before the first release. A recommendation to give them an `asc-` prefix, so they cannot clash with other kits, is still open.
+**Your styles always win.** The theme and every component put their styles in a CSS layer called `asc`. Anything you write outside a layer comes after it, so a plain rule like `.asc-btn { border-radius: 0 }` works without `!important` and without fighting the component.
 
-## Light and dark
+## The variables
 
-Today `tokens.css` has a **light** palette only.
+| Group | Variables | Use |
+| --- | --- | --- |
+| Ground | `--asc-page`, `--asc-surface`, `--asc-subtle`, `--asc-subtle-strong` | The page, cards on it, washes on cards |
+| Lines | `--asc-border`, `--asc-border-strong` | Hairlines between and around things |
+| Text | `--asc-ink`, `--asc-muted`, `--asc-faint`, `--asc-placeholder` | `ink` and `muted` are for reading. `faint` and `placeholder` are too light for text people must read, so they are for icons and empty fields only |
+| Action | `--asc-primary`, `--asc-on-primary`, `--asc-focus` | Main buttons and the keyboard focus ring |
+| Status | `--asc-success`, `--asc-warning`, `--asc-danger`, `--asc-info`, each with `-soft` | A strong colour for the words, a soft one for the ground behind them |
+| Hues | `--asc-hue-blue`, `-green`, `-amber`, `-red`, `-purple` | Charts, dots and avatars. Never text |
+| Type | `--asc-font`, `--asc-font-mono`, `--asc-text-xs` to `--asc-text-xl` | One typeface; monospace only for codes |
+| Controls | `--asc-control-sm`, `-md`, `-lg`, `--asc-control-text`, `--asc-input-text` | One height scale for buttons, inputs and selects, so a row of them always lines up |
+| Space | `--asc-space-2` to `--asc-space-24` | Steps of 2, 4, 6, 8, 12, 16 and 24px |
+| Corners | `--asc-radius-sm`, `--asc-radius`, `--asc-radius-lg`, `--asc-radius-full` | 5, 7 and 10px, and fully round |
+| Shadow | `--asc-shadow-control`, `-control-hover`, `--asc-shadow-pop` | A half-pixel hairline for controls; a real shadow only for things that float |
+| Motion | `--asc-ease`, `--asc-duration`, `--asc-duration-slow` | Set to zero when less motion is asked for |
 
-**Dark is planned.** The intended switch is a `dark` class or a `data-theme="dark"` attribute on a parent element, which re-points the same variables, so no component needs its own dark styles.
+The values follow affectUI's clean style, so AscentUI and affectUI components sit together without a seam.
 
-Until then you can make a dark theme yourself by overriding the colour variables under your own selector:
+## Small details that are easy to miss
 
-```css
-[data-theme='dark'] {
-  --bg: #0c0c0d;
-  --surface: #141415;
-  --text: #ededed;
-  --muted: #8f8f8f;
-  --border: rgba(255, 255, 255, 0.12);
-}
-```
+- **Inputs are 16px on phones.** Below 16px, iPhones zoom the whole page when someone taps a field. `--asc-input-text` handles it.
+- **Numbers line up.** Counts, money and stats use equal-width digits, so a total changing from 9 to 10 does not make the row jump.
+- **Colour is never the only signal.** Statuses always carry a word, for people who cannot tell red from green.
+- **Every name starts with `asc-`.** Nothing clashes with your own CSS or another kit's.
 
 ## A brand object (planned)
 
-The plan is one `brand` object that re-themes everything: light and dark colours, one font, corner radius and spacing. You would edit one object instead of a list of variables.
+One `brand` object that sets the colours, font and corners for light and dark in one place is planned. Until then, override the variables as above.
 
-This is not built yet. It is designed in a prototype and is part of the "Tokens + brand config" item in the [library](#library).
+## The five older components
 
-## Styles travel with the component
-
-Each component keeps its styles in its own CSS file and reads the variables above. There is no global stylesheet to keep in step, which is what lets an agent install one component cleanly.
+The data table, combo box, chart, month grid and form kit came from an earlier system and still read older variable names. Until they are rebuilt on this theme, also import `legacy.css` and `base.css` from the same folder.

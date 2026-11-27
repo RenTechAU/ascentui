@@ -64,6 +64,13 @@ const item = (
 
 // ---------------------------------------------------------------- phase 1: core (40 free)
 
+/** Built-in motion that ships so far, inside the batch-1 components. */
+const MOTION_STATUS: Record<string, Status> = {
+  'Number count-up': 'built',
+  'Skeleton shimmer': 'built',
+  'Press and focus feedback': 'part-built',
+};
+
 const comp = (group: string, name: string, description: string, status: Status, origin: Origin) =>
   item('component', 'free', 1, name, description, status, origin, { group });
 
@@ -73,16 +80,16 @@ const PHASE_1: CatalogItem[] = [
     'part-built', 'mixed'),
 
   // Actions and display (10)
-  comp('Actions and display', 'Button', 'The standard action button.', 'planned', 'new'),
-  comp('Actions and display', 'Badge', 'A small label for status and counts.', 'planned', 'new'),
-  comp('Actions and display', 'Card', 'A surface that groups related content.', 'planned', 'new'),
-  comp('Actions and display', 'Avatar', 'A person or company, as a picture or initials.', 'planned', 'engine'),
-  comp('Actions and display', 'Stat Card', 'One number with its label and change.', 'planned', 'new'),
-  comp('Actions and display', 'Empty State', 'What a list shows when there is nothing in it yet.', 'planned', 'new'),
-  comp('Actions and display', 'Icon Button', 'A button that is only an icon, with an accessible name.', 'planned', 'new'),
-  comp('Actions and display', 'Separator', 'A dividing line between groups.', 'planned', 'new'),
-  comp('Actions and display', 'Skeleton + Spinner', 'Loading placeholders and a busy indicator.', 'planned', 'new'),
-  comp('Actions and display', 'Tooltip', 'A short hint on hover or focus.', 'planned', 'new'),
+  comp('Actions and display', 'Button', 'The standard action button.', 'built', 'new'),
+  comp('Actions and display', 'Badge', 'A small label for status and counts.', 'built', 'new'),
+  comp('Actions and display', 'Card', 'A surface that groups related content.', 'built', 'new'),
+  comp('Actions and display', 'Avatar', 'A person or company, as a picture or initials.', 'built', 'new'),
+  comp('Actions and display', 'Stat Card', 'One number with its label and change.', 'built', 'new'),
+  comp('Actions and display', 'Empty State', 'What a list shows when there is nothing in it yet.', 'built', 'new'),
+  comp('Actions and display', 'Icon Button', 'A button that is only an icon, with an accessible name.', 'built', 'new'),
+  comp('Actions and display', 'Separator', 'A dividing line between groups.', 'built', 'new'),
+  comp('Actions and display', 'Skeleton + Spinner', 'Loading placeholders and a busy indicator.', 'built', 'new'),
+  comp('Actions and display', 'Tooltip', 'A short hint on hover or focus.', 'built', 'new'),
 
   // Forms (9)
   comp('Forms', 'Form kit', 'Field labels, required marks and form headings.', 'built', 'repo'),
@@ -121,7 +128,8 @@ const PHASE_1: CatalogItem[] = [
     ['List reorder', 'Rows move to their new place when a list changes.'],
     ['Press and focus feedback', 'Controls respond to press and keyboard focus.'],
   ] as const).map(([name, description]) =>
-    item('motion', 'free', 1, name, `${description} One switch turns motion off; reduced-motion is respected.`, 'planned', null, { group: 'Built-in' })),
+    item('motion', 'free', 1, name, `${description} One switch turns motion off; reduced-motion is respected.`,
+      MOTION_STATUS[name] ?? 'planned', null, { group: 'Built-in' })),
 
   // Layout blocks (2)
   item('block', 'free', 1, 'Page header', 'Title, description and actions at the top of a page.', 'planned', null, { group: 'Layout' }),
