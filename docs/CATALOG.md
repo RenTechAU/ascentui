@@ -1,0 +1,256 @@
+# AscentUI catalog: what we ship, in what order, free vs Pro
+
+Version 3, 2026-11-28. Status: proposal for review. Sits beside `PLAN.md` (how we build) and
+`AFFECTUI-RESEARCH.md` (how affectUI sells).
+
+Changes in version 3: the catalog is rebuilt around the 80/20 of what a coding agent needs (§4);
+every component is now free, including the app shell; phone components and phone versions of the
+core screens are added; an agent kit is a catalog layer of its own. Version 2 added phases, login
+screens, late illustration and motion, a late deployable app, and the backend recipe (§3).
+
+## 1. The pitch this has to serve
+
+1. **Buy once, use forever.** One payment, lifetime access.
+2. **A ready app in a day.** Start from working screens, not a blank page.
+3. **Only the essentials.** A small catalog, kept as simple as possible.
+
+Pricing: Individual USD 149 for the first 100 buyers then 299; Team (10 seats) USD 399 then 699.
+
+## 2. The rule for free vs Pro
+
+> **Every component is free. Screens that work are Pro.**
+>
+> A screen, or a block wired to data, is Pro. No exceptions on either side, except two free showcase screens.
+
+| | Free (MIT) | Pro (one-time licence) |
+| --- | --- | --- |
+| Job | Get found, get installed, prove the quality | Be the reason to pay |
+| What it is | Every component, the theme, the agent kit, two showcase screens, some motion and illustration | Screens and data blocks, each with its backend recipe (§3); later the deployable app |
+| Buyer's saving | Minutes to hours | Days to weeks |
+
+Two screens are free on purpose: **Sign in** (every app needs one, so it gets installed) and
+**Dashboard** (it shows how the pieces fit together).
+
+## 3. What "backend" means
+
+**Each Pro screen ships a backend recipe, not a backend.** The reference server comes later,
+with the deployable app (phase 5).
+
+A recipe is four small files that travel with the screen:
+
+| File | What it is | Why it matters |
+| --- | --- | --- |
+| **Contract** | The typed list of calls the screen makes (`listCases`, `assignPartner`…) and the shapes they return | The screen never guesses; an agent knows exactly what to build |
+| **Mock client** | The same contract answered from demo data, in memory | The screen works the minute it is installed, before any backend exists |
+| **Agent guide** (`AGENTS.md`) | Plain instructions for a coding agent: the tables to create, the rules to enforce, the mistakes to avoid, written for whatever stack the buyer uses | The buyer says "wire this to my Supabase" and it happens |
+| **Checks** | A test file the agent runs against its own work until it passes | This is what makes a prompt trustworthy |
+
+Why a recipe and not shipped server code:
+
+- **Buyers are on different stacks.** Supabase, Convex, Next with Postgres, Firebase. One server
+  framework fits a fraction of them; a contract plus a guide fits all.
+- **It keeps us small.** No server to maintain, version and secure for every buyer.
+- **It is how the buyers already work.** They direct an agent; we give the agent a precise brief.
+
+Why not a prompt alone:
+
+- **A bare prompt is not worth paying for,** and it gives no guarantee. Two runs produce two
+  different backends.
+- **The business rules are the hard part.** Tax and rounding, bill-once guards, who can see which
+  price, undo. Those are written into the guide as rules and enforced by the checks, taken from a
+  system a real business runs on. That is the part an agent can't invent.
+
+So: **prompt, plus contract, plus mock, plus checks.** The checks are what turn "a prompt" into a product.
+
+## 4. The 80/20: what an agent needs to build a working app
+
+Most business software, on a desk or a phone, is the same loop repeated: **sign in, see a list,
+open a record, change it, get told it worked.** An agent that has that loop, done properly once,
+can build most of an app by repeating it. So the catalog leads with the loop, not with variety.
+
+**The seven things that cover about 80% of the work**
+
+| # | What | Why agents need it handed to them |
+| --- | --- | --- |
+| 1 | **Shell**: sidebar and top bar on a desk, tab bar on a phone | Every screen sits in one. Agents rebuild it differently on every page |
+| 2 | **Sign in and roles** | Needed by every app; easy to get subtly and dangerously wrong |
+| 3 | **List**: table on a desk, rows on a phone, with search, filter, sort, paging | The most common screen in business software |
+| 4 | **Record**: drawer or page showing one thing, with its history | The second most common |
+| 5 | **Form**: fields, validation, save, error | Where most bugs live |
+| 6 | **States**: loading, empty, error, saved, confirm, undo | What separates a demo from a working app. Agents skip these unless told |
+| 7 | **One way to talk to data**: the contract and mock client (§3) | Without it every screen invents its own, and nothing agrees |
+
+**The four things that make the other six work**
+
+| What | Why |
+| --- | --- |
+| **Theme** | One place to change the look, so screens stay consistent |
+| **Conventions guide** | A short file the agent reads first: how to compose a list page, where state lives, how to name things |
+| **Phone behaviour** | Bottom sheets, big touch targets, pull to refresh, the tab bar. A desktop layout squeezed onto a phone is not a mobile app |
+| **Checks** | Tests the agent runs on its own work, so "it compiles" is not where it stops |
+
+What this changes in the catalog:
+
+- **The loop ships first and is the launch.** Phase 2 is renamed for it.
+- **Every component is free, including the App Shell.** The shell is item 1 on the list; charging
+  for it would cut adoption where it matters most. Pro is the wired screens.
+- **Phone components join the core set:** Bottom Sheet, List Row, Pull to Refresh.
+- **Phone versions of the core screens** join phase 2: phone list and phone record.
+- **The agent kit is a layer of its own:** conventions guide, page recipes, `llms.txt`, MCP server.
+- **Everything outside the loop is secondary**: boards, schedules, quotes, charts beyond the
+  dashboard, illustration, motion. Still planned, but after the loop.
+
+## 5. Phases, from core to secondary
+
+| Phase | Theme | What ships | Free | Pro |
+| --- | --- | --- | --- | --- |
+| **1. Core** | The parts of the loop | Theme, 31 components (desk and phone), built-in motion, 2 layout blocks, agent kit, website and install | 40 | 0 |
+| **2. The working loop** | Sign in, list, record, form, states, on desk and phone | Sign-in and account screens, dashboard, admin basics, phone list and record, 6 data blocks. **Launch and the first-100 offer start here** | 2 | 18 |
+| **3. Business screens** | The reason people come | Dispatch, field app, CRM, quotes + payments, assets + warranty, 8 more blocks | 0 | 32 |
+| **4. Secondary** | Polish and reach | Illustrations, standalone motion, Brand Studio, AI activity screen | 11 | 9 |
+| **5. Deployable app** | The whole thing running | Reference server, 2 starter apps, one-command setup | 0 | 2 |
+| | | **Total: 114** | **53** | **61** |
+
+At launch (end of phase 2) the catalog is 60 items: 42 free, 18 Pro. Every Pro buyer gets later
+phases at no extra cost.
+
+## 6. Phase 1: core (all free)
+
+Status key: **Have** = in the AscentUI repo (PR #1). **ChillOps** = designed in the ChillOps
+prototype on affectUI components; needs our own components underneath. **Hutch** = exists in
+Hutch, to copy and make generic. **New** = to write.
+
+**Theme (1)**
+
+| Item | Notes | Status |
+| --- | --- | --- |
+| Tokens + brand config | Light and dark colours, one font, corner radius, spacing. One `brand` object re-themes everything | Have (tokens); ChillOps (brand config) |
+
+**Components (31)**, with how many of ChillOps' 16 screens use each in brackets
+
+| Group | Components | Status |
+| --- | --- | --- |
+| Actions and display (10) | Button (13) · Badge (12) · Card (11) · Avatar (7) · Stat Card (5) · Empty State (4) · Icon Button (3) · Separator (3) · Skeleton + Spinner · Tooltip | New; Avatar from Hutch |
+| Forms (9) | Form kit · Segmented Control (6) · Select + Combo Box (5) · Switch + Checkbox (4) · Date + Time Picker (3) · Text Field (2) · Text Area (2) · Number Input (2) · PIN Input (2) | Form kit and Combo Box: Have. Switch: Hutch. Rest: New |
+| Data and overlays (5) | Toaster (14) · Dialog + Drawer (5) · Chart (4) · Data Table (3) · Month Grid | Data Table, Chart, Month Grid: Have. Toaster, Drawer: Hutch |
+| App frame (4) | App Shell (6): sidebar, top bar, phone tab bar, account menu · Command Menu · Stepper Form · Upload | ChillOps; Upload from Hutch |
+| Phone (3) | Bottom Sheet · List Row · Pull to Refresh | Hutch field app |
+
+**Built-in motion (5):** number count-up, skeleton shimmer, enter and exit for overlays, list
+reorder, press and focus feedback. One switch turns it all off; reduced-motion is respected.
+
+**Layout blocks (2):** Page header · Filter bar.
+
+**Agent kit (1):** the conventions guide, page recipes for the free screens, `llms.txt`, and the
+MCP server for docs. Counted as one item; it is what an agent reads before it writes anything.
+
+**Also in phase 1:** the website and the install registry.
+
+## 7. Phase 2: the working loop (launch)
+
+Everything here ships with its backend recipe (§3).
+
+**Sign-in and account screens (7)**
+
+| Screen | Tier | Status |
+| --- | --- | --- |
+| Sign in (email and password) | **Free** | Hutch |
+| Sign up | Pro | New |
+| Forgot and reset password | Pro | New |
+| Accept invite and set password | Pro | Hutch |
+| Verify code (email or text) | Pro | New |
+| PIN sign-in (phone, for field staff) | Pro | ChillOps |
+| Profile and account | Pro | ChillOps |
+
+**App basics (5)**
+
+| Screen | Tier | Status |
+| --- | --- | --- |
+| Dashboard | **Free** | ChillOps |
+| Staff and roles | Pro | Hutch |
+| Settings | Pro | Hutch |
+| History and undo | Pro | Hutch |
+| Trash and archive | Pro | Hutch |
+
+**Phone versions (2, Pro):** Phone list (rows, search, pull to refresh) · Phone record (detail with
+actions in a bottom sheet). Status: Hutch field app, ChillOps.
+
+**Data blocks (6, Pro):** Record list page · Record drawer · Timeline · Settings form · Bulk
+action bar · Undo history panel.
+
+## 8. Phase 3: business screens
+
+| Module | Screens | Status |
+| --- | --- | --- |
+| **Dispatch** (6) | Cases board · Cases list · New case · Case work area · Partners · Schedule | ChillOps |
+| **Field app**, phone (7) | Job offers · Today's jobs · Job detail and on-site status · Service report · Open jobs · Alerts · Invoices | ChillOps |
+| **CRM** (4) | Contacts · Companies · Deals pipeline · Lead inbox | ChillOps (3), Hutch (1) |
+| **Quotes + payments** (4) | Quote builder · Customer quote page · Invoices · Payments | Hutch |
+| **Assets + warranty** (3) | Products · Serial numbers · Warranty lookup | Hutch |
+
+**Data blocks (8, Pro):** Board · Notes and comments · Line items editor · Money summary ·
+Approval card · Schedule view · Setup guide · Photo report.
+
+Order within the phase: Dispatch and Field app first (they already exist as ChillOps and are the
+most distinctive), then CRM, then Quotes + payments, then Assets + warranty.
+
+## 9. Phase 4: secondary
+
+Illustration and motion match affectUI's approach, where free showpieces do the marketing, but
+they come after the product works.
+
+| Item | Count | Free | Pro | Notes |
+| --- | --- | --- | --- | --- |
+| Illustrations | 12 | 8 | 4 | Animated business scenes for landing pages and empty states: a dispatch board filling, a quote being accepted, a job moving across a map, an invoice paid, an undo |
+| Standalone motion | 6 | 3 | 3 | Text reveal, number ticker, list stagger (free); page transition, drag physics, background (Pro) |
+| Brand Studio screen | 1 | 0 | 1 | Edit the brand live, export the config |
+| AI activity screen | 1 | 0 | 1 | What the assistant did, with approve and undo |
+
+Until then the website uses affectUI's free MIT items for its own effects, as it does today.
+
+## 10. Phase 5: the deployable app
+
+| Item | What it is |
+| --- | --- |
+| Reference server | One real implementation of every contract (Hono + Postgres), passing the same checks buyers' agents run |
+| **Service business** starter | Console + field app, deployed with demo data. Built from phases 2 and 3 |
+| **Sales CRM** starter | Console for leads, deals and quotes |
+
+One command creates the app, seeds a fictional company and prints a login. It comes last
+because by then every contract has been proven by buyers on their own stacks.
+
+## 11. What each tier gets
+
+| | Free | Pro |
+| --- | --- | --- |
+| Theme, all 31 components, built-in motion, 2 layout blocks, agent kit | Yes | Yes |
+| Sign in and Dashboard screens | Yes | Yes |
+| 8 illustrations, 3 motion effects (phase 4) | Yes | Yes |
+| 12 more loop screens (desk and phone), 24 business screens | | Yes |
+| 14 data blocks | | Yes |
+| Backend recipe with every screen | | Yes |
+| Remaining illustrations and motion, Brand Studio, AI screen | | Yes |
+| Reference server and starter apps (phase 5) | | Yes |
+| AI install | Docs for everything | Source for everything |
+
+## 12. Against affectUI
+
+| | affectUI | AscentUI |
+| --- | --- | --- |
+| Catalog | 255 items, 29% free | 114 items at full build, 46% free |
+| Niche | AI agents and chat | Service, CRM and finance operations |
+| What Pro is | More interface | Interface plus the recipe to make it work |
+| Screens | 50, none free, front-end only | 40, two free, each with a backend recipe |
+| Illustration and motion | 38 items, 22 free | 18 standalone items, 11 free, in phase 4 |
+| Data Table, Combobox, Stat Card, Toaster, charts, App Shell | Pro | Free |
+| Organised around | Breadth: a component for everything | The loop an agent repeats to build an app |
+| Whole deployable app | No | Phase 5 |
+
+## 13. Open questions
+
+1. **Data Table free or Pro?** Recommendation: free. Revisit if early sales are slow.
+2. **Is Sign in the right free screen?** It gets installs, but it is also the first thing a buyer needs. Recommendation: free.
+3. **Launch at the end of phase 2 or wait for Dispatch?** Phase 2 is the whole loop on desk and phone, which is a real product, but it has no industry screens yet. Option: launch when phase 2 plus Dispatch are done.
+6. **Is a free App Shell too generous?** It follows from the rule and the 80/20. The risk is that free alone becomes enough for some buyers. Recommendation: free, and watch conversion.
+4. **Which stacks do the agent guides name first?** Recommendation: Supabase, then plain Postgres.
+5. **Code ownership** (from `PLAN.md`): Hutch is Chill Bunny's. To be settled in writing before launch.
