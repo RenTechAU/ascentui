@@ -1,0 +1,17 @@
+/* Chart — @ascentui/ui. Reads the variables in @ascentui/tokens. */
+.ch-tip{background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.08);padding:8px 10px;font-size:12px;min-width:150px;color:var(--text)}
+.ch-tip-h{font-weight:700;margin-bottom:5px}
+.ch-tip-r{display:flex;align-items:center;justify-content:space-between;gap:14px;line-height:1.7}
+.ch-tip-n{display:inline-flex;align-items:center;gap:6px;color:var(--muted)}
+.ch-tip-r b{font-family:var(--mono);font-weight:700;font-variant-numeric:tabular-nums}
+.ch-sw{width:9px;height:9px;border-radius:3px;flex:none;display:inline-block}
+.ch-legend{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;margin-top:10px}
+.ch-lg{display:inline-flex;align-items:center;gap:6px;background:none;border:none;padding:0;font-family:inherit;font-size:11.5px;font-weight:600;color:var(--muted);cursor:pointer}
+.ch-lg.off{color:var(--dim);text-decoration:line-through}
+.ch-vlabel{font-size:11.5px;font-weight:700;fill:var(--muted);font-family:var(--mono);font-variant-numeric:tabular-nums}
+.ch-blabel{font-size:10.5px;font-weight:700;fill:var(--muted)}
+.ch-empty{display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:12.5px;text-align:center;padding:0 12px}
+.ch-pie{position:relative;width:100%}
+.ch-pie-c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+.ch-pie-v{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.ch-pie-l{font-size:11.5px;font-weight:600;color:var(--dim);margin-top:2px}

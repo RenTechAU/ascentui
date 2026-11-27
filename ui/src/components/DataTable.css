@@ -1,0 +1,58 @@
+/* DataTable — @ascentui/ui. Reads the variables in @ascentui/tokens. */
+.dtable{border:1px solid var(--border);border-radius:12px;overflow:hidden;overflow-x:auto;background:var(--surface)}
+.dthead,.drow{display:grid;align-items:center;gap:14px;padding:11px 16px}
+.dthead{background:var(--surface2);border-bottom:1px solid var(--border);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--dim)}
+.dthead .dth{position:relative;display:inline-flex;align-items:center;user-select:none;min-width:0;overflow:hidden;white-space:nowrap}
+.dthead .dth.r{justify-content:flex-end}
+.dthead .dth-rs{position:absolute;top:-4px;bottom:-4px;right:0;width:8px;cursor:col-resize;touch-action:none}
+.dthead .dth-rs::after{content:'';position:absolute;top:25%;bottom:25%;right:3px;width:2px;border-radius:1px;background:var(--border2);opacity:0;transition:opacity .12s}
+.dthead .dth:hover .dth-rs::after{opacity:1}
+.dthead .dth-rs:hover::after,.dthead .dth-rs:active::after{background:var(--accent);opacity:1}
+.dthead .dth.sortable{cursor:pointer}
+.dthead .dth.sortable:hover{color:var(--text)}
+.dthead .dth.sorted{color:var(--accent)}
+.dthead .dth-arr{font-size:9px;margin-left:4px;flex:none}
+.dthead .dth-arr.idle{font-size:10px;opacity:.32;transition:opacity .12s}
+.dthead .dth.sortable:hover .dth-arr.idle{opacity:.75}
+.dthead .dth[draggable=true]:active{opacity:.5}
+.drow{border-bottom:1px solid var(--border);cursor:pointer;font-size:13px}
+.drow:last-child{border-bottom:none}
+.drow:hover{background:var(--surface2)}
+.dgroup{padding:9px 16px;background:var(--surface2);border-bottom:1px solid var(--border);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);display:flex;align-items:center;gap:8px}
+.tshell{display:flex;flex-direction:column;gap:10px}
+.tbar{--ctl-h:var(--ctl-h-sm);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.tbar-r{margin-left:auto;display:flex;align-items:center;gap:10px}
+.viewtabs{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.vtab{font-family:inherit;font-size:12.5px;font-weight:600;color:var(--muted);background:transparent;border:1px solid transparent;border-radius:7px;padding:4px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.vtab:hover{background:var(--surface3)}
+.vtab.on{background:var(--surface);color:var(--text);border-color:var(--border2);font-weight:700}
+.vtab.add{color:var(--accent)}
+.vtab-x{font-size:13px;line-height:1;color:var(--dim);border-radius:50%;width:15px;height:15px;display:inline-flex;align-items:center;justify-content:center}
+.vtab-x:hover{background:var(--danger-dim);color:var(--danger)}
+.grpby{display:inline-flex;align-items:center;gap:7px}
+.colmenu-wrap{position:relative}
+.colmenu-scrim{position:fixed;inset:0;z-index:30}
+.colmenu{position:absolute;right:0;top:calc(100% + 6px);z-index:31;background:var(--surface);border:1px solid var(--border2);border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.12);padding:7px;min-width:180px;display:flex;flex-direction:column;gap:1px}
+.colmenu label{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);padding:6px 8px;border-radius:7px;cursor:pointer}
+.colmenu label:hover{background:var(--surface2)}
+.colmenu label.locked{color:var(--dim);cursor:default}
+.colmenu .colmenu-reset{margin-top:4px;padding:7px 8px;border:0;border-top:1px solid var(--border);border-radius:0 0 7px 7px;background:none;color:var(--accent);font-size:12.5px;text-align:left;cursor:pointer}
+.colmenu .colmenu-reset:hover{background:var(--surface2)}
+.colmenu input[type=checkbox]{accent-color:var(--accent)}
+.dcell{min-width:0;display:flex;align-items:center;gap:7px}
+.dcell.r{justify-content:flex-end}
+.dgroup{display:flex;align-items:center;gap:7px;background:var(--surface2);border-bottom:1px solid var(--border);padding:7px 16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.dgroup-toggle{cursor:pointer;user-select:none}
+.dgroup-toggle:hover{color:var(--text)}
+.dgroup-chev{width:10px;display:inline-block}
+.dgroup-n{font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-dim);border-radius:20px;padding:0 7px}
+.tpage{--ctl-h:var(--ctl-h-sm);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.tpage-n{font-size:12.5px;color:var(--muted)}
+.tpage-btns{margin-left:auto;display:flex;align-items:center;gap:6px}
+.tpage-cur{font-size:12.5px;font-weight:600;color:var(--text);padding:0 4px;white-space:nowrap}
+.tpage .btn:disabled{opacity:.45;cursor:default}
+.dthead .dth-sel,.dcell-sel{display:flex;align-items:center;justify-content:center}
+.dcell-sel input[type=checkbox],.dth-sel input[type=checkbox]{width:14px;height:14px;accent-color:var(--accent);cursor:pointer}
+.drow.sel{background:var(--accent-dim)}
+.dcell-acts{display:flex;gap:4px;justify-content:flex-end;opacity:0;transition:opacity .12s}
+.drow:hover .dcell-acts,.drow.sel .dcell-acts{opacity:1}

@@ -8,20 +8,20 @@ Be direct. Skip preambles. Give simple, non-technical explanations unless asked 
 
 ## What this is
 
-**AscentUI** is a kit of pre-built business components for vibe coders. It is extracted from
+**AscentUI** is a kit of pre-built business components for vibe coders. It is copied from
 **Hutch** (`RenTechAU/chillbunny`), Chill Bunny's admin engine. The full plan is
 [`docs/PLAN.md`](docs/PLAN.md). Read it before structural work.
 
 ## Rules
 
-- **Extract, don't fork.** A component moves *out* of Hutch into AscentUI, and Hutch installs it
-  back as a published `@ascentui/*` package. Never keep two copies that can drift. A change
-  ships here first, then Hutch bumps the version.
+- **Hutch stays separate and independent.** AscentUI copies from Hutch, one way. Never make
+  Hutch install, import or depend on AscentUI, and never change Hutch as part of AscentUI work.
+  AscentUI owns its copies and may diverge freely; porting a later Hutch fix is a choice.
 - **Nothing Chill Bunny–specific ships.** No owner names, no ice bath/sauna/RLT product types, no
   legacy-import columns, no Australia-only assumptions baked in (tax, bank fields and states are
   config).
 - **Data comes in through props or a typed client interface**, never a hidden fetch. Demos pass
-  a mock client; Hutch passes its real API.
+  a mock client; a real app passes its API.
 - **Every item installs cleanly by an AI agent**: the shadcn registry and an `AGENTS.md` per module.
 - **Styles travel with the component.** Use the CSS variables from `@ascentui/tokens`, and keep
   styles in the component's own CSS file, never in a global stylesheet.

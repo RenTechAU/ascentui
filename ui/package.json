@@ -1,18 +1,46 @@
 {
   "name": "@ascentui/ui",
-  "version": "0.0.0",
-  "description": "AscentUI free building blocks: table, picker, chart, calendar, form kit (MIT)",
+  "version": "0.1.0",
+  "description": "AscentUI free building blocks: data table, combo box, chart, month grid, form kit (MIT)",
   "license": "MIT",
   "type": "module",
-  "files": ["src"],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist",
+    "src",
+    "LICENSE"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./base.css": "./dist/base.css"
   },
   "scripts": {
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "build": "rm -rf dist && tsc -p tsconfig.build.json && node ../scripts/copy-css.mjs src dist",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "prepack": "npm run build"
   },
   "peerDependencies": {
-    "@ascentui/tokens": "0.0.0",
-    "react": ">=18"
+    "@ascentui/tokens": "^0.1.0",
+    "react": ">=18",
+    "recharts": "^2.12.7"
+  },
+  "peerDependenciesMeta": {
+    "recharts": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "react": "^18.3.1",
+    "recharts": "^2.12.7",
+    "react-dom": "^18.3.1",
+    "@types/react-dom": "^18.3.0"
   }
 }
