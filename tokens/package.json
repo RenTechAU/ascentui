@@ -1,0 +1,11 @@
+{
+  "name": "@ascentui/tokens",
+  "version": "0.0.0",
+  "description": "AscentUI design tokens: CSS variables for colour, type and spacing, light and dark",
+  "license": "MIT",
+  "type": "module",
+  "files": ["src"],
+  "exports": {
+    "./tokens.css": "./src/tokens.css"
+  }
+}

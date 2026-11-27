@@ -1,0 +1,20 @@
+{
+  "name": "ascentui",
+  "private": true,
+  "description": "Pre-built business components for vibe coders: UI, schema and server logic, extracted from Hutch",
+  "license": "UNLICENSED",
+  "workspaces": [
+    "tokens",
+    "ui",
+    "modules/*"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}
