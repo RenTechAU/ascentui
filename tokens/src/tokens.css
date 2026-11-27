@@ -1,3 +1,43 @@
-/* AscentUI tokens. Phase 1 lifts these from Hutch's admin styles (:root, light + dark). */
-:root {
+/* @ascentui/tokens — the design variables every AscentUI component reads.
+   Lifted from Hutch's admin console. Override any of these on :root to theme. */
+:root{
+  --bg:#ffffff; --page:#f4f3ee; --surface:#ffffff; --surface2:#faf9f5; --surface3:#f1f0ea; --surface3-hi:#e6e4dc;
+  --border:rgba(0,0,0,0.09); --border2:rgba(0,0,0,0.15);
+  --text:#1b1b1a; --muted:#6c6c68; --dim:#9b9b96;
+  --accent:#0f9d8a; --accent-dim:#e3f4f0; --accent-dim2:#d2ece6;
+  --danger:#c43d2f; --danger-dim:#fbecea; --danger-dim2:#f6dcd8;
+  --warn:#9a6a07; --warn-dim:#faf0d8;
+  --ok:#2f7d4f; --ok-dim:#e9f4ec;
+  --purple:#5a47b0; --purple-dim:#eceafa;
+  /* Named here for the `deal` notification category (0116). The value was
+     already in the sheet four times as a literal, and in mobile.css under
+     this name — this is the same colour, finally spelled once. */
+  --blue:#3a6ea5; --blue-dim:#e7eef7;
+  --radius:10px;
+  --mono:'Geist Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+
+  /* The console's one easing curve. Borrowed rather than invented: mobile.css
+     already moves everything on cubic-bezier(0.2, 0.8, 0.2, 1), so pointing the
+     desktop sheet at the same curve means the two shells share a motion
+     vocabulary instead of each having their own. See the block below. */
+  --ease:cubic-bezier(.2,.8,.2,1);
+
+  /* form controls — see the block below. --ctl-h is the one height every
+     text-ish control renders at; the -sm/-xs steps are for denser contexts,
+     which rescale by re-pointing --ctl-h rather than by repadding by hand. */
+  --ctl-h:40px;      /* forms: modals, drawers, side panels */
+  --ctl-h-sm:34px;   /* toolbars + inline edits — matches .btn */
+  --ctl-h-xs:28px;   /* dense rows: workflow builder, $ breakdowns */
+  --ctl-px:12px;
+  --ctl-r:9px;
+  --ctl-fs:13.5px;
+  --ctl-caret:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236c6c68' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+/* The same iOS focus-zoom rule as the login gate, applied at the token instead
+   of at one control: under 16px Safari zooms the page in on focus and leaves it
+   there, so on a touch tablet running the desktop console EVERY field did it.
+   Re-pointing --ctl-fs is the whole fix — that is what a token is for, and it is
+   why the baseline never hardcodes a size. Fine pointers keep 13.5. */
+@media (pointer:coarse){
+  :root{--ctl-fs:16px}
 }
