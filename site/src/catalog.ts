@@ -92,15 +92,15 @@ const PHASE_1: CatalogItem[] = [
   comp('Actions and display', 'Tooltip', 'A short hint on hover or focus.', 'built', 'new'),
 
   // Forms (9)
-  comp('Forms', 'Form kit', 'Field labels, required marks and form headings.', 'built', 'repo'),
-  comp('Forms', 'Segmented Control', 'Switch between a few options in one row.', 'planned', 'new'),
-  comp('Forms', 'Select + Combo Box', 'Pick one from a list. The combo box searches as you type.', 'part-built', 'mixed'),
-  comp('Forms', 'Switch + Checkbox', 'On and off, and tick boxes.', 'planned', 'mixed'),
-  comp('Forms', 'Date + Time Picker', 'Pick a day and a time.', 'planned', 'new'),
-  comp('Forms', 'Text Field', 'A single line of text.', 'planned', 'new'),
-  comp('Forms', 'Text Area', 'Several lines of text.', 'planned', 'new'),
-  comp('Forms', 'Number Input', 'A number, with steps and limits.', 'planned', 'new'),
-  comp('Forms', 'PIN Input', 'A short code, one box per digit.', 'planned', 'new'),
+  comp('Forms', 'Form kit', 'Field labels, required marks, help and error text, and form sections.', 'built', 'repo'),
+  comp('Forms', 'Segmented Control', 'Switch between a few options in one row.', 'built', 'new'),
+  comp('Forms', 'Select + Combo Box', 'Pick one from a list. The combo box searches as you type.', 'built', 'mixed'),
+  comp('Forms', 'Switch + Checkbox', 'On and off, and tick boxes.', 'built', 'mixed'),
+  comp('Forms', 'Date + Time Picker', 'Pick a day and a time.', 'built', 'new'),
+  comp('Forms', 'Text Field', 'A single line of text.', 'built', 'new'),
+  comp('Forms', 'Text Area', 'Several lines of text.', 'built', 'new'),
+  comp('Forms', 'Number Input', 'A number, with steps and limits.', 'built', 'new'),
+  comp('Forms', 'PIN Input', 'A short code, one box per digit.', 'built', 'new'),
 
   // Data and overlays (5)
   comp('Data and overlays', 'Toaster', 'Brief messages that say what just happened.', 'planned', 'engine'),

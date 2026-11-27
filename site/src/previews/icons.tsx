@@ -12,3 +12,5 @@ export const Pencil = () => <I d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4" />;
 export const More = () => <I d="M5 12h.01M12 12h.01M19 12h.01" />;
 export const Inbox = () => <I d="M3 13h5l1 3h6l1-3h5M5 5h14l2 8v6H3v-6z" />;
 export const Search = () => <I d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4" />;
+export const Mail = () => <I d="M4 6h16v12H4zM4 7l8 6 8-6" />;
+export const Scale = () => <I d="M6 20h12M12 4v16M5 8h14M5 8l-2 6a3 3 0 0 0 4 0zM19 8l-2 6a3 3 0 0 0 4 0z" />;
