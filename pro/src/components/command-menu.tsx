@@ -10,7 +10,7 @@
  * Built from Dialog. Reads the shared theme (@ascentui/tokens).
  */
 import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type ButtonHTMLAttributes, type KeyboardEvent, type ReactNode } from "react";
-import { Dialog } from "./dialog";
+import { Dialog } from "@ascentui/ui/components/dialog";
 
 const css = `@layer asc {
 .asc-kbd{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;min-width:18px;height:18px;padding:0 var(--asc-space-4);border-radius:var(--asc-radius-sm);background:var(--asc-surface);box-shadow:var(--asc-shadow-control);color:var(--asc-muted);font:500 11px/1 var(--asc-font);white-space:nowrap;font-variant-numeric:tabular-nums}

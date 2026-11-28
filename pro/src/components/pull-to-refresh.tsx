@@ -9,8 +9,8 @@
  * Built from Button and Spinner. Reads the shared theme (@ascentui/tokens).
  */
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { Button } from "./button";
-import { Spinner } from "./spinner";
+import { Button } from "@ascentui/ui/components/button";
+import { Spinner } from "@ascentui/ui/components/spinner";
 
 const css = `@layer asc {
 .asc-ptr{position:relative;box-sizing:border-box;height:100%;min-height:0;overflow-y:auto;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch}

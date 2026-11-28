@@ -2,16 +2,14 @@
 import { Badge } from '@kit/badge';
 import { Button } from '@kit/button';
 import { Card } from '@kit/card';
-import { Chart, type ChartDatum, type ChartKind } from '@kit/chart';
-import chartSrc from '@kit/chart.tsx?raw';
+import { Chart, type ChartDatum, type ChartKind } from '@pro/chart';
 import { DataTable, type Column, type SavedView } from '@kit/data-table';
 import dataTableSrc from '@kit/data-table.tsx?raw';
 import { Dialog, Drawer, useConfirm } from '@kit/dialog';
 import dialogSrc from '@kit/dialog.tsx?raw';
 import { EmptyState } from '@kit/empty-state';
 import { IconButton } from '@kit/icon-button';
-import { MonthGrid, isoDay } from '@kit/month-grid';
-import monthGridSrc from '@kit/month-grid.tsx?raw';
+import { MonthGrid, isoDay } from '@pro/month-grid';
 import { SegmentedControl } from '@kit/segmented-control';
 import { Select } from '@kit/select';
 import { TextArea } from '@kit/text-area';
@@ -683,7 +681,7 @@ return <>{/* … */}{confirmDialog}</>;` },
     group: G,
     description: 'Bars, lines, areas, pie and donut, sparklines and meters from one component, in the theme’s colours, with the numbers as a table for screen readers.',
     install: ['chart'],
-    sources: [{ file: 'chart.tsx', code: chartSrc }],
+    sources: [],
     Demo: ChartDemo,
     Thumb: ChartThumb,
     usage: `import { Chart } from "@/components/ui/chart";
@@ -843,7 +841,7 @@ const columns: Column<Case>[] = [
     group: G,
     description: 'A month calendar that shows your items on each day. Weeks start on the reader’s own first day, and the arrow keys move between days.',
     install: ['month-grid'],
-    sources: [{ file: 'month-grid.tsx', code: monthGridSrc }],
+    sources: [],
     Demo: MonthDemo,
     Thumb: MonthThumb,
     usage: `import { MonthGrid } from "@/components/ui/month-grid";

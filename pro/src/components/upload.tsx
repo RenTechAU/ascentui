@@ -12,10 +12,10 @@
 import {
   useCallback, useEffect, useRef, useState, type CSSProperties, type DragEvent, type PointerEvent,
 } from "react";
-import { Button } from "./button";
-import { Dialog } from "./dialog";
-import { Field, ids, type FieldParts } from "./field";
-import { IconButton } from "./icon-button";
+import { Button } from "@ascentui/ui/components/button";
+import { Dialog } from "@ascentui/ui/components/dialog";
+import { Field, ids, type FieldParts } from "@ascentui/ui/components/field";
+import { IconButton } from "@ascentui/ui/components/icon-button";
 
 const css = `@layer asc {
 .asc-up{display:flex;flex-direction:column;gap:var(--asc-space-8);min-width:0}

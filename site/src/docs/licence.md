@@ -1,6 +1,6 @@
 # AscentUI Pro licence
 
-This page says in plain words what you can and cannot do with AscentUI Pro items. It covers Pro only. The free items (every component, the theme and the agent kit) are under the MIT licence, which is more permissive.
+This page says in plain words what you can and cannot do with AscentUI Pro items. It covers Pro only. The free items (the basic components, the theme and the agent kit) are under the MIT licence, which is more permissive.
 
 "Pro items" means the Pro screens, data blocks and other Pro entries in the library, with their backend recipes: the contract, mock client, agent guide and checks.
 

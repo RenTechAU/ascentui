@@ -18,7 +18,9 @@ Add the theme first. It puts `tokens.css` under `styles/ascentui/` (inside `src/
 npx shadcn@latest add {{REGISTRY}}/r/theme.json
 ```
 
-Every component marked built in the [library](#library) is in the registry under its file name, such as `button`, `text-field` or `combo-box`, along with `theme`. Installing one brings the parts it is built from, such as `field` for every form component. Chart also needs the `recharts` package, which the CLI installs for you.
+Every free component marked built in the [library](#library) is in the registry under its file name, such as `button`, `text-field` or `combo-box`, along with `theme`. Installing one brings the parts it is built from, such as `field` for every form component.
+
+Pro components (Data Grid, Chart, Month Grid, Upload, Command Menu, Stepper Form, Bottom Sheet, Pull to Refresh) install the same way from the Pro registry, `@ascentui-pro/<name>`, once your access key is in `components.json`. They bring the free parts they build on. Chart also needs the `recharts` package, which the CLI installs for you.
 
 ## 2. A registry namespace
 

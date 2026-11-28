@@ -24,7 +24,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { EmptyState } from "./empty-state";
+import { EmptyState } from "@ascentui/ui/components/empty-state";
 
 const css = `@layer asc {
 .asc-chart{position:relative;min-width:0;color:var(--asc-ink);font:400 var(--asc-text-xs)/var(--asc-leading-xs) var(--asc-font);font-variant-numeric:tabular-nums}

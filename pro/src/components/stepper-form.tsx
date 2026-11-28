@@ -11,7 +11,7 @@
  * Built from Button. Reads the shared theme (@ascentui/tokens).
  */
 import { Fragment, useEffect, useId, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
-import { Button } from "./button";
+import { Button } from "@ascentui/ui/components/button";
 
 const css = `@layer asc {
 .asc-stepper{container-type:inline-size;display:flex;flex-direction:column;gap:var(--asc-space-24);min-width:0;color:var(--asc-ink);font:400 var(--asc-text-sm)/var(--asc-leading-sm) var(--asc-font)}

@@ -10,7 +10,7 @@ The rule is short: **the basics are free. Power pieces and screens that work are
 
 | | Free (MIT) | Pro (one payment) |
 | --- | --- | --- |
-| What it is | Every component, the theme, the agent kit, two showcase screens | Screens and data blocks, each with a backend recipe |
+| What it is | 24 basic components, the theme, the agent kit, two showcase screens | 8 power components; screens and data blocks, each with a backend recipe |
 | Saves you | Minutes to hours | Days to weeks |
 
 Two screens are free on purpose: **Sign in**, because every app needs one, and **Dashboard**, because it shows how the pieces fit together.

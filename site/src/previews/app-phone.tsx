@@ -3,27 +3,22 @@ import { AccountMenu, AppShell, type ShellGroup } from '@kit/app-shell';
 import appShellSrc from '@kit/app-shell.tsx?raw';
 import { Avatar } from '@kit/avatar';
 import { Badge } from '@kit/badge';
-import { BottomSheet } from '@kit/bottom-sheet';
-import bottomSheetSrc from '@kit/bottom-sheet.tsx?raw';
+import { BottomSheet } from '@pro/bottom-sheet';
 import { Button } from '@kit/button';
-import { CommandMenu, CommandMenuTrigger, Kbd, type Command } from '@kit/command-menu';
-import commandMenuSrc from '@kit/command-menu.tsx?raw';
+import { CommandMenu, CommandMenuTrigger, Kbd, type Command } from '@pro/command-menu';
 import { DatePicker } from '@kit/date-picker';
 import { EmptyState } from '@kit/empty-state';
 import { IconButton } from '@kit/icon-button';
 import { List, ListRow, ListSection } from '@kit/list-row';
 import listRowSrc from '@kit/list-row.tsx?raw';
-import { PullToRefresh } from '@kit/pull-to-refresh';
-import pullSrc from '@kit/pull-to-refresh.tsx?raw';
+import { PullToRefresh } from '@pro/pull-to-refresh';
 import { SegmentedControl } from '@kit/segmented-control';
 import { Select } from '@kit/select';
-import { StepperForm } from '@kit/stepper-form';
-import stepperSrc from '@kit/stepper-form.tsx?raw';
+import { StepperForm } from '@pro/stepper-form';
 import { TextArea } from '@kit/text-area';
 import { TextField } from '@kit/text-field';
 import { Toaster, toast } from '@kit/toaster';
-import { mockUpload, Upload } from '@kit/upload';
-import uploadSrc from '@kit/upload.tsx?raw';
+import { mockUpload, Upload } from '@pro/upload';
 import { useMemo, useState, type CSSProperties, type ReactNode } from 'react';
 import { Archive, Check, Inbox } from './icons';
 import type { Preview } from './types';
@@ -850,7 +845,7 @@ const pathname = usePathname();
     group: FRAME,
     description: 'Search and jump to anything from the keyboard: grouped commands, forgiving matching, recent picks first and keys shown beside what they do.',
     install: ['command-menu'],
-    sources: [{ file: 'command-menu.tsx', code: commandMenuSrc }],
+    sources: [],
     Demo: CommandMenuDemo,
     Thumb: CommandMenuThumb,
     usage: `import { CommandMenu, CommandMenuTrigger, type Command } from "@/components/ui/command-menu";
@@ -937,7 +932,7 @@ const [loading, setLoading] = useState(false);
     group: FRAME,
     description: 'A long form split into steps, each checked before moving on, with a review of everything entered before it is sent.',
     install: ['stepper-form'],
-    sources: [{ file: 'stepper-form.tsx', code: stepperSrc }],
+    sources: [],
     Demo: StepperDemo,
     Thumb: StepperThumb,
     usage: `import { StepperForm } from "@/components/ui/stepper-form";
@@ -1004,7 +999,7 @@ const [loading, setLoading] = useState(false);
     group: FRAME,
     description: 'Choose or drop files, with clear reasons for anything turned away, progress for each file, retry, remove, image previews and a photo lightbox.',
     install: ['upload'],
-    sources: [{ file: 'upload.tsx', code: uploadSrc }],
+    sources: [],
     Demo: UploadDemo,
     Thumb: UploadThumb,
     usage: `import { Upload } from "@/components/ui/upload";
@@ -1086,7 +1081,7 @@ const [loading, setLoading] = useState(false);
     group: PHONE,
     description: 'A panel that slides up from the bottom of a phone screen. Drag or flick it down to close; snap points let it rest half open. A centred dialog on desks.',
     install: ['bottom-sheet'],
-    sources: [{ file: 'bottom-sheet.tsx', code: bottomSheetSrc }],
+    sources: [],
     Demo: BottomSheetDemo,
     Thumb: BottomSheetThumb,
     usage: `import { BottomSheet } from "@/components/ui/bottom-sheet";
@@ -1221,7 +1216,7 @@ const [loading, setLoading] = useState(false);
     group: PHONE,
     description: 'Pull a list down and let go to reload it, without fighting the browser’s own pull-to-refresh. A Refresh button does the same for mouse and keyboard.',
     install: ['pull-to-refresh'],
-    sources: [{ file: 'pull-to-refresh.tsx', code: pullSrc }],
+    sources: [],
     Demo: PullDemo,
     Thumb: PullThumb,
     usage: `import { PullToRefresh } from "@/components/ui/pull-to-refresh";

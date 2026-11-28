@@ -9,6 +9,11 @@ import { PMS, shadcn, usePm, type Pm } from '../prefs';
 import { previewBySlug, PREVIEWS, type Preview } from '../previews';
 import { behaviourOf } from '../previews/behaviour';
 import { importsOf, withDependencies } from '../previews/kit-sources';
+import { CATALOG } from '../catalog';
+
+const isPro = (p: Preview) => CATALOG.find((i) => i.slug === p.slug)?.tier === 'pro';
+// Pro items install through the gated registry, with the access key from your account.
+const proInstall = (p: Preview) => p.install.map((n) => `@ascentui-pro/${n}`).join(' ');
 
 type Theme = 'light' | 'dark';
 
@@ -64,6 +69,21 @@ function Installation({ p, registry }: { p: Preview; registry: string }) {
   const urls = p.install.map((n) => `${registry}/r/${n}.json`).join(' ');
   const files = withDependencies(p.install.map(fileOf));
   const extra = files.filter((f) => !p.install.map(fileOf).includes(f));
+  if (isPro(p))
+    return (
+      <>
+        <p>
+          {p.name} is part of <a href="#pricing">Pro</a>. After you buy, sign in with the same email to get your access key,
+          add it once to <code>components.json</code>, then install with the CLI or let your coding agent do it.
+        </p>
+        <CodeBlock code={shadcn(pm, `add ${registry}/r/theme.json`)} language="bash" filename="1. The theme, once" />
+        <CodeBlock code={shadcn(pm, `add ${proInstall(p)}`)} language="bash" filename={`2. ${p.name} (needs your Pro key)`} />
+        <p className="small">
+          It builds on free components ({extra.length ? extra.join(', ') : 'none'}), which the CLI adds for you. The{' '}
+          <a href="#docs-install">installation guide</a> covers Pro keys.
+        </p>
+      </>
+    );
   return (
     <>
       <SegmentedControl
@@ -123,10 +143,13 @@ function Page({ p, registry }: { p: Preview; registry: string }) {
   const urls = p.install.map((n) => `${registry}/r/${n}.json`).join(' ');
   const b = behaviourOf(p);
   const rel = related(p);
+  const pro = isPro(p);
   const allCode = p.sources.length === 1 ? p.sources[0].code : p.sources.map((s) => `// components/ui/${s.file}\n${s.code}`).join('\n\n');
   const prompt = [
     `Use the AscentUI MCP server to add the ${p.name} component to this project.`,
-    `If the AscentUI MCP server is not connected, read ${registry}/llms.txt and install it with the shadcn CLI: npx shadcn@latest add ${urls}`,
+    pro
+      ? `It is a Pro component: it needs the AscentUI Pro access key in components.json. Install with: npx shadcn@latest add ${proInstall(p)}`
+      : `If the AscentUI MCP server is not connected, read ${registry}/llms.txt and install it with the shadcn CLI: npx shadcn@latest add ${urls}`,
     `Install the theme first if styles/ascentui/tokens.css is missing (${registry}/r/theme.json) and import it once at the app's entry.`,
     'Pass data in through props; do not add a fetch inside the component. Do not rewrite the component or move its styles into a global stylesheet.',
   ].join('\n');
@@ -160,7 +183,7 @@ function Page({ p, registry }: { p: Preview; registry: string }) {
           <p>{p.description}</p>
         </div>
 
-        <CodeBlock code={shadcn(pm, `add ${urls}`)} language="bash" filename="Install" />
+        <CodeBlock code={shadcn(pm, `add ${pro ? proInstall(p) : urls}`)} language="bash" filename={pro ? 'Install (Pro key needed)' : 'Install'} />
 
         <div className="comp-toolbar">
           <SegmentedControl
@@ -168,7 +191,7 @@ function Page({ p, registry }: { p: Preview; registry: string }) {
             size="sm"
             value={view}
             onChange={setView}
-            options={[{ value: 'preview', label: 'Preview' }, { value: 'code', label: 'Code' }]}
+            options={pro ? [{ value: 'preview', label: 'Preview' }] : [{ value: 'preview', label: 'Preview' }, { value: 'code', label: 'Code' }]}
           />
           {view === 'preview' && (
             <>
@@ -186,7 +209,7 @@ function Page({ p, registry }: { p: Preview; registry: string }) {
             <Tooltip content="Copies a prompt for your coding agent. The AscentUI MCP server is planned; until then the prompt falls back to llms.txt and the CLI.">
               <CopyButton text={prompt} label={`Copy an agent prompt for ${p.name}`}>MCP</CopyButton>
             </Tooltip>
-            <CopyButton text={allCode} label={`Copy the code for ${p.name}`}>Copy code</CopyButton>
+            {pro ? <a className="comp-pro-link" href="#pricing">Get Pro for the code</a> : <CopyButton text={allCode} label={`Copy the code for ${p.name}`}>Copy code</CopyButton>}
           </span>
         </div>
 

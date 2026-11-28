@@ -4,7 +4,9 @@
 //   r/index.json    the registry index
 //   llms.txt        a short index of the catalog and docs
 //   llms-full.txt   the catalog and all the docs in one file
-// Reads ui/ and tokens/ only; never writes there. Run: node scripts/build-registry.mjs
+// Pro components (pro/src/components) are written to .build/registry-pro/ instead: never into site/public/,
+// which is published. The gated Pro registry serves them to licence holders.
+// Reads ui/, pro/ and tokens/ only; never writes there. Run: node scripts/build-registry.mjs
 import { mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { loadTs } from './load-ts.mjs';
@@ -21,7 +23,7 @@ mkdirSync(`${out}r`, { recursive: true });
 
 // ---------------------------------------------------------------- registry items
 
-const UI_PEERS = JSON.parse(read('ui/package.json')).peerDependencies ?? {};
+const UI_PEERS = { ...JSON.parse(read('pro/package.json')).peerDependencies, ...JSON.parse(read('ui/package.json')).peerDependencies };
 const ITEM_SCHEMA = 'https://ui.shadcn.com/schema/registry-item.json';
 const kebab = (s) => s.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
 const words = (s) => s.replace(/([a-z0-9])([A-Z])/g, '$1 $2');
@@ -31,7 +33,7 @@ function packagesOf(source) {
   const found = new Set();
   for (const m of source.matchAll(/from\s+['"]([^'"]+)['"]/g)) {
     const spec = m[1];
-    if (spec.startsWith('.') || spec === 'react' || spec.startsWith('react/') || spec === 'react-dom') continue;
+    if (spec.startsWith('.') || spec.startsWith('@ascentui/') || spec === 'react' || spec.startsWith('react/') || spec === 'react-dom') continue;
     found.add(spec.startsWith('@') ? spec.split('/').slice(0, 2).join('/') : spec.split('/')[0]);
   }
   // Pin to the range the ui package is built against, so the CLI does not install a newer major.
@@ -98,6 +100,37 @@ if (REGISTRY_BASE == null)
     if (i.registryDependencies) i.registryDependencies = i.registryDependencies.map((u) => `@ascentui/${u.split('/r/')[1].replace(/\.json$/, '')}`);
 
 for (const i of items) writeFileSync(`${out}r/${i.name}.json`, JSON.stringify(i, null, 2) + '\n');
+
+// ---------------------------------------------------------------- Pro items, private output
+
+const proOut = `${root}.build/registry-pro/`;
+rmSync(proOut, { recursive: true, force: true });
+mkdirSync(proOut, { recursive: true });
+const proDir = 'pro/src/components/';
+const proItems = [];
+for (const file of readdirSync(root + proDir).filter((f) => f.endsWith('.tsx')).sort()) {
+  const name = kebab(file.replace(/\.tsx$/, ''));
+  // In the repo, Pro files import free pieces as @ascentui/ui/components/<name>; installed, they sit side by side.
+  const source = read(proDir + file).replace(/(from\s+['"])@ascentui\/ui\/components\/([a-z0-9-]+)(['"])/g, '$1./$2$3');
+  const entry = catalogEntry(name);
+  const siblings = [...source.matchAll(/from\s+['"]\.\/([a-z0-9-]+)['"]/g)].map((m) => `@ascentui/${m[1]}`);
+  const dependencies = packagesOf(source);
+  proItems.push({
+    $schema: ITEM_SCHEMA,
+    name,
+    type: 'registry:ui',
+    title: words(file.replace(/\.tsx$/, '')).replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase()),
+    description: entry?.description ?? `${name} component.`,
+    ...(dependencies.length ? { dependencies } : {}),
+    registryDependencies: ['@ascentui/theme', ...new Set(siblings)],
+    files: [{ path: `ui/${file}`, type: 'registry:ui', content: source }],
+    docs: 'AscentUI Pro. Licensed to the buyer; do not redistribute. One file, styles inside. Requires React 19.',
+    meta: { tier: 'pro', license: 'AscentUI Pro', catalog: entry?.slug ?? null },
+  });
+}
+for (const i of proItems) writeFileSync(`${proOut}${i.name}.json`, JSON.stringify(i, null, 2) + '\n');
+const leaked = items.filter((i) => proItems.some((p) => p.name === i.name));
+if (leaked.length) throw new Error(`Pro items in the public registry: ${leaked.map((i) => i.name).join(', ')}`);
 writeFileSync(`${out}r/index.json`, JSON.stringify({
   $schema: 'https://ui.shadcn.com/schema/registry.json',
   name: 'ascentui',
@@ -128,7 +161,7 @@ const STATUS = { built: 'built', 'part-built': 'part built', planned: 'planned' 
 const summary = [
   '# AscentUI',
   '',
-  '> Business-ready React components and screens for people who build apps with coding agents. Every component is free (MIT). Screens that work are Pro (one payment, lifetime), each with a backend recipe: contract, mock client, agent guide and checks.',
+  '> Business-ready React components and screens for people who build apps with coding agents. The basic components are free (MIT). Eight power components (Data Grid, Chart, Month Grid, Upload, Command Menu, Stepper Form, Bottom Sheet, Pull to Refresh) and the screens that work are Pro (one payment, lifetime); each Pro screen comes with a backend recipe: contract, mock client, agent guide and checks.',
   '',
   `Status: pre-release. The catalog is ${total.total} items (${total.free} free, ${total.pro} Pro) in five phases. Most items are planned; each is marked below.`,
   REGISTRY_BASE == null ? '\nThe site address is not decided yet. Links use the placeholder https://<your-domain>.' : '',

@@ -10,7 +10,7 @@
  * Built from Dialog. Reads the shared theme (@ascentui/tokens).
  */
 import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
-import { Dialog, type DialogProps } from "./dialog";
+import { Dialog, type DialogProps } from "@ascentui/ui/components/dialog";
 
 // The sheet rules, written once and used twice: on phones in auto mode, and always in sheet mode
 const sheet = (s: string) => `

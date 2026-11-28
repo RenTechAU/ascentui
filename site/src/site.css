@@ -661,3 +661,4 @@ a.sb-link:hover,button.sb-link:hover{background:var(--accent-soft);color:var(--i
 .fs-grid .fs-group{padding:3px 9px}
 .ft-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
 .ft-tabs a{white-space:nowrap}
+.comp-pro-link{font-size:.923rem;color:var(--ink);text-decoration:underline;text-underline-offset:3px}

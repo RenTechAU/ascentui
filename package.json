@@ -6,6 +6,7 @@
   "workspaces": [
     "tokens",
     "ui",
+    "pro",
     "modules/*",
     "site",
     "platform"
