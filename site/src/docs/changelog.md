@@ -2,6 +2,15 @@
 
 What changed, newest first. AscentUI is in pre-release: nothing is published to npm or a public registry yet.
 
+## 28 November 2026: batch 4, app frame and phone
+
+- **App Shell**: sidebar with an icon rail, top bar and account menu on a desk; a tab bar and a menu drawer on a phone. It switches by its own width, and works with any router.
+- **Command Menu**: the ⌘K palette, with forgiving matching, recent picks and an opt-in shortcut that never fires while typing.
+- **Stepper Form**: steps checked before moving on, a review with Edit buttons, and nothing lost when going back.
+- **Upload**: drop or choose, clear reasons for files turned away, progress, retry, previews and a photo lightbox. Your upload function does the sending.
+- **Bottom Sheet**, **List Row** (with swipe actions that are also in a menu) and **Pull to Refresh** (with a Refresh button for mouse and keyboard).
+- Dialog gains a `before` slot above the title, used by the sheet's drag handle. A shared Menu Button comes with App Shell and List Row.
+
 ## 28 November 2026: the site takes its final shape
 
 - The site now has a sidebar on every page apart from the home page, with search on **⌘K** or **Ctrl + K**, the docs, the design system, and every component.

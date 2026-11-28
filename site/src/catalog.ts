@@ -64,7 +64,7 @@ const item = (
 
 // ---------------------------------------------------------------- phase 1: core (40 free)
 
-/** Built-in motion that ships so far, inside the components of batches 1 to 3. */
+/** Built-in motion that ships so far, inside the components of batches 1 to 4. */
 const MOTION_STATUS: Record<string, Status> = {
   'Number count-up': 'built',
   'Skeleton shimmer': 'built',
@@ -111,15 +111,15 @@ const PHASE_1: CatalogItem[] = [
   comp('Data and overlays', 'Month Grid', 'A month calendar that shows items on each day.', 'built', 'repo'),
 
   // App frame (4)
-  comp('App frame', 'App Shell', 'Sidebar, top bar, phone tab bar and account menu.', 'planned', 'prototype'),
-  comp('App frame', 'Command Menu', 'Search and jump to anything from the keyboard.', 'planned', 'prototype'),
-  comp('App frame', 'Stepper Form', 'A long form split into steps.', 'planned', 'prototype'),
-  comp('App frame', 'Upload', 'Choose or drop files, with progress.', 'planned', 'engine'),
+  comp('App frame', 'App Shell', 'Sidebar, top bar, phone tab bar and account menu.', 'built', 'prototype'),
+  comp('App frame', 'Command Menu', 'Search and jump to anything from the keyboard.', 'built', 'prototype'),
+  comp('App frame', 'Stepper Form', 'A long form split into steps.', 'built', 'prototype'),
+  comp('App frame', 'Upload', 'Choose or drop files, with progress.', 'built', 'engine'),
 
   // Phone (3)
-  comp('Phone', 'Bottom Sheet', 'A panel that slides up from the bottom of a phone screen.', 'planned', 'engine'),
-  comp('Phone', 'List Row', 'A touch-sized row for phone lists.', 'planned', 'engine'),
-  comp('Phone', 'Pull to Refresh', 'Pull a list down to reload it.', 'planned', 'engine'),
+  comp('Phone', 'Bottom Sheet', 'A panel that slides up from the bottom of a phone screen.', 'built', 'engine'),
+  comp('Phone', 'List Row', 'A touch-sized row for phone lists.', 'built', 'engine'),
+  comp('Phone', 'Pull to Refresh', 'Pull a list down to reload it.', 'built', 'engine'),
 
   // Built-in motion (5)
   ...([
