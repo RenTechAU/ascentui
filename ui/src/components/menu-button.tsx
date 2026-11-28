@@ -12,7 +12,7 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent
 import { Button, type ButtonProps } from "./button";
 
 const css = `@layer asc {
-.asc-menu{position:fixed;inset:auto;z-index:60;box-sizing:border-box;min-width:180px;max-width:min(320px,calc(100vw - var(--asc-space-16)));max-height:min(420px,calc(100dvh - var(--asc-space-24)));margin:0;padding:var(--asc-space-4);overflow-y:auto;overscroll-behavior:contain;border:0;border-radius:var(--asc-radius-lg);background:var(--asc-surface);color:var(--asc-ink);box-shadow:var(--asc-shadow-pop);font:400 var(--asc-text-sm)/var(--asc-leading-sm) var(--asc-font);opacity:0;transform:translateY(var(--asc-menu-from,-4px)) scale(.98);transition:opacity var(--asc-duration) var(--asc-ease),transform var(--asc-duration) var(--asc-ease)}
+.asc-menu{position:fixed;inset:auto;z-index:60;box-sizing:border-box;min-width:180px;max-width:min(320px,calc(100vw - var(--asc-space-16)));max-height:min(420px,calc(100dvh - var(--asc-space-24)));margin:0;padding:var(--asc-space-4);overflow-y:auto;overscroll-behavior:contain;border:0;border-radius:var(--asc-radius-lg);background:var(--asc-surface);color:var(--asc-ink);box-shadow:var(--asc-shadow-pop);font:400 var(--asc-text-sm)/var(--asc-leading-sm) var(--asc-font);text-align:start;opacity:0;transform:translateY(var(--asc-menu-from,-4px)) scale(.98);transition:opacity var(--asc-duration) var(--asc-ease),transform var(--asc-duration) var(--asc-ease)}
 .asc-menu[hidden]{display:none}
 .asc-menu[data-open]{opacity:1;transform:none}
 @starting-style{.asc-menu[data-open]{opacity:0;transform:translateY(var(--asc-menu-from,-4px)) scale(.98)}}

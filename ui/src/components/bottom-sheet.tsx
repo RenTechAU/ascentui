@@ -21,7 +21,7 @@ ${s}.asc-dlg:not([data-dragging]){transition:translate var(--asc-duration-slow) 
 ${s}.asc-dlg[data-snaps]{height:var(--asc-sheet-h)}
 ${s} .asc-sheet__grip{display:flex}
 ${s} .asc-dlg__head{padding-top:var(--asc-space-4)}
-${s} .asc-dlg__close{top:calc(var(--asc-space-16) + var(--asc-space-4) + (var(--asc-leading-md) - var(--asc-control-sm)) / 2)}
+${s}.asc-dlg .asc-dlg__close{top:calc(var(--asc-space-16) + var(--asc-space-4) + (var(--asc-leading-md) - var(--asc-control-sm)) / 2)}
 ${s} .asc-dlg__foot{padding-bottom:max(var(--asc-space-12),env(safe-area-inset-bottom))}
 ${s} .asc-dlg__foot>*{flex:1 1 auto}
 ${s} .asc-dlg__panel:not(:has(.asc-dlg__foot)) .asc-dlg__body{padding-bottom:max(var(--asc-space-16),env(safe-area-inset-bottom))}

@@ -10,6 +10,7 @@ import { CommandMenu, CommandMenuTrigger, Kbd, type Command } from '@kit/command
 import commandMenuSrc from '@kit/command-menu.tsx?raw';
 import { DatePicker } from '@kit/date-picker';
 import { EmptyState } from '@kit/empty-state';
+import { IconButton } from '@kit/icon-button';
 import { List, ListRow, ListSection } from '@kit/list-row';
 import listRowSrc from '@kit/list-row.tsx?raw';
 import { PullToRefresh } from '@kit/pull-to-refresh';
@@ -37,7 +38,7 @@ const theme = 'Light and dark come from the theme. Nothing in this file mentions
 // ---------------------------------------------------------------- icons (16px grid, for the kit's 16px slots)
 
 const S = ({ d }: { d: string }) => (
-  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden style={{ flex: 'none' }}>
     <path d={d} />
   </svg>
 );
@@ -60,6 +61,12 @@ const IC = {
   help: 'M8 14.25a6.25 6.25 0 1 0 0-12.5 6.25 6.25 0 0 0 0 12.5zM6.25 6.25a1.75 1.75 0 1 1 2.5 1.6c-.5.25-.75.65-.75 1.15v.25M8 11.25v.01',
   mark: 'M2 13 8 2.5 14 13M5.5 13 8 8.5l2.5 4.5',
 };
+
+const Logo = () => (
+  <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinejoin="round" aria-hidden style={{ flex: 'none' }}>
+    <path d={IC.mark} />
+  </svg>
+);
 
 // ---------------------------------------------------------------- data
 
@@ -220,13 +227,13 @@ function AppShellDemo() {
         <AppShell
           landmarks={false}
           style={{ height: 600 }}
-          brand={<><S d={IC.mark} /> Brightwater Services</>}
-          brandMark={<S d={IC.mark} />}
+          brand={<><Logo /> Brightwater Services</>}
+          brandMark={<Logo />}
           nav={nav}
           current={page}
           title={<span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{PAGES[page]}</span>}
-          search={<CommandMenuTrigger onClick={() => setSearch(true)} compact={size === 'phone'} />}
-          actions={size === 'desk' ? <Button size="sm" icon={<S d={IC.plus} />} onClick={() => toast('New case started')}>New case</Button> : null}
+          search={<CommandMenuTrigger onClick={() => setSearch(true)} />}
+          actions={<IconButton variant="secondary" icon={<S d={IC.plus} />} label="New case" onClick={() => toast('New case started')} />}
           account={
             <AccountMenu
               name="Dana Whitfield"
@@ -456,16 +463,16 @@ function StepperThumb() {
 // ---------------------------------------------------------------- Upload
 
 /** Made-up job photos, drawn as SVG so the demo needs no network */
-function photo(seed: number, label: string) {
+function photo(seed: number) {
   const sky = ['#bfe3f7', '#f6d6b8', '#cfe8d5', '#e2d9f3'][seed % 4];
   const ground = ['#3b8fb0', '#6f8f5a', '#4a7fa3', '#8a6f5a'][seed % 4];
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600"><rect width="800" height="600" fill="${sky}"/><circle cx="${560 + seed * 30}" cy="150" r="60" fill="#fff6" /><path d="M0 380 Q200 ${300 + seed * 20} 400 370 T800 360 V600 H0z" fill="${ground}"/><rect x="${180 + seed * 40}" y="300" width="220" height="140" rx="12" fill="#ffffffcc"/><text x="40" y="560" font-family="sans-serif" font-size="34" fill="#0009">${label}</text></svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600"><rect width="800" height="600" fill="${sky}"/><circle cx="${560 + seed * 30}" cy="150" r="60" fill="#fff6" /><path d="M0 380 Q200 ${300 + seed * 20} 400 370 T800 360 V600 H0z" fill="${ground}"/><rect x="${180 + seed * 40}" y="300" width="220" height="140" rx="12" fill="#ffffffcc"/></svg>`;
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 const PHOTOS = [
-  { id: 'p1', name: 'pump-before.jpg', size: 2_480_000, type: 'image/jpeg', url: photo(0, 'Pump, before') },
-  { id: 'p2', name: 'filter-housing.jpg', size: 1_920_000, type: 'image/jpeg', url: photo(1, 'Filter housing') },
-  { id: 'p3', name: 'pump-after.jpg', size: 2_150_000, type: 'image/jpeg', url: photo(2, 'Pump, after') },
+  { id: 'p1', name: 'pump-before.jpg', size: 2_480_000, type: 'image/jpeg', url: photo(0) },
+  { id: 'p2', name: 'filter-housing.jpg', size: 1_920_000, type: 'image/jpeg', url: photo(1) },
+  { id: 'p3', name: 'pump-after.jpg', size: 2_150_000, type: 'image/jpeg', url: photo(2) },
 ];
 
 function UploadDemo() {

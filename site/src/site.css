@@ -224,7 +224,7 @@ h1,h2,h3,p{margin:0}
 .icon-btn{display:inline-grid;place-items:center;width:36px;height:36px;flex:none;border:0;border-radius:10px;background:transparent;color:var(--muted);cursor:pointer}
 .icon-btn:hover{background:var(--accent-soft);color:var(--ink)}
 .icon-btn:focus-visible,.sb-search:focus-visible,.sb-link:focus-visible,.nav-search:focus-visible{outline:2px solid var(--aui-focus);outline-offset:2px}
-kbd{font:500 .75rem var(--mono)}
+kbd:not(.asc-kbd){font:500 .75rem var(--mono)}
 .soon{flex:none;font-size:.68rem;font-weight:600;letter-spacing:.02em;text-transform:uppercase;color:var(--soon);border:1px solid var(--line);border-radius:999px;padding:0 6px;line-height:16px}
 .pro-mark{display:inline-flex;align-items:center;color:var(--muted)}
 

@@ -14,7 +14,7 @@ import { IconButton } from "./icon-button";
 
 const css = `@layer asc {
 :root[data-asc-scroll-lock]{overflow:hidden;padding-right:var(--asc-lock-gap,0px)}
-.asc-dlg{--w:520px;box-sizing:border-box;width:min(var(--w),calc(100% - var(--asc-space-24)));max-width:none;max-height:calc(100dvh - var(--asc-space-24) * 2);margin:auto;padding:0;border:0;border-radius:var(--asc-radius-lg);background:var(--asc-surface);color:var(--asc-ink);box-shadow:var(--asc-shadow-pop);overflow:hidden;font:400 var(--asc-text-sm)/var(--asc-leading-sm) var(--asc-font);overscroll-behavior:contain}
+.asc-dlg{--w:520px;box-sizing:border-box;width:min(var(--w),calc(100% - var(--asc-space-24)));max-width:none;max-height:calc(100dvh - var(--asc-space-24) * 2);margin:auto;padding:0;border:0;border-radius:var(--asc-radius-lg);background:var(--asc-surface);color:var(--asc-ink);box-shadow:var(--asc-shadow-pop);overflow:hidden;font:400 var(--asc-text-sm)/var(--asc-leading-sm) var(--asc-font);text-align:start;overscroll-behavior:contain}
 .asc-dlg:not([open]){display:none}
 .asc-dlg[data-size="sm"]{--w:400px}
 .asc-dlg[data-size="lg"]{--w:720px}
@@ -37,7 +37,7 @@ const css = `@layer asc {
 .asc-dlg__body{flex:1;min-height:0;overflow-y:auto;padding:0 var(--asc-space-16) var(--asc-space-16)}
 .asc-dlg__body:empty{display:none}
 .asc-dlg__foot{display:flex;flex-wrap:wrap-reverse;align-items:center;justify-content:flex-end;gap:var(--asc-space-8);padding:var(--asc-space-12) var(--asc-space-16);border-top:1px solid var(--asc-border);background:var(--asc-subtle)}
-.asc-dlg__close{position:absolute;top:calc(var(--asc-space-16) + (var(--asc-leading-md) - var(--asc-control-sm)) / 2);right:var(--asc-space-12)}
+.asc-dlg .asc-dlg__close{position:absolute;top:calc(var(--asc-space-16) + (var(--asc-leading-md) - var(--asc-control-sm)) / 2);right:var(--asc-space-12)}
 .asc-dlg[data-kind="drawer"] .asc-dlg__head{border-bottom:1px solid var(--asc-border);padding-bottom:var(--asc-space-12);margin-bottom:var(--asc-space-16)}
 .asc-dlg[data-kind="drawer"] .asc-dlg__foot{padding-bottom:max(var(--asc-space-12),env(safe-area-inset-bottom))}
 @keyframes asc-dlg-in{from{opacity:0;transform:translateY(var(--asc-space-8)) scale(.98)}}

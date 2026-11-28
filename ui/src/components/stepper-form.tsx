@@ -55,7 +55,10 @@ const css = `@layer asc {
 .asc-stepper__vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
 @container (max-width:520px){
   .asc-stepper__step:not([data-state="current"]) .asc-stepper__name{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-  .asc-stepper__step[data-state="current"]{flex:2 1 auto}
+  .asc-stepper__step{flex:1 1 auto;min-width:auto}
+  .asc-stepper__step:last-child{flex:0 0 auto}
+  .asc-stepper__step:not(:last-child)::after{min-width:var(--asc-space-4)}
+  .asc-stepper__steps{gap:var(--asc-space-4)}
   .asc-stepper__list{grid-template-columns:minmax(0,1fr)}
   .asc-stepper__list dt{padding-bottom:0;border-bottom:0}
   .asc-stepper__foot-end{flex:1}

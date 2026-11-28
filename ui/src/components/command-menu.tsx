@@ -49,6 +49,10 @@ const css = `@layer asc {
 .asc-cmd-trigger__label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}
 .asc-cmd-trigger[data-compact]{width:var(--asc-control-md);padding:0;justify-content:center}
 .asc-cmd-trigger[data-compact] .asc-cmd-trigger__label,.asc-cmd-trigger[data-compact] .asc-kbds{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+@container asc-shell (max-width:639px){
+  .asc-cmd-trigger{width:var(--asc-control-md);padding:0;justify-content:center}
+  .asc-cmd-trigger .asc-cmd-trigger__label,.asc-cmd-trigger .asc-kbds{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+}
 }`;
 
 // ---------------------------------------------------------------- types
@@ -223,7 +227,7 @@ export type CommandMenuTriggerProps = Omit<ButtonHTMLAttributes<HTMLButtonElemen
   label?: string;
   /** The shortcut to show, matching the menu's shortcut prop */
   shortcut?: string;
-  /** Only the search icon, for a phone's top bar. Its label is still read out */
+  /** Only the search icon. Its label is still read out. Inside a narrow App Shell this happens on its own */
   compact?: boolean;
 };
 

@@ -14,7 +14,7 @@ import {
 } from "react";
 import { Button } from "./button";
 import { Dialog } from "./dialog";
-import { Field, type FieldParts } from "./field";
+import { Field, ids, type FieldParts } from "./field";
 import { IconButton } from "./icon-button";
 
 const css = `@layer asc {
@@ -27,9 +27,10 @@ const css = `@layer asc {
 .asc-up__zone>svg{width:20px;height:20px;color:var(--asc-faint)}
 .asc-up__zone-text{margin:0}
 .asc-up__zone-text strong{color:var(--asc-ink);font-weight:500}
+.asc-up__hint{margin:0;font-size:var(--asc-text-xs);line-height:var(--asc-leading-xs)}
 .asc-up__buttons{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--asc-space-8)}
-.asc-up__camera{display:none}
-@media (pointer:coarse){.asc-up__camera{display:inline-flex}.asc-up__drop{display:none}}
+.asc-up__buttons .asc-up__camera{display:none}
+@media (pointer:coarse){.asc-up__buttons .asc-up__camera{display:inline-flex}.asc-up__drop{display:none}}
 .asc-up__input{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);border:0;opacity:0}
 .asc-up__list{display:flex;flex-direction:column;gap:var(--asc-space-4);margin:0;padding:0;list-style:none}
 .asc-up__item{display:flex;align-items:center;gap:var(--asc-space-12);box-sizing:border-box;min-height:calc(var(--asc-control-lg) + var(--asc-space-16));padding:var(--asc-space-8) var(--asc-space-8) var(--asc-space-8) var(--asc-space-8);border-radius:var(--asc-radius);background:var(--asc-surface);box-shadow:var(--asc-shadow-control)}
@@ -416,7 +417,6 @@ export function Upload({
   return (
     <Field
       label={label}
-      description={description ?? hint}
       error={error}
       hideLabel={hideLabel}
       required={required}
@@ -433,7 +433,7 @@ export function Upload({
             id={c.id}
             role="group"
             aria-labelledby={c["aria-labelledby"]}
-            aria-describedby={c["aria-describedby"]}
+            aria-describedby={ids(c["aria-describedby"], (description != null || hint) && `${c.id}-hint`)}
             className="asc-up__zone"
             data-dragging={dragging || undefined}
             data-invalid={c["aria-invalid"] || undefined}
@@ -465,10 +465,15 @@ export function Upload({
                   {labels.camera}
                 </Button>
               )}
-              <Button variant="secondary" size="sm" disabled={disabled} aria-describedby={c["aria-describedby"]} onClick={() => picker.current?.click()}>
+              <Button variant="secondary" size="sm" disabled={disabled} aria-describedby={ids(c["aria-describedby"], (description != null || hint) && `${c.id}-hint`)} onClick={() => picker.current?.click()}>
                 {labels.choose}
               </Button>
             </span>
+            {(description != null || hint) && (
+              <p className="asc-up__hint" id={`${c.id}-hint`}>
+                {description ?? hint}
+              </p>
+            )}
             <input
               ref={picker}
               className="asc-up__input"
