@@ -1,6 +1,6 @@
 // Builds what agents and the shadcn CLI read, into site/public/ (generated, not committed):
 //   r/<name>.json   one shadcn registry item per free component in ui/src/components, CSS included
-//   r/theme.json    the token file and base styles the components read
+//   r/theme.json    the token file the components read
 //   r/index.json    the registry index
 //   llms.txt        a short index of the catalog and docs
 //   llms-full.txt   the catalog and all the docs in one file
@@ -54,10 +54,8 @@ for (const file of all.filter((f) => f.endsWith('.tsx')).sort()) {
   const name = kebab(stem);
   const source = read(dir + file);
   const entry = catalogEntry(name);
-  // One-file components (kebab-case names) carry their CSS inside. The older PascalCase ones have a .css beside them.
-  const oneFile = stem === name;
+  // Every component is one file with its CSS inside.
   const files = [{ path: `ui/${file}`, type: 'registry:ui', content: source }];
-  if (all.includes(`${stem}.css`)) files.push({ path: `ui/${stem}.css`, type: 'registry:ui', content: read(`${dir}${stem}.css`) });
   const dependencies = packagesOf(source);
   // Other components this one is built from, e.g. Button uses Spinner: installed alongside automatically.
   const siblings = [...source.matchAll(/from\s+['"]\.\/([a-z0-9-]+)['"]/g)].map((m) => `${base}/r/${m[1]}.json`);
@@ -70,9 +68,7 @@ for (const file of all.filter((f) => f.endsWith('.tsx')).sort()) {
     ...(dependencies.length ? { dependencies } : {}),
     registryDependencies: [`${base}/r/theme.json`, ...new Set(siblings)],
     files,
-    docs: oneFile
-      ? `One file, styles inside. Reads the AscentUI theme (${base}/r/theme.json): import styles/ascentui/tokens.css once at your app's entry. Requires React 19.`
-      : `Reads the CSS variables from the AscentUI theme (${base}/r/theme.json). Import tokens.css, legacy.css and base.css once at your app's entry.`,
+    docs: `One file, styles inside. Reads the AscentUI theme (${base}/r/theme.json): import styles/ascentui/tokens.css once at your app's entry. Requires React 19.`,
     meta: { tier: 'free', license: 'MIT', catalog: entry?.slug ?? null },
   });
 }
@@ -82,13 +78,11 @@ items.unshift({
   name: 'theme',
   type: 'registry:file',
   title: 'Theme',
-  description: 'The CSS variables every AscentUI component reads, and the base styles.',
+  description: 'The CSS variables every AscentUI component reads: light and dark, touch-screen sizes and reduced motion.',
   files: [
     { path: 'styles/tokens.css', type: 'registry:file', target: 'styles/ascentui/tokens.css', content: read('tokens/src/tokens.css') },
-    { path: 'styles/legacy.css', type: 'registry:file', target: 'styles/ascentui/legacy.css', content: read('tokens/src/legacy.css') },
-    { path: 'styles/base.css', type: 'registry:file', target: 'styles/ascentui/base.css', content: read('ui/src/base.css') },
   ],
-  docs: "Import styles/ascentui/tokens.css once at your app's entry. legacy.css and base.css are only for the data table, chart and month grid until they are rebuilt.",
+  docs: "Import styles/ascentui/tokens.css once at your app's entry. It is the only stylesheet: every component carries its own styles.",
   meta: { tier: 'free', license: 'MIT', catalog: 'tokens-and-brand-config' },
 });
 
@@ -131,7 +125,8 @@ const rules = [
   '## Rules for agents',
   '',
   '- Install items with the shadcn CLI, or copy the files. Do not rewrite a component that exists here.',
-  '- Each new component is one `.tsx` file with its styles inside (React 19). The three older ones (data table, chart, month grid) have a `.css` file beside them; keep those together.\n- Install the theme once. Components read only its `--asc-*` variables, which handle light and dark, touch-screen sizing and reduced motion. Change the look there, not in a component.',
+  '- Each component is one `.tsx` file with its styles inside (React 19). Do not move its styles into a global stylesheet.',
+  '- Install the theme once. Components read only its `--asc-*` variables, which handle light and dark, touch-screen sizing and reduced motion. Change the look there, not in a component.',
   '- Data comes in through props or a typed client. Do not add a fetch inside a component.',
   '- Pro source needs an access key sent as `Authorization: Bearer <key>`. Never write a key into source code or commit it.',
 ].join('\n');

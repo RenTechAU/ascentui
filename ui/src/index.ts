@@ -1,20 +1,24 @@
-// @ascentui/ui: the free components (MIT).
+// @ascentui/ui: the free components (MIT). Each is one file with its styles inside.
 // Import the theme once at your app's entry:
 //   import '@ascentui/tokens/tokens.css';
-// The three components copied from Hutch (below, first) also need, until they are rebuilt in batch 3:
-//   import '@ascentui/tokens/legacy.css';
-//   import '@ascentui/ui/base.css';
-export * from './components/DataTable';
-export * from './components/Chart';
-export * from './components/MonthGrid';
-
-// One-file components on the shared theme (@ascentui/tokens/tokens.css)
 export { Avatar, AvatarGroup, type AvatarGroupProps, type AvatarProps } from './components/avatar';
 export { Badge, type BadgeProps } from './components/badge';
 export { Button, type ButtonProps } from './components/button';
 export { Card, type CardProps } from './components/card';
+export { Chart, CHART_HUES, type ChartDatum, type ChartHue, type ChartKind, type ChartProps, type ChartReference, type ChartSeries } from './components/chart';
 export { Checkbox, type CheckboxProps } from './components/checkbox';
 export { ComboBox, type ComboBoxOption, type ComboBoxProps } from './components/combo-box';
+export {
+  DataTable,
+  useTableStorage,
+  type Column,
+  type DataTableProps,
+  type GroupOption,
+  type SavedView,
+  type Selection,
+  type Sort,
+  type TableLayout,
+} from './components/data-table';
 export { DatePicker, type DatePickerProps } from './components/date-picker';
 export {
   ConfirmDialog,
@@ -44,6 +48,15 @@ export {
   type InputBoxProps,
 } from './components/field';
 export { IconButton, type IconButtonProps } from './components/icon-button';
+export {
+  isoDay,
+  localeWeekStart,
+  MonthGrid,
+  monthDays,
+  parseDay,
+  type MonthGridProps,
+  type Weekday,
+} from './components/month-grid';
 export { NumberInput, type NumberInputProps } from './components/number-input';
 export { PinInput, type PinInputProps } from './components/pin-input';
 export { SegmentedControl, type SegmentedControlProps, type SegmentedOption } from './components/segmented-control';

@@ -2,7 +2,7 @@
 
 There are three ways to add an AscentUI item to your app. All three give you source files in your own project that you can read and change.
 
-AscentUI components are React and TypeScript. Each one comes as a `.tsx` file with its own `.css` file beside it, so your app needs a build tool that can import CSS, such as Vite or Next.js.
+AscentUI components are React 19 and TypeScript. Each one is a single `.tsx` file with its styles inside, so there is no CSS file to wire up beyond the theme.
 
 ## 1. The shadcn CLI
 
@@ -12,7 +12,7 @@ Each item has an address in the registry. Add one by its address:
 npx shadcn@latest add {{REGISTRY}}/r/data-table.json
 ```
 
-Add the theme first. It puts `tokens.css` and `base.css` under `styles/ascentui/` (inside `src/` if your app has one), and the components read its CSS variables. Import both files once, at your app's entry:
+Add the theme first. It puts `tokens.css` under `styles/ascentui/` (inside `src/` if your app has one), and the components read its CSS variables. Import it once, at your app's entry:
 
 ```bash
 npx shadcn@latest add {{REGISTRY}}/r/theme.json
@@ -61,14 +61,13 @@ There are no Pro items in the registry yet. Checkout, sign-in and access keys ar
 
 ## 3. Manual copy
 
-1. Copy `tokens.css` and `base.css` into your app and import both once, at your app's entry.
-2. Copy the component's `.tsx` file and its `.css` file into the same folder.
-3. Import the component. It imports its own CSS.
+1. Copy `tokens.css` into your app and import it once, at your app's entry.
+2. Copy the component's `.tsx` file, and the files it imports from `./`, into one folder.
+3. Import the component. Its styles come with it.
 
 ```tsx
 import './styles/tokens.css';
-import './styles/base.css';
-import { DataTable } from './components/ui/DataTable';
+import { DataTable } from './components/ui/data-table';
 ```
 
 ## npm packages (planned)

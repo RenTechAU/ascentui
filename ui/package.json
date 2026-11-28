@@ -1,12 +1,10 @@
 {
   "name": "@ascentui/ui",
   "version": "0.1.0",
-  "description": "AscentUI components (MIT). Each is one file with its styles inside; they read the shared theme in @ascentui/tokens.",
+  "description": "AscentUI components (MIT). Each is one file with its styles inside; they all read the shared theme in @ascentui/tokens. Chart needs recharts.",
   "license": "MIT",
   "type": "module",
-  "sideEffects": [
-    "**/*.css"
-  ],
+  "sideEffects": false,
   "files": [
     "dist",
     "src",
@@ -18,8 +16,7 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
-    },
-    "./base.css": "./dist/base.css"
+    }
   },
   "scripts": {
     "build": "rm -rf dist && tsc -p tsconfig.build.json && node ../scripts/copy-css.mjs src dist",
