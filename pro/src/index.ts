@@ -3,6 +3,17 @@
 export { BottomSheet, type BottomSheetProps } from './components/bottom-sheet';
 export { Chart, CHART_HUES, type ChartDatum, type ChartHue, type ChartKind, type ChartProps, type ChartReference, type ChartSeries } from './components/chart';
 export {
+  DataGrid,
+  useTableStorage,
+  type CellEditor,
+  type DataGridProps,
+  type GridColumn,
+  type GroupOption,
+  type SavedView,
+  type Selection,
+  type TableLayout,
+} from './components/data-grid';
+export {
   CommandMenu,
   CommandMenuTrigger,
   Kbd,

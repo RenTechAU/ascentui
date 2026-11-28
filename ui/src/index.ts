@@ -18,14 +18,10 @@ export { Checkbox, type CheckboxProps } from './components/checkbox';
 export { ComboBox, type ComboBoxOption, type ComboBoxProps } from './components/combo-box';
 export {
   DataTable,
-  useTableStorage,
+  focusTableRow,
   type Column,
   type DataTableProps,
-  type GroupOption,
-  type SavedView,
-  type Selection,
   type Sort,
-  type TableLayout,
 } from './components/data-table';
 export { DatePicker, type DatePickerProps } from './components/date-picker';
 export {
