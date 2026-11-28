@@ -29,6 +29,7 @@ import { EmptyState } from "./empty-state";
 const css = `@layer asc {
 .asc-chart{position:relative;min-width:0;color:var(--asc-ink);font:400 var(--asc-text-xs)/var(--asc-leading-xs) var(--asc-font);font-variant-numeric:tabular-nums}
 .asc-chart__plot{position:relative;width:100%}
+.asc-chart .recharts-wrapper{z-index:1}
 .asc-chart .recharts-text{fill:var(--asc-muted);font-size:var(--asc-text-xs)}
 .asc-chart .recharts-cartesian-grid line{stroke:var(--asc-border-strong);stroke-dasharray:3 3}
 .asc-chart .recharts-reference-line line{stroke:var(--asc-faint);stroke-dasharray:5 4}
@@ -55,7 +56,7 @@ button.asc-chart__lg:hover{background:var(--asc-subtle-strong);color:var(--asc-i
 .asc-chart__center-v{font:500 var(--asc-text-xl)/var(--asc-leading-xl) var(--asc-font);letter-spacing:-.02em}
 .asc-chart__center-l{color:var(--asc-muted)}
 .asc-chart__empty{display:grid;place-items:center;border-radius:var(--asc-radius);background:var(--asc-subtle)}
-.asc-chart__table{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.asc-chart__alt{position:absolute;top:0;left:0;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
 .asc-meter{position:relative;display:block;width:100%;min-width:40px;height:6px;border-radius:var(--asc-radius-full);background:var(--asc-subtle-strong);overflow:hidden}
 .asc-meter[data-size="md"]{height:8px}
 .asc-meter__fill{position:absolute;inset:0 auto 0 0;border-radius:inherit;background:var(--asc-primary);transform-origin:left;transition:width var(--asc-duration-slow) var(--asc-ease)}
@@ -134,12 +135,10 @@ const colorOf = (c: string | undefined, i: number) => {
   return (CHART_HUES as string[]).includes(hue) ? `var(--asc-hue-${hue})` : hue;
 };
 
+/** Numbers in the reader's locale. Axes switch to short forms (18K) when the biggest value is large */
 function formatter(format: ChartProps["format"], compact = false): (v: number) => string {
   if (typeof format === "function") return format;
-  const full = new Intl.NumberFormat(undefined, { maximumFractionDigits: 1, ...format });
-  if (!compact) return (v) => full.format(v);
-  const short = new Intl.NumberFormat(undefined, { maximumFractionDigits: 1, ...format, notation: "compact" });
-  return (v) => (Math.abs(v) >= 10000 ? short.format(v) : full.format(v));
+  return new Intl.NumberFormat(undefined, { maximumFractionDigits: 1, ...format, ...(compact ? { notation: "compact" } : {}) }).format;
 }
 const pct = new Intl.NumberFormat(undefined, { style: "percent", maximumFractionDigits: 0 });
 
@@ -197,7 +196,8 @@ function DataTableAlt({ label, summary, xKey, xLabel, rows, series, fmt }: {
   label: string; summary?: string; xKey: string; xLabel: string; rows: ChartDatum[]; series: ChartSeries[]; fmt: (v: number) => string;
 }) {
   return (
-    <table className="asc-chart__table">
+    <div className="asc-chart__alt">
+    <table>
       <caption>{summary ? `${label}. ${summary}` : label}</caption>
       <thead>
         <tr>
@@ -214,6 +214,7 @@ function DataTableAlt({ label, summary, xKey, xLabel, rows, series, fmt }: {
         ))}
       </tbody>
     </table>
+    </div>
   );
 }
 
@@ -226,7 +227,11 @@ export function Chart({
   const { radius, duration } = useThemeNumbers(wrap);
   const [hidden, setHidden] = useState<string[]>([]);
   const fmt = useMemo(() => formatter(format), [format]);
-  const axisFmt = useMemo(() => (percent ? (v: number) => pct.format(v) : formatter(format, true)), [format, percent]);
+  const biggest = useMemo(
+    () => Math.max(0, ...data.flatMap((d) => (seriesProp ?? []).map((s) => Math.abs(Number(d[s.key] ?? 0))))) * (stacked ? (seriesProp?.length ?? 1) : 1),
+    [data, seriesProp, stacked],
+  );
+  const axisFmt = useMemo(() => (percent ? (v: number) => pct.format(v) : formatter(format, biggest >= 10000)), [format, percent, biggest]);
   const round = kind === "pie" || kind === "donut";
   const valueKey = seriesProp?.[0]?.key ?? "value";
   const series: ChartSeries[] = useMemo(
@@ -321,7 +326,7 @@ export function Chart({
     const catAxis = horizontal ? (
       <YAxis type="category" dataKey={xKey} width={labelWidth} tickLine={false} axisLine={false} interval={0} />
     ) : (
-      <XAxis dataKey={xKey} tickLine={false} axisLine={false} tickMargin={8} minTickGap={8} />
+      <XAxis dataKey={xKey} tickLine={false} axisLine={false} tickMargin={8} minTickGap={4} interval="preserveStartEnd" />
     );
     const numAxis = horizontal ? (
       <XAxis type="number" tickLine={false} axisLine={false} tickFormatter={axisFmt} />

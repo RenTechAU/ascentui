@@ -127,6 +127,7 @@ export function Dialog({
   const wanted = useRef(open);
   wanted.current = open;
   const locked = useRef(false);
+  const titleRef = useRef<HTMLHeadingElement>(null);
 
   if (open && !mounted) setMounted(true);
 
@@ -140,7 +141,11 @@ export function Dialog({
       dlg.showModal();
       if (!locked.current) lockScroll();
       locked.current = true;
+      // A drawer shows a record: start on its title, so a phone does not open its keyboard for the first field
       if (initialFocus?.current) initialFocus.current.focus();
+      else if (kind === "drawer") titleRef.current?.focus();
+      // Tells the Toaster, so toasts stay usable above the dialog
+      document.dispatchEvent(new Event("asc:layer"));
     } else if (open && dlg.hasAttribute("data-closing")) {
       // Opened again during the exit motion
       dlg.removeAttribute("data-closing");
@@ -152,7 +157,7 @@ export function Dialog({
       dlg.addEventListener("animationend", (e) => e.target === dlg && done(), { once: true });
       return () => clearTimeout(timer);
     }
-  }, [open, mounted, initialFocus]);
+  }, [open, mounted, initialFocus, kind]);
 
   // Closing for any reason (our exit, the browser, a form with method="dialog") ends the same way
   useEffect(() => {
@@ -165,6 +170,7 @@ export function Dialog({
       const back = opener.current;
       if (back?.isConnected && (document.activeElement === document.body || dlg.contains(document.activeElement))) back.focus();
       setMounted(false);
+      document.dispatchEvent(new Event("asc:layer"));
       onClosed?.();
       // Closed by the browser while still meant to be open: tell the owner
       if (wanted.current) ask.current(false);
@@ -224,7 +230,7 @@ export function Dialog({
         {mounted && (
           <div className="asc-dlg__panel">
             <div className="asc-dlg__head">
-              <h2 className="asc-dlg__title" id={`${id}-title`}>{title}</h2>
+              <h2 className="asc-dlg__title" id={`${id}-title`} ref={titleRef} tabIndex={-1}>{title}</h2>
               {description != null && <p className="asc-dlg__desc" id={`${id}-desc`}>{description}</p>}
             </div>
             <div className="asc-dlg__body">{children}</div>

@@ -19,7 +19,7 @@ import { TextField } from '@kit/text-field';
 import { Toaster, toast } from '@kit/toaster';
 import toasterSrc from '@kit/toaster.tsx?raw';
 import { useMemo, useState, type CSSProperties, type ReactNode } from 'react';
-import { Archive, Check, Pencil, Plus, Search, Trash } from './icons';
+import { Archive, Check, Copy, Pencil, Plus, Search, Trash } from './icons';
 import type { Preview } from './types';
 
 const G = 'Data and overlays';
@@ -86,8 +86,8 @@ function ToasterDemo() {
   return (
     <div style={col(460)}>
       <Toaster />
-      <Card title="Open cases" description="Archive one: the toast offers Undo." padding="none" style={{ gap: 0 }}>
-        <div style={{ padding: '0 12px 4px' }}>
+      <Card title="Open cases" description="Archive one: the toast offers Undo." style={{ gap: 4 }}>
+        <div>
           {cases.length === 0 && <p style={{ ...note, padding: '12px 0' }}>All archived. Undo brings them back.</p>}
           {cases.map((c) => (
             <div key={c.id} style={{ ...row, flexWrap: 'nowrap', justifyContent: 'space-between', padding: '8px 0', borderTop: '1px solid var(--asc-border)' }}>
@@ -194,6 +194,7 @@ function DialogDemo() {
         description={`${c.id} · ${c.customer}`}
         footer={
           <>
+            <Button variant="ghost" icon={<Copy />} onClick={() => toast.success('Link copied', { description: `Anyone on the team can open ${c.id} with it.` })}>Copy link</Button>
             <Button variant="secondary" onClick={() => setDrawer(false)}>Close</Button>
             <Button onClick={() => { setDrawer(false); toast.success(`${c.id} marked done`, { undo: () => toast('Back to in progress') }); }}>Mark done</Button>
           </>
@@ -277,15 +278,20 @@ function ChartDemo() {
       <Card title="Jobs this quarter" description="By technician">
         <Chart kind="bar" horizontal label="Jobs this quarter by technician" xLabel="Technician" data={BY_TECH} series={[{ key: 'jobs', label: 'Jobs', color: 'green' }]} height={180} />
       </Card>
-      <Card>
-        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 16 }}>
-          <div>
-            <p style={label}>Billed this month</p>
-            <p style={{ margin: '4px 0 0', fontSize: 'var(--asc-text-xl)', lineHeight: 'var(--asc-leading-xl)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>{money.format(25300)}</p>
-          </div>
-          <div style={{ width: 120 }}>
-            <Chart kind="spark" label="Billed per month, last six months" xLabel="Month" data={MONTHS} series={[{ key: 'service', label: 'Service' }]} format={usd0} />
-          </div>
+      <Card title="Service billed" description="A sparkline beside the number it explains">
+        <div style={{ display: 'grid', gap: 16 }}>
+          {[{ n: 'This month', v: 18400, k: 'service' }, { n: 'Parts this month', v: 6900, k: 'parts' }].map((m) => (
+            <div key={m.k} style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 16 }}>
+              <div>
+                <p style={label}>{m.n}</p>
+                <p style={{ margin: '4px 0 0', fontSize: 'var(--asc-text-xl)', lineHeight: 'var(--asc-leading-xl)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>{new Intl.NumberFormat(undefined, usd0).format(m.v)}</p>
+                <p style={{ ...note, color: 'var(--asc-success)' }}>Up {m.k === 'service' ? '10' : '13'}% on last month</p>
+              </div>
+              <div style={{ width: 'min(40%, 140px)' }}>
+                <Chart kind="spark" label={`${m.n}, last six months`} xLabel="Month" data={MONTHS} series={[{ key: m.k, label: m.n, color: m.k === 'parts' ? 'purple' : undefined }]} format={usd0} height={48} />
+              </div>
+            </div>
+          ))}
         </div>
       </Card>
       <Card title="Parts budget" description="Used this month">
@@ -316,17 +322,17 @@ function ChartThumb() {
 
 const caseColumns = (open: (c: Case) => void): Column<Case>[] => [
   {
-    key: 'id', label: 'Case', width: '104px', sortValue: (c) => c.id,
+    key: 'id', label: 'Case', width: '92px', sortValue: (c) => c.id,
     // The case number is a real button too, so the row can be opened without a mouse
     render: (c) => <button type="button" style={linkBtn} onClick={(e) => { e.stopPropagation(); open(c); }}>{c.id}</button>,
   },
-  { key: 'customer', label: 'Customer', width: '1.2fr', minWidth: 140, render: (c) => <Ellipsis>{c.customer}</Ellipsis>, sortValue: (c) => c.customer },
-  { key: 'job', label: 'Job', width: '1.6fr', minWidth: 160, render: (c) => <Ellipsis>{c.job}</Ellipsis>, sortValue: (c) => c.job },
-  { key: 'status', label: 'Status', width: '140px', render: (c) => <Badge tone={TONE[c.status]} dot>{c.status}</Badge>, sortValue: (c) => STATUSES.indexOf(c.status) },
-  { key: 'tech', label: 'Technician', width: '1fr', minWidth: 120, optional: true, render: (c) => <Ellipsis>{c.tech}</Ellipsis>, sortValue: (c) => c.tech },
-  { key: 'due', label: 'Due', width: '84px', render: (c) => fmtDay(c.due), sortValue: (c) => c.due },
+  { key: 'customer', label: 'Customer', width: '1.2fr', minWidth: 110, render: (c) => <Ellipsis>{c.customer}</Ellipsis>, sortValue: (c) => c.customer },
+  { key: 'job', label: 'Job', width: '1.6fr', minWidth: 130, render: (c) => <Ellipsis>{c.job}</Ellipsis>, sortValue: (c) => c.job },
+  { key: 'status', label: 'Status', width: '128px', render: (c) => <Badge tone={TONE[c.status]} dot>{c.status}</Badge>, sortValue: (c) => STATUSES.indexOf(c.status) },
+  { key: 'tech', label: 'Technician', width: '1fr', minWidth: 110, optional: true, defaultHidden: true, render: (c) => <Ellipsis>{c.tech}</Ellipsis>, sortValue: (c) => c.tech },
+  { key: 'due', label: 'Due', width: '68px', render: (c) => fmtDay(c.due), sortValue: (c) => c.due },
   { key: 'priority', label: 'Priority', width: '88px', optional: true, defaultHidden: true, render: (c) => c.priority, sortValue: (c) => ['Low', 'Normal', 'High'].indexOf(c.priority) },
-  { key: 'amount', label: 'Amount', width: '104px', align: 'right', optional: true, render: (c) => money.format(c.amount), sortValue: (c) => c.amount },
+  { key: 'amount', label: 'Amount', width: '96px', align: 'right', optional: true, render: (c) => money.format(c.amount), sortValue: (c) => c.amount },
 ];
 const linkBtn: CSSProperties = { padding: 0, border: 0, background: 'none', color: 'inherit', font: 'inherit', fontWeight: 500, cursor: 'pointer', textDecoration: 'underline', textDecorationColor: 'var(--asc-border-strong)', textUnderlineOffset: 3 };
 const Ellipsis = ({ children }: { children: ReactNode }) => (
@@ -421,10 +427,10 @@ const EmptyMessage = ({ title, text, action }: { title: string; text?: string; a
 );
 
 function DataTableThumb() {
-  const cols = caseColumns(() => {}).filter((c) => ['customer', 'status', 'amount'].includes(c.key));
+  const cols = caseColumns(() => {}).filter((c) => ['customer', 'status'].includes(c.key));
   return (
-    <div style={{ width: 260 }}>
-      <DataTable label="Cases" showViews={false} rows={CASES.slice(0, 3)} columns={cols.map((c) => ({ ...c, minWidth: 60, optional: false }))} getRowKey={(c) => c.id} maxHeight="none" />
+    <div style={{ width: 250 }}>
+      <DataTable label="Cases" toolbar={false} rows={CASES.slice(0, 3)} columns={cols.map((c) => ({ ...c, minWidth: 60, optional: false }))} getRowKey={(c) => c.id} maxHeight="none" />
     </div>
   );
 }
@@ -451,10 +457,12 @@ function MonthDemo() {
     return m;
   }, []);
   const chosen = selected ? byDay.get(selected) ?? [] : [];
+  const narrowCss = '@container (max-width:560px){.demo-chip{justify-content:center;background:none!important;padding:0!important}.demo-chip-text{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}}';
   const chip: CSSProperties = { display: 'flex', alignItems: 'center', gap: 4, minWidth: 0, padding: '1px 4px', borderRadius: 'var(--asc-radius-sm)', background: 'var(--asc-subtle-strong)', fontSize: 11, lineHeight: '16px', whiteSpace: 'nowrap', overflow: 'hidden' };
   const dot = (s: Status): CSSProperties => ({ width: 6, height: 6, flex: 'none', borderRadius: 999, background: `var(--asc-${TONE[s] === 'neutral' ? 'faint' : TONE[s]})` });
   return (
     <div style={{ ...col(820), width: '100%' }}>
+      <style>{narrowCss}</style>
       <MonthGrid
         month={month}
         onMonthChange={setMonth}
@@ -467,12 +475,12 @@ function MonthDemo() {
           return (
             <>
               {list.slice(0, 2).map((v, i) => (
-                <span key={i} style={chip} title={`${fmtTime(v.time)} ${v.customer}, ${v.status}`}>
+                <span key={i} className="demo-chip" style={chip} title={`${fmtTime(v.time)} ${v.customer}, ${v.status}`}>
                   <span style={dot(v.status)} aria-hidden />
-                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{fmtTime(v.time)} {v.customer}</span>
+                  <span className="demo-chip-text" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{fmtTime(v.time)} {v.customer}</span>
                 </span>
               ))}
-              {list.length > 2 && <span style={{ ...note, fontSize: 11 }}>+{list.length - 2} more</span>}
+              {list.length > 2 && <span className="demo-chip-text" style={{ ...note, fontSize: 11 }}>+{list.length - 2} more</span>}
             </>
           );
         }}
@@ -494,8 +502,10 @@ function MonthDemo() {
 }
 function MonthThumb() {
   return (
-    <div style={{ width: 420, transform: 'scale(.56)', transformOrigin: 'center', pointerEvents: 'none' }} aria-hidden>
-      <MonthGrid month={new Date()} />
+    <div style={{ position: 'relative', width: 252, height: 150, overflow: 'hidden', pointerEvents: 'none' }} aria-hidden>
+      <div style={{ position: 'absolute', top: 0, left: 0, width: 600, transform: 'scale(.42)', transformOrigin: 'top left' }}>
+        <MonthGrid month={new Date()} />
+      </div>
     </div>
   );
 }
@@ -787,7 +797,7 @@ const columns: Column<Case>[] = [
           { name: 'maxHeight', type: 'CSS length', def: '"70vh"', desc: 'The box scrolls past this, header in view. "none" lets the page scroll' },
           { name: 'views / onViewsChange', type: 'SavedView[] / (views) => void', desc: 'Saved views. Left out, they last for this visit' },
           { name: 'layout / defaultLayout / onLayoutChange', type: 'TableLayout', desc: 'Hidden columns, order, widths, sort, group and view' },
-          { name: 'showViews', type: 'boolean', def: 'true', desc: 'Hide the views bar' },
+          { name: 'toolbar', type: 'boolean', def: 'true', desc: 'The bar with views, Group and Columns. Off for a small fixed table' },
         ],
       },
       {

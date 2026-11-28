@@ -10,6 +10,7 @@
  * Reads the shared theme (@ascentui/tokens).
  */
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { Button } from "./button";
 import { IconButton } from "./icon-button";
 import { Spinner } from "./spinner";
@@ -75,6 +76,7 @@ export const TOAST_DURATION = { normal: 5000, withAction: 8000, error: Infinity 
 
 let items: ToastItem[] = [];
 let counter = 0;
+let toasters = 0;
 const listeners = new Set<() => void>();
 const emit = () => listeners.forEach((l) => l());
 const subscribe = (l: () => void) => {
@@ -155,7 +157,9 @@ const Close = () => <Icon d="M4.5 4.5l7 7M11.5 4.5l-7 7" />;
 
 const reducedMotion = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-function Toast({ t, paused, announce }: { t: ToastItem; paused: boolean; announce: (text: string, urgent: boolean) => void }) {
+function Toast({ t, paused, announce, release }: {
+  t: ToastItem; paused: boolean; announce: (text: string, urgent: boolean) => void; release: (from: HTMLElement | null) => void;
+}) {
   const el = useRef<HTMLLIElement>(null);
   const text = useRef<HTMLDivElement>(null);
   const action: ToastAction | undefined = t.undo ? { label: "Undo", onClick: t.undo } : t.action;
@@ -214,13 +218,17 @@ function Toast({ t, paused, announce }: { t: ToastItem; paused: boolean; announc
             variant="secondary"
             onClick={() => {
               action.onClick();
+              release(el.current);
               dismiss(t.id);
             }}
           >
             {action.label}
           </Button>
         )}
-        <IconButton size="sm" icon={<Close />} label="Dismiss" tooltip={false} onClick={() => dismiss(t.id)} />
+        <IconButton size="sm" icon={<Close />} label="Dismiss" tooltip={false} onClick={() => {
+          release(el.current);
+          dismiss(t.id);
+        }} />
       </div>
     </li>
   );
@@ -243,6 +251,43 @@ export function Toaster({ position = "bottom-right", max = 3, label = "Notificat
   const urgent = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState(false);
   const [focused, setFocused] = useState(false);
+  // Where the keyboard was before Alt+T, so closing the last toast puts it back there
+  const returnTo = useRef<HTMLElement | null>(null);
+
+  // Toasts belong to a Toaster: when the last one unmounts, any left over go with it
+  useEffect(() => {
+    toasters++;
+    return () => {
+      if (--toasters > 0) return;
+      items = [];
+      emit();
+    };
+  }, []);
+
+  // A toast that had focus is closing: move focus to the next toast, or back to the page
+  const release = (from: HTMLElement | null) => {
+    if (!from?.contains(document.activeElement)) return;
+    const rest = [...(region.current?.querySelectorAll<HTMLElement>(".asc-toast:not([data-leaving])") ?? [])].filter((n) => n !== from);
+    const next = rest[rest.length - 1];
+    if (next) (next.querySelector<HTMLElement>("button") ?? next).focus();
+    else if (returnTo.current?.isConnected) returnTo.current.focus();
+    else (document.activeElement as HTMLElement | null)?.blur();
+  };
+  // While a modal dialog is open, everything outside it is out of reach, so the toasts move into it
+  // (still drawn above it) and their buttons stay usable. Dialog announces when it opens and closes
+  const [host, setHost] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    const find = () => {
+      const open = document.querySelectorAll<HTMLElement>("dialog:modal");
+      setHost(open[open.length - 1] ?? null);
+    };
+    find();
+    document.addEventListener("asc:layer", find);
+    return () => document.removeEventListener("asc:layer", find);
+  }, []);
+
+  // Focus can vanish with a closing toast without a blur event, so check where it really is
+  const focusInside = focused && !!region.current?.contains(document.activeElement);
   const [y, x] = position.split("-") as ["top" | "bottom", "right" | "center"];
 
   // Over the limit: the oldest close, so the newest is always in view
@@ -260,12 +305,12 @@ export function Toaster({ position = "bottom-right", max = 3, label = "Notificat
     try {
       const open = el.matches(":popover-open");
       if (!all.length) return void (open && el.hidePopover());
-      if (open && document.querySelector("dialog:modal")) el.hidePopover();
+      if (open && document.querySelector("dialog:modal") && !host) el.hidePopover();
       if (!el.matches(":popover-open")) el.showPopover();
     } catch {
       /* not in the page yet, or popovers unsupported: it still shows, as a fixed layer */
     }
-  }, [newest?.id, newest?.version, all.length]);
+  }, [newest?.id, newest?.version, all.length, host]);
 
   // Alt+T moves focus to the newest toast, so keyboard users can reach Undo. Escape closes the newest
   useEffect(() => {
@@ -274,6 +319,7 @@ export function Toaster({ position = "bottom-right", max = 3, label = "Notificat
       if (!items?.length) return;
       if (e.altKey && e.code === "KeyT") {
         e.preventDefault();
+        if (!region.current?.contains(document.activeElement)) returnTo.current = document.activeElement as HTMLElement | null;
         const last = items[items.length - 1]!;
         (last.querySelector<HTMLElement>("button") ?? last).focus();
         return;
@@ -289,14 +335,8 @@ export function Toaster({ position = "bottom-right", max = 3, label = "Notificat
       const id = pick.dataset.id;
       if (!id) return;
       e.preventDefault();
+      if (inside) release(pick);
       dismiss(id);
-      if (inside) {
-        // Keep focus in the toaster, on the next toast, or let it go back to the page
-        const rest = [...items].filter((n) => n !== pick);
-        const next = rest[rest.length - 1];
-        if (next) (next.querySelector<HTMLElement>("button") ?? next).focus();
-        else (document.activeElement as HTMLElement | null)?.blur();
-      }
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
@@ -312,9 +352,8 @@ export function Toaster({ position = "bottom-right", max = 3, label = "Notificat
     }, 50);
   };
 
-  return (
+  const layer = (
     <>
-      <style href="asc-toaster" precedence="asc">{css}</style>
       <div className="asc-toaster__live" role="status" aria-live="polite" aria-atomic="true" ref={polite} />
       <div className="asc-toaster__live" role="alert" aria-live="assertive" aria-atomic="true" ref={urgent} />
       <section
@@ -329,15 +368,23 @@ export function Toaster({ position = "bottom-right", max = 3, label = "Notificat
         onPointerLeave={() => setHovered(false)}
         onFocus={() => setFocused(true)}
         onBlur={(e) => !e.currentTarget.contains(e.relatedTarget as Node) && setFocused(false)}
+        onClick={(e) => e.stopPropagation()}
       >
         {all.length > 0 && (
           <ol className="asc-toaster__list">
             {all.map((t) => (
-              <Toast key={t.id} t={t} paused={hovered || focused} announce={announce} />
+              <Toast key={t.id} t={t} paused={hovered || focusInside} announce={announce} release={release} />
             ))}
           </ol>
         )}
       </section>
+    </>
+  );
+
+  return (
+    <>
+      <style href="asc-toaster" precedence="asc">{css}</style>
+      {host ? createPortal(layer, host) : layer}
     </>
   );
 }

@@ -185,8 +185,8 @@ export type DataTableProps<T> = {
   layout?: TableLayout;
   defaultLayout?: Partial<TableLayout>;
   onLayoutChange?: (layout: TableLayout) => void;
-  /** Turn off the views bar */
-  showViews?: boolean;
+  /** The bar above the table: views, Group and Columns. Turn it off for a small, fixed table */
+  toolbar?: boolean;
   className?: string;
   style?: CSSProperties;
 };
@@ -255,7 +255,7 @@ const I = {
 export function DataTable<T>({
   label, rows, columns, getRowKey, rowLabel, groups, onRowClick, selection, bulkActions, rowActions, rowActionsWidth = "96px",
   loading = false, loadingRows = 5, empty = "Nothing to show yet", pageSize = 25, maxHeight = "70vh",
-  views: viewsProp, onViewsChange, layout: layoutProp, defaultLayout, onLayoutChange, showViews = true, className, style,
+  views: viewsProp, onViewsChange, layout: layoutProp, defaultLayout, onLayoutChange, toolbar = true, className, style,
 }: DataTableProps<T>) {
   const uid = useId();
   const defaultHidden = useMemo(() => columns.filter((c) => c.defaultHidden).map((c) => c.key), [columns]);
@@ -673,8 +673,8 @@ export function DataTable<T>({
   return (
     <div className={["asc-dt", className].filter(Boolean).join(" ")} style={style}>
       <style href="asc-data-table" precedence="asc">{css}</style>
-      <div className="asc-dt__bar">
-        {showViews && (
+      {toolbar && <div className="asc-dt__bar">
+        {(
           <div className="asc-dt__views" role="group" aria-label="Views">
             <Button size="sm" variant={L.view ? "ghost" : "secondary"} aria-pressed={!L.view} onClick={clearView}>All</Button>
             {views.map((v) => (
@@ -763,7 +763,7 @@ export function DataTable<T>({
             </div>
           </div>
         </div>
-      </div>
+      </div>}
 
       {selection && bulkActions && selectedKeys.length > 0 && (
         <div className="asc-dt__bulk" role="region" aria-label="Selected rows">

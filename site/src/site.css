@@ -164,7 +164,8 @@ h1,h2,h3,p{margin:0}
 /* Component previews. The stage carries the AscentUI theme (data-theme), so the components show in
    their own light or dark look inside the dark site. */
 .stage,.g-stage{background:var(--asc-page);color:var(--asc-ink);font-family:var(--asc-font);font-size:var(--asc-text-sm);line-height:var(--asc-leading-sm);-webkit-font-smoothing:antialiased}
-.stage{min-height:340px;display:grid;place-items:center;padding:48px 24px;border-radius:14px;border:1px solid var(--line)}
+.stage{min-height:340px;display:grid;grid-template-columns:minmax(0,1fr);place-items:center;padding:48px 24px;border-radius:14px;border:1px solid var(--line)}
+.stage>*{max-width:100%}
 .gallery-wrap{display:flex;flex-direction:column;gap:16px}
 .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
 .g-card{display:flex;flex-direction:column;min-width:0;border:1px solid var(--line);border-radius:14px;background:var(--panel);overflow:hidden;transition:border-color .14s}
