@@ -542,3 +542,6 @@ a.sb-link:hover,button.sb-link:hover{background:var(--accent-soft);color:var(--i
   .sc-desk{position:absolute;top:50%;right:calc(50% + 300px);width:640px;translate:0 -46%;opacity:.8;transform:perspective(1600px) rotateY(16deg);transform-origin:right center;-webkit-mask-image:linear-gradient(90deg,transparent,#000 40%);mask-image:linear-gradient(90deg,transparent,#000 40%)}
   .sc-phone{top:50%;bottom:auto;left:calc(50% + 330px);right:auto;translate:0 -46%;opacity:.92;transform:perspective(1600px) rotateY(-14deg);transform-origin:left center}
 }
+.lib-app{display:flex;flex-direction:column;gap:12px;margin-top:20px}
+.lib-app h3{font-size:1.077rem;font-weight:500;display:flex;gap:8px;align-items:baseline}
+.lib-app h3 small{color:var(--dim);font-weight:400}

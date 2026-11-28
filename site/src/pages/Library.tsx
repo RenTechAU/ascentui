@@ -64,8 +64,10 @@ function LiveCard({ item }: { item: CatalogItem }) {
         <p>{p.description}</p>
       </div>
       <div className="lc-foot">
-        <Badge tone="success">Free</Badge>
-        <CopyButton className="copy-btn lc-copy" text={installCommand(p.install)} label={`Copy the install command for ${item.name}`} />
+        <Badge tone={item.tier === 'free' ? 'success' : 'purple'}>{item.tier === 'free' ? 'Free' : 'Pro'}</Badge>
+        {item.tier === 'free' && (
+          <CopyButton className="copy-btn lc-copy" text={installCommand(p.install)} label={`Copy the install command for ${item.name}`} />
+        )}
       </div>
     </article>
   );
@@ -103,6 +105,22 @@ function Row({ item }: { item: CatalogItem }) {
 }
 
 type Built = 'all' | 'built' | 'planned';
+
+// Screens are shown by the app they build, as affectUI names its screens. Display only: catalog modules and slugs stay put.
+const APP_OF: Record<string, string> = {
+  CRM: 'CRM', Dispatch: 'Dispatch', 'Field app': 'Field app', Phone: 'Field app',
+  'Quotes + payments': 'Finance', 'Assets + warranty': 'Products and warranty',
+  'Sign-in and account': 'Admin', 'App basics': 'Admin', Brand: 'Admin', AI: 'AI',
+};
+const APP_ORDER = ['CRM', 'Dispatch', 'Field app', 'Finance', 'Products and warranty', 'Admin', 'AI'];
+function byApp(rows: CatalogItem[]) {
+  const groups = new Map<string, CatalogItem[]>();
+  for (const r of rows) {
+    const app = APP_OF[r.module ?? ''] ?? 'Other';
+    groups.set(app, [...(groups.get(app) ?? []), r]);
+  }
+  return [...groups].sort(([a], [b]) => (APP_ORDER.indexOf(a) + 99) % 99 - (APP_ORDER.indexOf(b) + 99) % 99);
+}
 const isBuilt = (i: CatalogItem) => i.status !== 'planned';
 
 export function Library({ items, section: fromRoute }: { items: CatalogItem[]; section: SectionId | null }) {
@@ -190,7 +208,16 @@ export function Library({ items, section: fromRoute }: { items: CatalogItem[]; s
                 <span>{c.total} {c.total === 1 ? 'item' : 'items'} · {c.free} free · {c.pro} Pro</span>
               </div>
               <p className="small">{layer.blurb}</p>
-              {view === 'grid' ? (
+              {layer.id === 'screen' ? (
+                byApp(rows).map(([app, list]) => (
+                  <div className="lib-app" key={app}>
+                    <h3>{app} <small>{list.length}</small></h3>
+                    {view === 'grid'
+                      ? <div className="lc-grid lc-grid-plan">{list.map((i) => previewBySlug(i.slug) ? <LiveCard key={i.slug} item={i} /> : <PlanCard key={i.slug} item={i} />)}</div>
+                      : <ul className="lib-list">{list.map((i) => <Row key={i.slug} item={i} />)}</ul>}
+                  </div>
+                ))
+              ) : view === 'grid' ? (
                 <>
                   {live.length > 0 && <div className="lc-grid">{live.map((i) => <LiveCard key={i.slug} item={i} />)}</div>}
                   {rest.length > 0 && <div className="lc-grid lc-grid-plan">{rest.map((i) => <PlanCard key={i.slug} item={i} />)}</div>}

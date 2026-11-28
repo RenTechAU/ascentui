@@ -30,7 +30,7 @@ export function Home() {
               <span className="pill-short">The basics are free →</span>
             </a>
             <TextReveal as="h1" className="h1" text="UI for businesses" />
-            <p className="lede">Business-ready React components for CRM, services, finance and AI.</p>
+            <p className="lede">Business-ready React components and screens for service businesses: CRM, dispatch, a field app, quotes and invoices.</p>
             <div className="cta">
               <Button className="light" size="lg" onClick={goTo('library')}>Browse library</Button>
               <Button className="round" variant="secondary" size="lg" onClick={goTo('docs-install')}>Get started</Button>
