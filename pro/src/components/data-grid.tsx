@@ -56,9 +56,7 @@ const css = `@layer asc {
 .asc-dg__resize:hover::after,.asc-dg__resize[data-active]::after,.asc-dg__resize:focus-visible::after{background:var(--asc-focus);opacity:1}
 .asc-dg__resize:focus-visible{outline:none}
 .asc-dg__sel{display:flex;align-items:center;justify-content:center}
-.asc-dg__acts{justify-content:flex-end;gap:var(--asc-space-2);opacity:0;overflow:visible;transition:opacity var(--asc-duration)}
-.asc-dt__row:hover .asc-dg__acts,.asc-dt__row:focus-within .asc-dg__acts,.asc-dt__row[data-selected] .asc-dg__acts,.asc-dt__row[aria-current="true"] .asc-dg__acts{opacity:1}
-@media (hover:none){.asc-dg__acts{opacity:1}}
+.asc-dt__row[data-selected] .asc-dt__acts{opacity:1}
 .asc-dg__cell[data-editable]{box-sizing:border-box;align-self:stretch;margin:0 calc(var(--asc-space-6) * -1);padding:var(--asc-space-4) var(--asc-space-6);border-radius:var(--asc-radius-sm);cursor:text;transition:box-shadow var(--asc-duration)}
 .asc-dg__cell[data-editable]:hover{box-shadow:inset 0 0 0 1px var(--asc-border-strong)}
 .asc-dg__cell[data-editable]:focus-visible{outline:2px solid var(--asc-focus);outline-offset:-2px}
@@ -76,7 +74,7 @@ const css = `@layer asc {
 .asc-dg__group-btn[aria-expanded="false"] svg{transform:rotate(-90deg)}
 .asc-dg__muted{color:var(--asc-muted);font-weight:400}
 .asc-dg__sel[data-no-open]{align-self:stretch;cursor:pointer}
-@media (pointer:coarse){.asc-dg__bar .asc-btn[data-size],.asc-dg__bulk .asc-btn[data-size],.asc-dg__acts .asc-btn[data-size],.asc-dg__menu .asc-btn[data-size],.asc-dg__bar .asc-input[data-size]{--h:var(--asc-control-md)}}
+@media (pointer:coarse){.asc-dg__bar .asc-btn[data-size],.asc-dg__bulk .asc-btn[data-size],.asc-dg__menu .asc-btn[data-size],.asc-dg__bar .asc-input[data-size]{--h:var(--asc-control-md)}}
 }`;
 
 // ---------------------------------------------------------------- types
@@ -145,10 +143,6 @@ export type DataGridProps<T> = Omit<DataTableProps<T>, "columns" | "sort" | "def
   selection?: Selection;
   /** Shown in a bar when rows are selected, e.g. an Archive button. Gets the keys and a clear function */
   bulkActions?: (keys: string[], clear: () => void) => ReactNode;
-  /** Small buttons at the end of each row, shown on hover and focus (always on touch screens) */
-  rowActions?: (row: T) => ReactNode;
-  /** Room for rowActions: a fixed track, so every row lines up. Default "96px" */
-  rowActionsWidth?: string;
   /** Saves a cell changed in place. Change your rows to match. Return a promise to show it saving;
    *  if it rejects, the editor stays open with the error's message */
   onCellEdit?: (row: T, columnKey: string, value: string) => void | Promise<unknown>;
@@ -687,7 +681,7 @@ export function DataGrid<T>({
           );
         })}
         {rowActions && (
-          <td role="cell" className="asc-dt__td asc-dg__acts" data-no-open onKeyDown={(e) => e.stopPropagation()}>
+          <td role="cell" className="asc-dt__td asc-dt__acts" data-no-open onKeyDown={(e) => e.stopPropagation()}>
             {rowActions(r)}
           </td>
         )}

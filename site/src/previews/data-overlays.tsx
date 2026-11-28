@@ -17,7 +17,7 @@ import { TextArea } from '@kit/text-area';
 import { TextField } from '@kit/text-field';
 import { Toaster, toast } from '@kit/toaster';
 import toasterSrc from '@kit/toaster.tsx?raw';
-import { useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { Archive, Check, Copy, Pencil, Plus, Search, Trash } from './icons';
 import type { Preview } from './types';
 
@@ -392,6 +392,20 @@ function DataTableDemo() {
         getRowKey={(c) => c.id}
         onOpen={(c) => setOpenId(c.id)}
         openId={openId}
+        rowActions={(c) => (
+          <IconButton
+            size="sm"
+            icon={<Archive />}
+            label={`Archive ${c.id}`}
+            onClick={() => {
+              const before = all;
+              setAll(all.filter((x) => x.id !== c.id));
+              if (openId === c.id) setOpenId(null);
+              toast.success(`${c.id} archived`, { undo: () => setAll(before) });
+            }}
+          />
+        )}
+        rowActionsWidth="40px"
         loading={state === 'loading'}
         pageSize={10}
         maxHeight="min(70vh, 520px)"
@@ -403,7 +417,7 @@ function DataTableDemo() {
           )
         }
       />
-      <p style={note}>Click a row, or move with the arrow keys and press Enter. The open row stays marked while the panel shows it.</p>
+      <p style={note}>Click a row, or move with the arrow keys and press Enter. The open row stays marked while the panel shows it. Each row has an Archive button, with Undo.</p>
       <Drawer open={!!open} onOpenChange={(o) => !o && close()} title={open?.job ?? ''} description={open ? `${open.id} · ${open.customer}` : undefined} footer={<Button variant="secondary" onClick={close}>Close</Button>}>
         {open && <CaseFacts c={open} onStage={setStage} />}
       </Drawer>
@@ -461,6 +475,16 @@ function DataGridDemo() {
   const [views, setViews] = useState(SEED_VIEWS);
   const [openId, setOpenId] = useState<string | null>(null);
   const panel = useRef<HTMLElement>(null);
+  const space = useRef<HTMLDivElement>(null);
+  const [narrow, setNarrow] = useState(false);
+  // Like App Shell, it goes by its own width: in a narrow space a record opens full screen, with Back
+  useEffect(() => {
+    const el = space.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setNarrow(el.clientWidth < 640));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
   const open = all.find((c) => c.id === openId) ?? null;
   const text = q.trim().toLowerCase();
   const rows = all.filter((c) => !text || `${c.id} ${c.customer} ${c.job} ${c.tech}`.toLowerCase().includes(text));
@@ -486,11 +510,7 @@ function DataGridDemo() {
   };
   const openCase = (c: Case) => {
     setOpenId(c.id);
-    // On a narrow screen the panel sits under the grid: bring it into view
-    requestAnimationFrame(() => {
-      const el = panel.current;
-      if (el && el.getBoundingClientRect().top > window.innerHeight - 80) el.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
-    });
+    requestAnimationFrame(() => panel.current?.querySelector<HTMLElement>('[data-panel-title]')?.focus({ preventScroll: true }));
   };
   const close = () => {
     const id = openId;
@@ -499,9 +519,9 @@ function DataGridDemo() {
   };
 
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 16, width: '100%', maxWidth: 1120, minWidth: 0 }}>
+    <div ref={space} style={{ position: 'relative', display: 'flex', alignItems: 'flex-start', gap: 16, width: '100%', maxWidth: 1120, minWidth: 0 }}>
       <Toaster />
-      <div style={{ ...col(820), flex: '1 1 520px', width: 'auto' }}>
+      <div style={{ ...col(820), flex: '1 1 520px', width: 'auto', visibility: open && narrow ? 'hidden' : undefined }} inert={(open && narrow) || undefined}>
         <div style={{ width: 'min(100%, 260px)' }}>
           <TextField label="Search cases" hideLabel type="search" size="sm" prefix={<Search />} placeholder="Search cases" value={q} onChange={(e) => setQ(e.target.value)} />
         </div>
@@ -537,14 +557,19 @@ function DataGridDemo() {
         <aside
           ref={panel}
           aria-label={`Case ${open.id}`}
-          style={{ flex: '1 1 280px', maxWidth: 'min(100%, 380px)', minWidth: 0, boxSizing: 'border-box', display: 'flex', flexDirection: 'column', gap: 16, padding: 16, borderRadius: 'var(--asc-radius-lg)', background: 'var(--asc-surface)', boxShadow: 'var(--asc-shadow-control)' }}
+          onKeyDown={(e) => e.key === 'Escape' && !e.defaultPrevented && close()}
+          style={{
+            ...(narrow ? { position: 'absolute', inset: 0, overflowY: 'auto' } : { flex: '1 1 280px', maxWidth: 380 }),
+            minWidth: 0, boxSizing: 'border-box', display: 'flex', flexDirection: 'column', gap: 16, padding: 16, borderRadius: 'var(--asc-radius-lg)', background: 'var(--asc-surface)', boxShadow: 'var(--asc-shadow-control)',
+          }}
         >
+          {narrow && <div><Button size="sm" variant="ghost" onClick={close}>‹ Back</Button></div>}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
             <div style={{ minWidth: 0 }}>
-              <p style={{ margin: 0, fontWeight: 500 }}>{open.job}</p>
+              <p data-panel-title tabIndex={-1} style={{ margin: 0, fontWeight: 500, outline: 'none' }}>{open.job}</p>
               <p style={note}>{open.id} · {open.customer}</p>
             </div>
-            <Button size="sm" variant="secondary" onClick={close}>Close</Button>
+            {!narrow && <Button size="sm" variant="secondary" onClick={close}>Close</Button>}
           </div>
           <CaseFacts c={open} onStage={(s) => { change([open.id], { status: s }); toast.success(`${open.id} moved to ${s}`); }} />
         </aside>
@@ -913,6 +938,7 @@ const columns: Column<Case>[] = [
           { name: 'getRowKey', type: '(row) => string | number', desc: 'A stable id per row. Rows carry it as data-row-id' },
           { name: 'onOpen', type: '(row) => void', desc: 'Opens a record. A click on the row, or Enter or Space on it. Not a click on a button inside it' },
           { name: 'openId', type: 'string | number | null', desc: 'The open record’s key. Its row is marked and announced as current' },
+          { name: 'rowActions / rowActionsWidth', type: '(row) => ReactNode / string', def: '— / "96px"', desc: 'Small buttons at the end of each row, shown on hover and focus, always on touch screens. Clicks on them never open the row' },
           { name: 'sort / defaultSort / onSortChange', type: 'Sort | null', desc: 'The sort, controlled or not' },
           { name: 'loading / loadingRows', type: 'boolean / number', def: 'false / 5', desc: 'Placeholder rows while loading' },
           { name: 'empty', type: 'ReactNode', def: '"Nothing to show yet"', desc: 'Text, or your own EmptyState' },

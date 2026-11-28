@@ -18,6 +18,10 @@ import { IconButton } from "./icon-button";
 import { Skeleton } from "./skeleton";
 
 const css = `@layer asc {
+.asc-dt__acts{justify-content:flex-end;gap:var(--asc-space-2);opacity:0;overflow:visible;transition:opacity var(--asc-duration)}
+.asc-dt__row:hover .asc-dt__acts,.asc-dt__row:focus-within .asc-dt__acts,.asc-dt__row[aria-current="true"] .asc-dt__acts{opacity:1}
+@media (hover:none){.asc-dt__acts{opacity:1}}
+@media (pointer:coarse){.asc-dt__acts .asc-btn[data-size]{--h:var(--asc-control-md)}}
 .asc-dt{display:flex;flex-direction:column;gap:var(--asc-space-8);min-width:0;color:var(--asc-ink);font:400 var(--asc-text-sm)/var(--asc-leading-sm) var(--asc-font);font-variant-numeric:tabular-nums}
 .asc-dt__scroll{position:relative;overflow:auto;overscroll-behavior-x:contain;border-radius:var(--asc-radius-lg);background:var(--asc-surface);box-shadow:var(--asc-shadow-control)}
 .asc-dt__scroll:focus-visible{outline:2px solid var(--asc-focus);outline-offset:2px}
@@ -83,6 +87,11 @@ export type DataTableProps<T> = {
   onOpen?: (row: T) => void;
   /** The key of the row whose record is open. It is marked, and announced as current, until this changes */
   openId?: string | number | null;
+  /** Small buttons at the end of each row, e.g. Archive, shown on hover and focus (always on touch screens).
+   *  For acting on many rows at once, the Pro Data Grid adds selection and a bulk bar */
+  rowActions?: (row: T) => ReactNode;
+  /** Room for rowActions: a fixed track, so every row lines up. Default "96px" */
+  rowActionsWidth?: string;
   /** The sort, controlled. Or start from defaultSort and hear about changes in onSortChange */
   sort?: Sort | null;
   defaultSort?: Sort | null;
@@ -259,7 +268,7 @@ export const ariaSort = (dir: Sort["dir"] | null | undefined) => (dir ? (dir ===
 // ---------------------------------------------------------------- component
 
 export function DataTable<T>({
-  label, rows, columns, getRowKey, onOpen, openId, sort: sortProp, defaultSort = null, onSortChange,
+  label, rows, columns, getRowKey, onOpen, openId, rowActions, rowActionsWidth = "96px", sort: sortProp, defaultSort = null, onSortChange,
   loading = false, loadingRows = 5, empty = "Nothing to show yet", pageSize = 25, maxHeight = "70vh", className, style,
 }: DataTableProps<T>) {
   const [innerSort, setInnerSort] = useState<Sort | null>(defaultSort);
@@ -281,7 +290,11 @@ export function DataTable<T>({
   const openKey = openId == null ? null : String(openId);
   const pageKeys = pageRows.map(keyOf);
   const { tabKey, setFocusKey, moveKey } = useRowFocus(pageKeys, openKey);
-  const rowStyle = rowGrid(columns.map((c) => columnTrack(c)));
+  const actPx = /^(\d+(?:\.\d+)?)px$/.exec(rowActionsWidth);
+  const rowStyle = rowGrid([
+    ...columns.map((c) => columnTrack(c)),
+    ...(rowActions ? [{ css: rowActionsWidth, px: actPx ? Number(actPx[1]) : 96 }] : []),
+  ]);
 
   const head = (
     <tr role="row" className="asc-dt__row" style={rowStyle}>
@@ -293,6 +306,7 @@ export function DataTable<T>({
           </th>
         );
       })}
+      {rowActions && <th role="columnheader" className="asc-dt__th" scope="col"><span className="asc-dt__vh">Actions</span></th>}
     </tr>
   );
 
@@ -304,6 +318,7 @@ export function DataTable<T>({
               <Skeleton width={`${55 + ((i * 7 + j * 13) % 35)}%`} height={10} />
             </td>
           ))}
+          {rowActions && <td role="cell" className="asc-dt__td" />}
         </tr>
       ))
     : pageRows.map((r) => {
@@ -338,6 +353,11 @@ export function DataTable<T>({
                 {c.render(r)}
               </td>
             ))}
+            {rowActions && (
+              <td role="cell" className="asc-dt__td asc-dt__acts" data-no-open onKeyDown={(e) => e.stopPropagation()}>
+                {rowActions(r)}
+              </td>
+            )}
           </tr>
         );
       });
