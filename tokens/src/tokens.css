@@ -39,14 +39,15 @@
     --asc-on-primary: #fcfcfc;
     --asc-focus: rgba(0, 96, 226, 0.7);
 
-    /* Status: strong tone for text and icons, soft tone for the ground behind them */
-    --asc-success: #1e8a4f;
+    /* Status: strong tone for text and icons, soft tone for the ground behind them.
+       Light values are affectUI's, darkened just enough to pass 4.5:1 on their soft ground and the page. */
+    --asc-success: #1a7845;
     --asc-success-soft: #00a43319;
-    --asc-warning: #b25e00;
+    --asc-warning: #a05500;
     --asc-warning-soft: #ff9c0029;
-    --asc-danger: #c4320a;
+    --asc-danger: #c0310a;
     --asc-danger-soft: #f52b0018;
-    --asc-info: #006dcbf2;
+    --asc-info: #0c6abb;
     --asc-info-soft: #008ff519;
 
     /* Hues for charts, dots and avatars. Never for text */
