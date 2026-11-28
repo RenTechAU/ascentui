@@ -110,12 +110,14 @@ export type DialogProps = {
   role?: "dialog" | "alertdialog";
   /** The words on the × button, for screen readers */
   closeLabel?: string;
+  /** Content at the very top of the panel, above the title, such as a bottom sheet's drag handle */
+  before?: ReactNode;
   className?: string;
 };
 
 export function Dialog({
   open, onOpenChange, title, description, children, footer, size = "md", dismissible = true, hideClose = false,
-  initialFocus, onClosed, kind = "dialog", role, closeLabel = "Close", className,
+  initialFocus, onClosed, kind = "dialog", role, closeLabel = "Close", before, className,
 }: DialogProps) {
   const ref = useRef<HTMLDialogElement>(null);
   const opener = useRef<HTMLElement | null>(null);
@@ -229,6 +231,7 @@ export function Dialog({
       >
         {mounted && (
           <div className="asc-dlg__panel">
+            {before}
             <div className="asc-dlg__head">
               <h2 className="asc-dlg__title" id={`${id}-title`} ref={titleRef} tabIndex={-1}>{title}</h2>
               {description != null && <p className="asc-dlg__desc" id={`${id}-desc`}>{description}</p>}
