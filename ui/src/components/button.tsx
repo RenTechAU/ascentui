@@ -4,7 +4,7 @@
  * Reads the shared theme (@ascentui/tokens): sizes grow to 44px on touch screens, and motion
  * stops when the device asks for less, without anything in this file.
  */
-import type { ButtonHTMLAttributes, MouseEvent, ReactNode } from "react";
+import type { ComponentProps, MouseEvent, ReactNode } from "react";
 import { Spinner } from "./spinner";
 
 const css = `@layer asc {
@@ -26,7 +26,7 @@ const css = `@layer asc {
 .asc-btn[aria-busy="true"]{cursor:progress}
 }`;
 
-export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+export type ButtonProps = ComponentProps<"button"> & {
   /** primary for the one main action on a screen; secondary for the rest; ghost in toolbars; danger to delete */
   variant?: "primary" | "secondary" | "ghost" | "danger";
   /** 24, 28 or 32px high on a desk; 36 or 44px on touch screens */

@@ -60,6 +60,9 @@
     --asc-shadow-control: 0 0 0 0.5px rgba(0, 0, 0, 0.06), 0 1px 1px -1px rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --asc-shadow-control-hover: 0 0 0 0.5px rgba(0, 0, 0, 0.1), 0 1px 1px -1px rgba(0, 0, 0, 0.12), 0 1px 3px 0 rgba(0, 0, 0, 0.07);
     --asc-shadow-pop: 0 0 0 0.5px rgba(0, 0, 0, 0.08), 0 12px 32px rgba(0, 0, 0, 0.14);
+
+    /* The dimmed page behind a dialog or drawer */
+    --asc-backdrop: rgba(0, 0, 0, 0.32);
   }
 
   .dark,
@@ -93,6 +96,7 @@
     --asc-shadow-control: 0 0 0 0.5px rgba(255, 255, 255, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.4);
     --asc-shadow-control-hover: 0 0 0 0.5px rgba(255, 255, 255, 0.2), 0 1px 3px 0 rgba(0, 0, 0, 0.5);
     --asc-shadow-pop: 0 0 0 0.5px rgba(255, 255, 255, 0.12), 0 12px 32px rgba(0, 0, 0, 0.6);
+    --asc-backdrop: rgba(0, 0, 0, 0.6);
   }
 
   /* Everything that is the same in both themes */

@@ -16,6 +16,16 @@ export { Card, type CardProps } from './components/card';
 export { Checkbox, type CheckboxProps } from './components/checkbox';
 export { ComboBox, type ComboBoxOption, type ComboBoxProps } from './components/combo-box';
 export { DatePicker, type DatePickerProps } from './components/date-picker';
+export {
+  ConfirmDialog,
+  Dialog,
+  Drawer,
+  useConfirm,
+  type ConfirmDialogProps,
+  type ConfirmOptions,
+  type DialogProps,
+  type DrawerProps,
+} from './components/dialog';
 export { EmptyState, type EmptyStateProps } from './components/empty-state';
 export {
   affixIds,
@@ -45,4 +55,15 @@ export { StatCard, type StatCardProps } from './components/stat-card';
 export { Switch, type SwitchProps } from './components/switch';
 export { TextArea, type TextAreaProps } from './components/text-area';
 export { TextField, type TextFieldProps } from './components/text-field';
+export {
+  toast,
+  Toaster,
+  TOAST_DURATION,
+  useToast,
+  type ToastAction,
+  type ToasterProps,
+  type ToastItem,
+  type ToastOptions,
+  type ToastTone,
+} from './components/toaster';
 export { Tooltip, type TooltipProps } from './components/tooltip';

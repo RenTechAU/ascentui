@@ -50,6 +50,7 @@ Override any variable in your own stylesheet:
 | Space | `--asc-space-2` to `--asc-space-24` | Steps of 2, 4, 6, 8, 12, 16 and 24px |
 | Corners | `--asc-radius-sm`, `--asc-radius`, `--asc-radius-lg`, `--asc-radius-full` | 5, 7 and 10px, and fully round |
 | Shadow | `--asc-shadow-control`, `-control-hover`, `--asc-shadow-pop` | A half-pixel hairline for controls; a real shadow only for things that float |
+| Backdrop | `--asc-backdrop` | The dimmed page behind a dialog or drawer |
 | Motion | `--asc-ease`, `--asc-duration`, `--asc-duration-slow` | Set to zero when less motion is asked for |
 
 The values follow affectUI's clean style, so AscentUI and affectUI components sit together without a seam.
