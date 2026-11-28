@@ -35,7 +35,7 @@ const css = `@layer asc {
 .asc-dt__th{position:relative;display:flex;align-items:center;min-width:0;padding:0;color:var(--asc-muted);font:500 var(--asc-text-xs)/var(--asc-leading-xs) var(--asc-font);text-align:left;white-space:nowrap;user-select:none}
 .asc-dt__th[data-align="right"]{justify-content:flex-end;text-align:right}
 .asc-dt__th-label{overflow:hidden;text-overflow:ellipsis}
-.asc-dt__sort{display:inline-flex;align-items:center;gap:var(--asc-space-4);max-width:100%;min-height:var(--asc-control-sm);margin:0 calc(var(--asc-space-4) * -1);padding:0 var(--asc-space-4);border:0;border-radius:var(--asc-radius-sm);background:none;color:inherit;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color var(--asc-duration),background-color var(--asc-duration)}
+.asc-dt__sort{display:inline-flex;align-items:center;gap:var(--asc-space-4);max-width:100%;min-height:var(--asc-control-md);margin:0 calc(var(--asc-space-4) * -1);padding:0 var(--asc-space-4);border:0;border-radius:var(--asc-radius-sm);background:none;color:inherit;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color var(--asc-duration),background-color var(--asc-duration)}
 .asc-dt__sort:hover{color:var(--asc-ink);background:var(--asc-subtle-strong)}
 .asc-dt__sort:focus-visible{outline:2px solid var(--asc-focus);outline-offset:0}
 .asc-dt__th[aria-sort] .asc-dt__sort{color:var(--asc-ink)}
@@ -49,6 +49,7 @@ const css = `@layer asc {
 .asc-dt__foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--asc-space-8);color:var(--asc-muted);font-size:var(--asc-text-xs);line-height:var(--asc-leading-xs)}
 .asc-dt__pages{display:flex;align-items:center;gap:var(--asc-space-2)}
 .asc-dt__page{padding:0 var(--asc-space-6);color:var(--asc-ink);font-weight:500;white-space:nowrap}
+@media (pointer:coarse){.asc-dt__pages .asc-btn[data-size]{--h:var(--asc-control-md)}}
 .asc-dt__vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 }`;
 

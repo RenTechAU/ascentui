@@ -64,7 +64,7 @@ const css = `@layer asc {
 .asc-dg__cell[data-editable]:focus-visible{outline:2px solid var(--asc-focus);outline-offset:-2px}
 .asc-dg__cell[data-editing]{flex-direction:column;align-items:stretch;justify-content:center;gap:var(--asc-space-2);overflow:visible;cursor:auto}
 .asc-dg__cell[data-editing]:hover{box-shadow:none}
-.asc-dg__input{box-sizing:border-box;width:100%;min-width:0;height:var(--asc-control-sm);margin:0;padding:0 var(--asc-space-6);border:0;border-radius:var(--asc-radius-sm);background:var(--asc-surface);box-shadow:inset 0 0 0 2px var(--asc-focus);color:var(--asc-ink);font:400 var(--asc-input-text)/1 var(--asc-font);font-variant-numeric:tabular-nums;text-align:inherit;outline:none}
+.asc-dg__input{box-sizing:border-box;width:100%;min-width:0;height:var(--asc-control-md);margin:0;padding:0 var(--asc-space-6);border:0;border-radius:var(--asc-radius-sm);background:var(--asc-surface);box-shadow:inset 0 0 0 2px var(--asc-focus);color:var(--asc-ink);font:400 var(--asc-input-text)/1 var(--asc-font);font-variant-numeric:tabular-nums;text-align:inherit;outline:none}
 .asc-dg__input[aria-invalid="true"]{box-shadow:inset 0 0 0 2px var(--asc-danger)}
 .asc-dg__input[aria-busy="true"]{opacity:.6}
 .asc-dg__err{margin:0;color:var(--asc-danger);font-size:var(--asc-text-xs);line-height:var(--asc-leading-xs);white-space:normal}
@@ -75,6 +75,8 @@ const css = `@layer asc {
 .asc-dg__group-btn svg{width:12px;height:12px;color:var(--asc-faint);transition:transform var(--asc-duration) var(--asc-ease)}
 .asc-dg__group-btn[aria-expanded="false"] svg{transform:rotate(-90deg)}
 .asc-dg__muted{color:var(--asc-muted);font-weight:400}
+.asc-dg__sel[data-no-open]{align-self:stretch;cursor:pointer}
+@media (pointer:coarse){.asc-dg__bar .asc-btn[data-size],.asc-dg__bulk .asc-btn[data-size],.asc-dg__acts .asc-btn[data-size],.asc-dg__menu .asc-btn[data-size],.asc-dg__bar .asc-input[data-size]{--h:var(--asc-control-md)}}
 }`;
 
 // ---------------------------------------------------------------- types
@@ -260,7 +262,7 @@ export function DataGrid<T>({
 
   const actPx = PX.exec(rowActionsWidth);
   const rowStyle = rowGrid([
-    ...(selection ? [{ css: "calc(var(--asc-control-sm) * .67 + var(--asc-space-4))", px: 28 }] : []),
+    ...(selection ? [{ css: "var(--asc-control-md)", px: 28 }] : []),
     ...cols.map((c) => columnTrack(c, widths[c.key])),
     ...(rowActions ? [{ css: rowActionsWidth, px: actPx ? Number(actPx[1]) : 96 }] : []),
   ]);
@@ -651,7 +653,7 @@ export function DataGrid<T>({
         }}
       >
         {selection && (
-          <td role="cell" className="asc-dt__td asc-dg__sel" data-no-open>
+          <td role="cell" className="asc-dt__td asc-dg__sel" data-no-open onClick={(e) => e.target === e.currentTarget && toggleRow(k)}>
             <Checkbox aria-label={`Select ${rowLabel ? rowLabel(r) : k}`} checked={isSel} onChange={() => toggleRow(k)} />
           </td>
         )}

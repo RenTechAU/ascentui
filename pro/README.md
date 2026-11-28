@@ -1,7 +1,7 @@
 # @ascentui/pro
 
-The Pro components: Chart, Month Grid, Command Menu, Stepper Form, Upload, Bottom Sheet and Pull to
-Refresh (the Data Grid joins when built). Proprietary, see `LICENSE`.
+The Pro components: Data Grid, Chart, Month Grid, Command Menu, Stepper Form, Upload, Bottom Sheet
+and Pull to Refresh. Proprietary, see `LICENSE`.
 
 - One file per component, styles inside, like the free kit. They import free pieces as
   `@ascentui/ui/components/<name>`; the registry build rewrites those to `./<name>` for installs.
