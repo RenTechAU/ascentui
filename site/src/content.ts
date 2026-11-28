@@ -68,3 +68,8 @@ export const PRICING_FAQ: { q: string; a: string; tbc?: boolean }[] = [
 
 export const PRO_STATUS =
   'Pro is not on sale yet. It launches with the working loop (phase 2). The free items are in pre-release.';
+
+/** Customers shown in the "Used by" strip on the home page. Add one only with that customer's written OK.
+ *  `logo` is a path under site/public (SVG, single colour, it is tinted to match the theme); without it the
+ *  name is shown as text. While this is empty the strip is hidden; add ?preview-logos to the address to see it. */
+export const CUSTOMERS: { name: string; logo?: string; href?: string }[] = [];

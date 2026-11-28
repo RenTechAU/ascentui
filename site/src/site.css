@@ -545,3 +545,16 @@ a.sb-link:hover,button.sb-link:hover{background:var(--accent-soft);color:var(--i
 .lib-app{display:flex;flex-direction:column;gap:12px;margin-top:20px}
 .lib-app h3{font-size:1.077rem;font-weight:500;display:flex;gap:8px;align-items:baseline}
 .lib-app h3 small{color:var(--dim);font-weight:400}
+
+/* ---- "Used by" rolling strip ---- */
+.ub{display:flex;flex-direction:column;align-items:center;gap:18px;padding-block:8px 56px}
+.ub>p{color:var(--dim);font-size:.923rem}
+.ub-view{width:min(100%,1080px);overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.ub-track{display:flex;width:max-content;animation:ub-roll 40s linear infinite}
+.ub-view:hover .ub-track{animation-play-state:paused}
+.ub-set{display:flex;align-items:center;gap:56px;padding-right:56px;margin:0;list-style:none}
+.ub-set li{display:flex;align-items:center;height:32px;color:var(--muted);font-weight:600;font-size:1.077rem;letter-spacing:-.01em;white-space:nowrap}
+.ub-set img{height:22px;width:auto;opacity:.7;filter:grayscale(1)}
+.dark .ub-set img,html.dark .ub-set img{filter:grayscale(1) invert(1)}
+@keyframes ub-roll{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.ub-track{animation:none;flex-wrap:wrap;width:auto;justify-content:center}.ub-set[aria-hidden]{display:none}.ub-view{-webkit-mask-image:none;mask-image:none}}

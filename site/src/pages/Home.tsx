@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Showcase } from '../showcase/Showcase';
+import { UsedBy } from '../UsedBy';
 import { CodeBlock } from '@/components/ui/code-block';
 import { SegmentedControl } from '@/components/ui/segmented-control';
 import { TextReveal } from '@/components/ui/text-reveal';
@@ -38,6 +39,8 @@ export function Home() {
           </div>
           <Showcase />
         </section>
+
+        <UsedBy />
 
         <section className="wrap pitch" aria-label="Why AscentUI">
           {PITCH.map((p) => (
