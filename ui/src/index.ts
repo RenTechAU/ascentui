@@ -86,6 +86,13 @@ export { Separator, type SeparatorProps } from './components/separator';
 export { Skeleton, type SkeletonProps } from './components/skeleton';
 export { Spinner, type SpinnerProps } from './components/spinner';
 export { StatCard, type StatCardProps } from './components/stat-card';
+export {
+  StepperForm,
+  type FormStep,
+  type ReviewItem,
+  type StepperFormLabels,
+  type StepperFormProps,
+} from './components/stepper-form';
 export { Switch, type SwitchProps } from './components/switch';
 export { TextArea, type TextAreaProps } from './components/text-area';
 export { TextField, type TextFieldProps } from './components/text-field';
@@ -101,3 +108,15 @@ export {
   type ToastTone,
 } from './components/toaster';
 export { Tooltip, type TooltipProps } from './components/tooltip';
+export {
+  accepts,
+  formatBytes,
+  mockUpload,
+  Upload,
+  type ExistingFile,
+  type UploadFn,
+  type UploadItem,
+  type UploadLabels,
+  type UploadProps,
+  type UploadStatus,
+} from './components/upload';
