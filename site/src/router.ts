@@ -1,7 +1,7 @@
 // Hash routing with plain `#name` anchors. No router dependency.
 import { useEffect, useState } from 'react';
 
-export type Page = 'home' | 'library' | 'docs' | 'pricing' | 'licence' | 'component' | 'ds';
+export type Page = 'home' | 'library' | 'docs' | 'pricing' | 'licence' | 'component' | 'ds' | 'roadmap';
 
 export const DOC_IDS = ['introduction', 'install', 'theming', 'accessibility', 'agents', 'skills', 'loop', 'changelog'] as const;
 export type DocId = (typeof DOC_IDS)[number];
@@ -30,7 +30,7 @@ export interface Route {
 export function parseHash(hash: string): Route {
   const name = hash.replace(/^#/, '').toLowerCase();
   const base: Route = { page: 'home', doc: 'introduction', ds: 'colors', section: null, component: '', anchor: null };
-  if (name === 'library' || name === 'pricing' || name === 'licence') return { ...base, page: name };
+  if (name === 'library' || name === 'pricing' || name === 'licence' || name === 'roadmap') return { ...base, page: name };
   if (name === 'license') return { ...base, page: 'licence' };
   if (name === 'docs') return { ...base, page: 'docs' };
   if (name === 'design-system' || name === 'ds') return { ...base, page: 'ds' };

@@ -23,6 +23,10 @@ export function Pricing({ checkout }: { checkout: CheckoutClient }) {
         <div className="sec-head">
           <h1>Pay once. Build as many as you like.</h1>
           <p>No subscription. Use it in your own projects and your clients'.</p>
+          <p className="small">
+            Lifetime means every phase on the <a href="#roadmap">roadmap</a> as it ships: business screens, deployable
+            apps and the full business suite after them.
+          </p>
           <p className="small">{PRO_STATUS}</p>
         </div>
         <Plans onFree={goTo('library')} onBuy={buy} busy={busy} />

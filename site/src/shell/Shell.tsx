@@ -118,6 +118,7 @@ function SidebarContent({ route, onSearch, onNavigate, onClose }: { route: Route
             ))}
           </Disclosure>
           <li>
+            <a className="sb-link" href="#roadmap" aria-current={here(route.page === 'roadmap')} onClick={onNavigate}>Roadmap</a>
             <a className="sb-link" href="#pricing" aria-current={here(route.page === 'pricing')} onClick={onNavigate}>Pricing</a>
           </li>
         </ul>

@@ -38,6 +38,7 @@ export function Footer() {
           <a href="#library">Library</a>
           <a href="#docs">Docs</a>
           <a href="#design-system">Design system</a>
+          <a href="#roadmap">Roadmap</a>
           <a href="#pricing">Pricing</a>
           <a href="#licence">Licence</a>
           <a href="./llms.txt">llms.txt</a>

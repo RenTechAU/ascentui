@@ -12,6 +12,7 @@ import { Home } from './pages/Home';
 import { Library } from './pages/Library';
 import { Licence } from './pages/Licence';
 import { Pricing } from './pages/Pricing';
+import { Roadmap } from './pages/Roadmap';
 import { goTo, useRoute } from './router';
 import { Footer } from './shell/Footer';
 import { isMac, Palette, usePaletteShortcut } from './shell/Palette';
@@ -31,6 +32,7 @@ function HomeHeader({ onSearch }: { onSearch: () => void }) {
         <a href="#library">Library</a>
         <a href="#docs">Docs</a>
         <a href="#design-system">Design system</a>
+        <a href="#roadmap">Roadmap</a>
         <a href="#pricing">Pricing</a>
       </nav>
       <div className="nav-cta">
@@ -62,6 +64,7 @@ export function App() {
       {route.page === 'docs' && <Docs pages={DOCS} current={route.doc} registryBase={REGISTRY_BASE} />}
       {route.page === 'ds' && <DesignSystem current={route.ds} />}
       {route.page === 'pricing' && <Pricing checkout={checkout} />}
+      {route.page === 'roadmap' && <Roadmap />}
       {route.page === 'licence' && <Licence source={licence} company={COMPANY} />}
     </>
   );
