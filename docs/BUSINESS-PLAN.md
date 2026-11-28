@@ -107,6 +107,7 @@ upgrades for major versions). That is a decision for mid-2027, noted in §9.
 | Apr to Jun | **Phase 3b: CRM, quotes + payments, assets** + selling | 100 customers by 30 Apr |
 | Jul to Aug | **Phase 4: illustration, motion, Brand Studio, AI screen** | Regular price in effect. Reach and polish |
 | Sep to Oct | **Phase 5: deployable app** | Reference server and starter apps |
+| 2028 onwards | **Future phases: the full business suite** | CRM, finance, operations, integrations, AI agents, admin and analytics, by demand (`CATALOG.md` §13) |
 
 The dates assume design reviews turn around within two or three days. Design sign-off is the
 step most likely to slip the plan, because it is the one that needs you.
@@ -141,6 +142,8 @@ affectUI uses. Steps are in `docs/SETUP.md`.
 
 - [x] Refunds: full refund if a Pro item doesn't work as described and isn't fixed within 14 days (as affectUI)
 - [x] Goal stays 100 customers by 30 April 2027, about a month after the Pro launch
+- [x] Long-term aim: set up a whole business system (CRM, finance, operations, AI) by directing a coding agent. Reserved for future phases, after phase 5
+- [x] AI through the Vercel AI SDK (hosted and self-hosted models); server kits ship with each future module
 - [ ] Which illustrations to make, and which are free (phase 4)
 - [ ] Licence gaps: open-source apps that include Pro items, seat transfers, more than 10 seats
 

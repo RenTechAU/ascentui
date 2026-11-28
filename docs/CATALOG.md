@@ -1,6 +1,6 @@
 # AscentUI catalog: what we ship, in what order, free vs Pro
 
-Version 3, 2026-11-28. Status: proposal for review. Sits beside `PLAN.md` (how we build) and
+Version 4, 2026-11-28. Status: proposal for review. Sits beside `PLAN.md` (how we build) and
 `AFFECTUI-RESEARCH.md` (how affectUI sells).
 
 Changes in version 3: the catalog is rebuilt around the 80/20 of what a coding agent needs (§4);
@@ -247,7 +247,38 @@ because by then every contract has been proven by buyers on their own stacks.
 | Organised around | Breadth: a component for everything | The loop an agent repeats to build an app |
 | Whole deployable app | No | Phase 5 |
 
-## 13. Decisions and open questions
+## 13. Future phases: the full business suite (reserved)
+
+Decided 28 Nov 2026. AscentUI's long-term aim is that **a new business can set up its whole system by
+directing a coding agent**: a CRM like HubSpot, finance like Xero and field and operations
+management like an ERP, connected to its other software and to any AI model. This is reserved for
+phases after 5. Nothing here changes the launch or the counts in §5.
+
+**Target:** feature parity over time, built in order of demand, after the first 100 buyers.
+
+| Area | What it adds beyond phases 1–5 |
+| --- | --- |
+| **CRM** (HubSpot-like) | Activities and tasks, email and call logging, sequences, forms, segments, lead scoring |
+| **Finance** (Xero-like) | Bills, chart of accounts and journal, bank feeds and reconciliation, tax settings, P&L, balance sheet, aged receivables and payables, multi-currency |
+| **Operations** (ERP-like) | Inventory and stock locations, purchase orders, suppliers, capacity and scheduling, job costing |
+| **Integrations** | A connector framework (OAuth and secret storage, webhooks in and out, sync jobs with retries and logs), then connectors by demand: payments, accounting, email and calendar, messaging |
+| **AI and agents** | Any model through the Vercel AI SDK: hosted providers and self-hosted ones (Ollama, vLLM, anything OpenAI-compatible). An in-app assistant, agent runs, agentic workflows, and an approvals queue |
+| **Authorisations for agents** | Agents act only through scoped tools. Risky actions wait for a person's approval, every action is in the audit log, and everything is undoable |
+| **Admin** | Organisation settings, invites, roles and a permissions matrix, single sign-on, two-factor, sessions, audit log |
+| **Analytics** | Dashboard builder, report builder, saved metrics, scheduled exports |
+
+**How it will ship**
+
+- **Server kits.** Each module from here on ships real server code alongside its screens. Recipes
+  alone can't hold secrets, OAuth callbacks, webhooks or model calls. Supabase and Postgres come first.
+- **AI layer:** the Vercel AI SDK, so one interface covers 20+ hosted providers and any
+  OpenAI-compatible self-hosted model.
+- **Setup by agent.** A business app template plus a setup playbook the agent follows end to end:
+  accounts the owner creates, then auth, modules, brand and demo data wired by the agent.
+- **Compliance.** Payroll, e-invoicing and tax filing are regulated per country. They need specialist
+  review before they ship, and may stay out.
+
+## 14. Decisions and open questions
 
 Decided on 28 Nov 2026:
 
@@ -256,6 +287,8 @@ Decided on 28 Nov 2026:
 - **Sign in and Dashboard are the two free screens.**
 - **Pro launches with Dispatch and the field app,** not straight after phase 2.
 - **Payments: Stripe.**
+- **The full business suite** (CRM, finance, operations, integrations, AI and agents, admin, analytics) is reserved for phases after 5; see §13.
+- **AI layer:** Vercel AI SDK. **Server code:** shipped as server kits with each module from the suite onwards.
 
 Still open:
 
