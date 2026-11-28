@@ -1,12 +1,32 @@
 // @ascentui/ui: the free components (MIT). Each is one file with its styles inside.
 // Import the theme once at your app's entry:
 //   import '@ascentui/tokens/tokens.css';
+export {
+  AccountMenu,
+  AppShell,
+  type AccountMenuProps,
+  type AppShellLabels,
+  type AppShellProps,
+  type ShellGroup,
+  type ShellItem,
+} from './components/app-shell';
 export { Avatar, AvatarGroup, type AvatarGroupProps, type AvatarProps } from './components/avatar';
 export { Badge, type BadgeProps } from './components/badge';
 export { Button, type ButtonProps } from './components/button';
 export { Card, type CardProps } from './components/card';
 export { Chart, CHART_HUES, type ChartDatum, type ChartHue, type ChartKind, type ChartProps, type ChartReference, type ChartSeries } from './components/chart';
 export { Checkbox, type CheckboxProps } from './components/checkbox';
+export {
+  CommandMenu,
+  CommandMenuTrigger,
+  Kbd,
+  matchesShortcut,
+  scoreCommand,
+  shortcutKeys,
+  type Command,
+  type CommandMenuProps,
+  type CommandMenuTriggerProps,
+} from './components/command-menu';
 export { ComboBox, type ComboBoxOption, type ComboBoxProps } from './components/combo-box';
 export {
   DataTable,
@@ -57,6 +77,7 @@ export {
   type MonthGridProps,
   type Weekday,
 } from './components/month-grid';
+export { MenuButton, type MenuAction, type MenuButtonProps, type MenuEntry } from './components/menu-button';
 export { NumberInput, type NumberInputProps } from './components/number-input';
 export { PinInput, type PinInputProps } from './components/pin-input';
 export { SegmentedControl, type SegmentedControlProps, type SegmentedOption } from './components/segmented-control';

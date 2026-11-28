@@ -45,6 +45,11 @@ const catalogEntry = (name) =>
     ? CATALOG.find((i) => i.slug === CATALOG_SLUG[name])
     : CATALOG.find((i) => i.layer === 'component' && (i.slug === name || i.slug.startsWith(`${name}-`) || i.slug.endsWith(`-${name}`)));
 
+// Shared parts with no catalog item of their own, installed alongside the components that use them.
+const HELPER_DESCRIPTION = {
+  'menu-button': 'A button that opens a short menu of actions, on the WAI-ARIA menu button pattern. App Shell and List Row use it.',
+};
+
 const dir = 'ui/src/components/';
 const all = readdirSync(root + dir);
 const items = [];
@@ -64,7 +69,7 @@ for (const file of all.filter((f) => f.endsWith('.tsx')).sort()) {
     name,
     type: 'registry:ui',
     title: words(stem).replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase()),
-    description: entry?.description ?? `${words(stem)} component.`,
+    description: entry?.description ?? HELPER_DESCRIPTION[name] ?? `${words(stem)} component.`,
     ...(dependencies.length ? { dependencies } : {}),
     registryDependencies: [`${base}/r/theme.json`, ...new Set(siblings)],
     files,
