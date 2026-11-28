@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Showcase } from '../showcase/Showcase';
 import { UsedBy } from '../UsedBy';
+import { Featured } from '../showcase/Featured';
 import { CodeBlock } from '@/components/ui/code-block';
 import { SegmentedControl } from '@/components/ui/segmented-control';
 import { TextReveal } from '@/components/ui/text-reveal';
@@ -50,6 +51,8 @@ export function Home() {
             </div>
           ))}
         </section>
+
+        <Featured />
 
         <div className="band" id="how">
           <section className="wrap sec">

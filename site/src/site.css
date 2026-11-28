@@ -558,3 +558,106 @@ a.sb-link:hover,button.sb-link:hover{background:var(--accent-soft);color:var(--i
 .dark .ub-set img,html.dark .ub-set img{filter:grayscale(1) invert(1)}
 @keyframes ub-roll{to{transform:translateX(-50%)}}
 @media (prefers-reduced-motion:reduce){.ub-track{animation:none;flex-wrap:wrap;width:auto;justify-content:center}.ub-set[aria-hidden]{display:none}.ub-view{-webkit-mask-image:none;mask-image:none}}
+
+/* ---- Hero sync: the cursor taps Arrived, the desk row follows ---- */
+.sc-next{position:relative}
+.sc-cta{transition:transform var(--asc-duration) var(--asc-ease),background var(--asc-duration)}
+.sc-cta[data-press]{transform:scale(.96)}
+.sc-cursor{position:absolute;right:-6px;bottom:-26px;opacity:0;transition:right .8s var(--asc-ease),bottom .8s var(--asc-ease),opacity .3s,transform .15s;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))}
+.sc-cursor[data-at="cta"]{right:42%;bottom:14px;opacity:1}
+.sc-cursor[data-press]{transform:scale(.85)}
+.sc-row{transition:background .6s}
+.sc-row[data-flash]{background:color-mix(in srgb,var(--asc-success) 14%,transparent)}
+
+/* ---- See it work: six components playing what they do ---- */
+.ft-tabs{display:flex;flex-wrap:wrap;gap:4px 20px;border-bottom:1px solid var(--line);margin-bottom:20px}
+.ft-tabs a{padding:8px 0;color:var(--muted);text-decoration:none;border-bottom:2px solid transparent;margin-bottom:-1px}
+.ft-tabs a[aria-current]{color:var(--ink);border-color:var(--ink)}
+.ft-tabs a:hover{color:var(--ink)}
+.ft-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.ft-card{border:1px solid var(--line);border-radius:14px;background:var(--panel);overflow:hidden;display:flex;flex-direction:column}
+.ft-stage{position:relative;height:232px;display:grid;place-items:center;padding:20px;background:var(--bg2);border-bottom:1px solid var(--line);overflow:hidden}
+.ft-tier{position:absolute;top:10px;right:10px}
+.ft-foot{display:block;padding:14px 16px 16px;text-decoration:none;color:inherit}
+.ft-foot h3{font-size:1rem;font-weight:500;color:var(--ink)}
+.ft-foot p{color:var(--muted);margin-top:2px}
+.ft-foot:hover h3{text-decoration:underline}
+.ft-more{display:flex;justify-content:center;margin-top:24px}
+.ft-all{padding:9px 18px;border-radius:999px;background:var(--accent-soft);color:var(--ink);text-decoration:none;font-weight:500}
+
+/* scenes share one small vocabulary */
+.fs{width:100%;max-width:280px;font-size:11.5px;line-height:1.35;color:var(--ink);display:flex;flex-direction:column;gap:8px}
+.fs small{color:var(--dim);font-size:10.5px}
+.fs b{font-weight:600}
+.fs-input{position:relative;height:28px;border:1px solid var(--line2);border-radius:7px;padding:0 9px;display:flex;align-items:center;background:var(--panel)}
+.fs-input[data-focus]{box-shadow:0 0 0 2px var(--aui-focus)}
+.fs-ph{color:var(--dim)}
+.fs-caret{width:1px;height:14px;background:var(--ink);margin-left:1px;animation:fs-blink 1s steps(1) infinite}
+@keyframes fs-blink{50%{opacity:0}}
+.fs [data-press]{transform:scale(.94)}
+/* grid */
+.fs-toolbar{display:flex;gap:6px}
+.fs-chip{border:1px solid var(--line2);border-radius:999px;padding:2px 8px;color:var(--muted);transition:all var(--asc-duration-slow) var(--asc-ease)}
+.fs-chip[data-on]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.fs-table{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.fs-group{padding:4px 9px;background:var(--accent-soft);color:var(--muted);font-weight:600;font-size:10.5px;animation:fs-in var(--asc-duration-slow) var(--asc-ease)}
+.fs-tr{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:8px;align-items:center;padding:6px 9px;border-top:1px solid var(--line);transition:background var(--asc-duration)}
+.fs-tr[data-picked]{background:var(--accent-soft)}
+.fs-box{width:11px;height:11px;border:1px solid var(--line2);border-radius:3px;transition:all var(--asc-duration)}
+.fs-tr[data-picked] .fs-box{background:var(--ink);border-color:var(--ink)}
+.fs-tt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fs-bulk{align-self:center;background:var(--ink);color:var(--bg);border-radius:8px;padding:5px 12px;display:flex;gap:12px;opacity:0;translate:0 6px;transition:all var(--asc-duration-slow) var(--asc-ease)}
+.fs-bulk[data-show]{opacity:1;translate:0 0}
+@keyframes fs-in{from{opacity:0;translate:0 -4px}}
+/* calendar */
+.fs-cal-head{display:flex;justify-content:space-between}
+.fs-cal-head span{color:var(--dim)}
+.fs-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.fs-cal-grid small{text-align:center}
+.fs-day{height:34px;border:1px solid var(--line);border-radius:5px;padding:2px 3px;background:var(--panel);display:flex;flex-direction:column;gap:1px;overflow:hidden;transition:border-color var(--asc-duration)}
+.fs-day>span{font-size:9.5px;color:var(--dim)}
+.fs-day[data-drop]{border-color:var(--ink)}
+.fs-job{font-style:normal;font-size:8.5px;background:color-mix(in srgb,var(--asc-info) 22%,transparent);border-radius:3px;padding:0 3px;white-space:nowrap;overflow:hidden;animation:fs-drop .35s var(--asc-ease)}
+@keyframes fs-drop{from{opacity:0;transform:translateY(-8px) scale(.9)}}
+/* chart */
+.fs-chart-head{display:flex;justify-content:space-between;align-items:flex-start}
+.fs-chart-head div{display:flex;flex-direction:column}
+.fs-chart-head b{font-size:18px;font-variant-numeric:tabular-nums}
+.fs-seg{display:flex;border:1px solid var(--line2);border-radius:7px;padding:2px}
+.fs-seg i{font-style:normal;padding:2px 7px;border-radius:5px;color:var(--muted);transition:all var(--asc-duration)}
+.fs-seg i[data-on]{background:var(--ink);color:var(--bg)}
+.fs-bars{height:110px;display:flex;align-items:flex-end;gap:8px;border-bottom:1px solid var(--line2)}
+.fs-bars span{flex:1;background:var(--ink);opacity:.85;border-radius:4px 4px 0 0;transition:height .7s var(--asc-ease)}
+/* combo */
+.fs-list{margin:0;padding:4px;list-style:none;border:1px solid var(--line2);border-radius:8px;background:var(--panel);box-shadow:0 8px 24px -12px rgba(0,0,0,.4)}
+.fs-list li{padding:4px 7px;border-radius:5px;color:var(--muted)}
+.fs-list li b{color:var(--ink)}
+.fs-list li[data-hi]{background:var(--accent-soft);color:var(--ink)}
+.fs-done{color:var(--asc-success);animation:fs-in var(--asc-duration-slow) var(--asc-ease)}
+/* toast */
+.fs-case{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:9px;padding:9px 10px;background:var(--panel);transition:opacity var(--asc-duration-slow)}
+.fs-case div{display:flex;flex-direction:column}
+.fs-case div span{color:var(--muted)}
+.fs-case[data-closed]{opacity:.5}
+.fs-btn,.fs-next{background:var(--ink);color:var(--bg);border-radius:6px;padding:4px 10px;font-weight:500;transition:transform .12s}
+.fs-toasts{position:relative;height:44px}
+.fs-t{position:absolute;inset:auto 0 0 0;margin:auto;width:max-content;display:flex;gap:14px;align-items:center;background:var(--ink);color:var(--bg);border-radius:9px;padding:8px 12px;opacity:0;translate:0 10px;transition:all var(--asc-duration-slow) var(--asc-ease)}
+.fs-t[data-show]{opacity:1;translate:0 0}
+.fs-t b{text-decoration:underline;transition:transform .12s;display:inline-block}
+/* stepper */
+.fs-dots{display:flex;justify-content:space-between}
+.fs-dots span{display:flex;align-items:center;gap:5px;color:var(--dim)}
+.fs-dots i{font-style:normal;width:17px;height:17px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line2);font-size:9.5px;transition:all var(--asc-duration)}
+.fs-dots span[data-state="now"]{color:var(--ink)}
+.fs-dots span[data-state="now"] i{border-color:var(--ink)}
+.fs-dots span[data-state="done"] i{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.fs-progress{height:3px;background:var(--line);border-radius:3px;overflow:hidden}
+.fs-progress span{display:block;height:100%;background:var(--ink);transition:width .5s var(--asc-ease)}
+.fs-field{display:flex;flex-direction:column;gap:4px}
+.fs-next{align-self:flex-end}
+@media (prefers-reduced-motion:reduce){.fs *,.sc-cursor{transition:none!important;animation:none!important}}
+.ft-stage{height:252px}
+.fs-grid .fs-tr{padding:5px 9px}
+.fs-grid .fs-group{padding:3px 9px}
+.ft-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+.ft-tabs a{white-space:nowrap}
