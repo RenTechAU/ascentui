@@ -64,11 +64,12 @@ const item = (
 
 // ---------------------------------------------------------------- phase 1: core (40 free)
 
-/** Built-in motion that ships so far, inside the batch-1 components. */
+/** Built-in motion that ships so far, inside the components of batches 1 to 3. */
 const MOTION_STATUS: Record<string, Status> = {
   'Number count-up': 'built',
   'Skeleton shimmer': 'built',
   'Press and focus feedback': 'part-built',
+  'Overlay enter and exit': 'built',
 };
 
 const comp = (group: string, name: string, description: string, status: Status, origin: Origin) =>
@@ -103,9 +104,9 @@ const PHASE_1: CatalogItem[] = [
   comp('Forms', 'PIN Input', 'A short code, one box per digit.', 'built', 'new'),
 
   // Data and overlays (5)
-  comp('Data and overlays', 'Toaster', 'Brief messages that say what just happened.', 'planned', 'engine'),
-  comp('Data and overlays', 'Dialog + Drawer', 'A centred dialog and a side panel.', 'planned', 'mixed'),
-  comp('Data and overlays', 'Chart', 'Bars, lines, pie, sparkline and more from one component.', 'built', 'repo'),
+  comp('Data and overlays', 'Toaster', 'Brief messages that say what just happened, with Undo.', 'built', 'engine'),
+  comp('Data and overlays', 'Dialog + Drawer', 'A centred dialog and a side panel.', 'built', 'mixed'),
+  comp('Data and overlays', 'Chart', 'Bars, lines, areas, pie and donut, sparkline and meter from one component.', 'built', 'repo'),
   comp('Data and overlays', 'Data Table', 'A table with sorting, grouping, column choices and saved views.', 'built', 'repo'),
   comp('Data and overlays', 'Month Grid', 'A month calendar that shows items on each day.', 'built', 'repo'),
 

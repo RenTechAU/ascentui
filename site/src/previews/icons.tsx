@@ -14,3 +14,6 @@ export const Inbox = () => <I d="M3 13h5l1 3h6l1-3h5M5 5h14l2 8v6H3v-6z" />;
 export const Search = () => <I d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4" />;
 export const Mail = () => <I d="M4 6h16v12H4zM4 7l8 6 8-6" />;
 export const Scale = () => <I d="M6 20h12M12 4v16M5 8h14M5 8l-2 6a3 3 0 0 0 4 0zM19 8l-2 6a3 3 0 0 0 4 0z" />;
+export const Archive = () => <I d="M3 5h18v4H3zM5 9v10h14V9M10 13h4" />;
+export const Check = () => <I d="M5 12.5l4.5 4.5L19 7.5" />;
+export const Eye = () => <I d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />;
