@@ -2,6 +2,10 @@
 
 What changed, newest first. AscentUI is in pre-release: nothing is published to npm or a public registry yet.
 
+## 28 November 2026: free vs Pro, and the roadmap
+
+- Free vs Pro changed: the basics are free; eight power components are Pro (Data Grid, Chart, Month Grid, Upload, Command Menu, Stepper Form, Bottom Sheet, Pull to Refresh). The Data Table splits into a free Data Table and a Pro Data Grid.
+- New Roadmap page. Lifetime covers phases 1 to 5; the first 100 buyers also get the full business suite.
 ## 28 November 2026: batch 4, app frame and phone
 
 - **App Shell**: sidebar with an icon rail, top bar and account menu on a desk; a tab bar and a menu drawer on a phone. It switches by its own width, and works with any router.

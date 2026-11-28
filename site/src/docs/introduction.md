@@ -6,7 +6,7 @@ Most business software, on a desk or a phone, is the same loop repeated: sign in
 
 ## What is free and what is Pro
 
-The rule is short: **every component is free. Screens that work are Pro.**
+The rule is short: **the basics are free. Power pieces and screens that work are Pro.**
 
 | | Free (MIT) | Pro (one payment) |
 | --- | --- | --- |

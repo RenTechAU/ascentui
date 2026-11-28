@@ -37,11 +37,11 @@ export const PITCH: { title: string; body: string }[] = [
 export const PRICING_FAQ: { q: string; a: string; tbc?: boolean }[] = [
   {
     q: 'What am I buying?',
-    a: 'Lifetime access to every Pro item: screens that work and data blocks wired to data, each with a backend recipe your agent can follow. You get the source, in your own project, to keep and change. Pro items added in later phases are included.',
+    a: 'Lifetime access to every Pro item: the power components, screens that work and data blocks wired to data, each with a backend recipe your agent can follow. You get the source, in your own project, to keep and change. Pro items added in later phases are included.',
   },
   {
     q: 'What is free?',
-    a: 'Every component, the theme and the agent kit, under the MIT licence, plus two screens: Sign in and Dashboard. You do not need an account to use them.',
+    a: '24 components, the theme and the agent kit, under the MIT licence, plus two screens: Sign in and Dashboard. You do not need an account to use them. The power pieces (Data Grid, Chart, Month Grid, Upload, Command Menu, Stepper Form, Bottom Sheet, Pull to Refresh) are Pro.',
   },
   {
     q: 'Do I pay once?',
@@ -68,3 +68,8 @@ export const PRICING_FAQ: { q: string; a: string; tbc?: boolean }[] = [
 
 export const PRO_STATUS =
   'Pro is not on sale yet. It launches with the working loop (phase 2). The free items are in pre-release.';
+
+/** Customers shown in the "Used by" strip on the home page. Add one only with that customer's written OK.
+ *  `logo` is a path under site/public (SVG, single colour, it is tinted to match the theme); without it the
+ *  name is shown as text. While this is empty the strip is hidden; add ?preview-logos to the address to see it. */
+export const CUSTOMERS: { name: string; logo?: string; href?: string }[] = [];

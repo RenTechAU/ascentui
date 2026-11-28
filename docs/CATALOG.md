@@ -1,10 +1,10 @@
 # AscentUI catalog: what we ship, in what order, free vs Pro
 
-Version 3, 2026-11-28. Status: proposal for review. Sits beside `PLAN.md` (how we build) and
+Version 5, 2026-11-28. Status: proposal for review. Sits beside `PLAN.md` (how we build) and
 `AFFECTUI-RESEARCH.md` (how affectUI sells).
 
 Changes in version 3: the catalog is rebuilt around the 80/20 of what a coding agent needs (§4);
-every component is now free, including the app shell; phone components and phone versions of the
+every component was made free, including the app shell (version 5 makes eight power components Pro again, §2); phone components and phone versions of the
 core screens are added; an agent kit is a catalog layer of its own. Version 2 added phases, login
 screens, late illustration and motion, a late deployable app, and the backend recipe (§3).
 
@@ -18,14 +18,17 @@ Pricing: Individual USD 149 for the first 100 buyers then 299; Team (10 seats) U
 
 ## 2. The rule for free vs Pro
 
-> **Every component is free. Screens that work are Pro.**
+> **The basics are free. Power pieces and screens that work are Pro.**
 >
-> A screen, or a block wired to data, is Pro. No exceptions on either side, except two free showcase screens.
+> A screen, or a block wired to data, is Pro, except two free showcase screens. A component is free unless it is a
+> deal breaker: needed in every real business app, slow to get right, and visibly broken when an agent fakes it.
+> Eight pass that test: Data Grid, Chart, Month Grid, Upload, Command Menu, Stepper Form, Bottom Sheet, Pull to Refresh.
+> The hooks stay free on purpose (App Shell, Data Table, Combo Box, Toaster, Stat Card): agents install them first.
 
 | | Free (MIT) | Pro (one-time licence) |
 | --- | --- | --- |
 | Job | Get found, get installed, prove the quality | Be the reason to pay |
-| What it is | Every component, the theme, the agent kit, two showcase screens, some motion and illustration | Screens and data blocks, each with its backend recipe (§3); later the deployable app |
+| What it is | 24 basic components, the theme, the agent kit, two showcase screens, some motion and illustration | 8 power components; screens and data blocks, each with its backend recipe (§3); later the deployable app |
 | Buyer's saving | Minutes to hours | Days to weeks |
 
 Two screens are free on purpose: **Sign in** (every app needs one, so it gets installed) and
@@ -92,8 +95,8 @@ can build most of an app by repeating it. So the catalog leads with the loop, no
 What this changes in the catalog:
 
 - **The loop ships first and is the launch.** Phase 2 is renamed for it.
-- **Every component is free, including the App Shell.** The shell is item 1 on the list; charging
-  for it would cut adoption where it matters most. Pro is the wired screens.
+- **The App Shell is free.** The shell is item 1 on the list; charging for it would cut adoption where it
+  matters most. Pro is the eight power components and the wired screens (§2).
 - **Phone components join the core set:** Bottom Sheet, List Row, Pull to Refresh.
 - **Phone versions of the core screens** join phase 2: phone list and phone record.
 - **The agent kit is a layer of its own:** conventions guide, page recipes, `llms.txt`, MCP server.
@@ -104,18 +107,18 @@ What this changes in the catalog:
 
 | Phase | Theme | What ships | Free | Pro |
 | --- | --- | --- | --- | --- |
-| **1. Core** | The parts of the loop | Theme, 31 components (desk and phone), built-in motion, 2 layout blocks, agent kit, website and install | 40 | 0 |
+| **1. Core** | The parts of the loop | Theme, 32 components (24 free, 8 Pro; desk and phone), built-in motion, 2 layout blocks, agent kit, website and install | 33 | 8 |
 | **2. The working loop** | Sign in, list, record, form, states, on desk and phone | Sign-in and account screens, dashboard, admin basics, phone list and record, 6 data blocks | 2 | 18 |
 | **3. Business screens** | The reason people come | Dispatch, field app, CRM, quotes + payments, assets + warranty, 8 more blocks. **Pro launches, and the first-100 offer starts, when Dispatch and the field app are done** | 0 | 32 |
 | **4. Secondary** | Polish and reach | Illustrations, standalone motion, Brand Studio, AI activity screen | 11 | 9 |
 | **5. Deployable app** | The whole thing running | Reference server, 2 starter apps, one-command setup | 0 | 2 |
-| | | **Total: 114** | **53** | **61** |
+| | | **Total: 115** | **46** | **69** |
 
-At Pro launch (phase 2 plus Dispatch and the field app) the catalog is 73 items: 42 free, 31 Pro.
+At Pro launch (phase 2 plus Dispatch and the field app) the catalog is 74 items: 35 free, 39 Pro.
 The free tier goes public earlier, at the end of phase 1. Every Pro buyer gets later
 phases at no extra cost.
 
-## 6. Phase 1: core (all free)
+## 6. Phase 1: core (24 free components, 8 Pro)
 
 Status key: **Have** = in the AscentUI repo (PR #1). **ChillOps** = designed in the ChillOps
 prototype on affectUI components; needs our own components underneath. **Hutch** = exists in
@@ -224,7 +227,8 @@ because by then every contract has been proven by buyers on their own stacks.
 
 | | Free | Pro |
 | --- | --- | --- |
-| Theme, all 31 components, built-in motion, 2 layout blocks, agent kit | Yes | Yes |
+| Theme, 24 basic components, built-in motion, 2 layout blocks, agent kit | Yes | Yes |
+| 8 power components (Data Grid, Chart, Month Grid, Upload, Command Menu, Stepper Form, Bottom Sheet, Pull to Refresh) | | Yes |
 | Sign in and Dashboard screens | Yes | Yes |
 | 8 illustrations, 3 motion effects (phase 4) | Yes | Yes |
 | 12 more loop screens (desk and phone), 24 business screens | | Yes |
@@ -243,19 +247,55 @@ because by then every contract has been proven by buyers on their own stacks.
 | What Pro is | More interface | Interface plus the recipe to make it work |
 | Screens | 50, none free, front-end only | 40, two free, each with a backend recipe |
 | Illustration and motion | 38 items, 22 free | 18 standalone items, 11 free, in phase 4 |
-| Data Table, Combobox, Stat Card, Toaster, charts, App Shell | Pro | Free |
+| Data Table, Combobox, Stat Card, Toaster, App Shell | Pro | Free |
+| Data Grid (grouping, saved views), charts, calendar, upload, command menu | Pro | Pro |
 | Organised around | Breadth: a component for everything | The loop an agent repeats to build an app |
 | Whole deployable app | No | Phase 5 |
 
-## 13. Decisions and open questions
+## 13. Future phases: the full business suite (reserved)
+
+Decided 28 Nov 2026. AscentUI's long-term aim is that **a new business can set up its whole system by
+directing a coding agent**: a CRM like HubSpot, finance like Xero and field and operations
+management like an ERP, connected to its other software and to any AI model. This is reserved for
+phases after 5. Nothing here changes the launch or the counts in §5.
+
+**Target:** feature parity over time, built in order of demand, after the first 100 buyers.
+
+| Area | What it adds beyond phases 1–5 |
+| --- | --- |
+| **CRM** (HubSpot-like) | Activities and tasks, email and call logging, sequences, forms, segments, lead scoring |
+| **Finance** (Xero-like) | Bills, chart of accounts and journal, bank feeds and reconciliation, tax settings, P&L, balance sheet, aged receivables and payables, multi-currency |
+| **Operations** (ERP-like) | Inventory and stock locations, purchase orders, suppliers, capacity and scheduling, job costing |
+| **Integrations** | A connector framework (OAuth and secret storage, webhooks in and out, sync jobs with retries and logs), then connectors by demand: payments, accounting, email and calendar, messaging |
+| **AI and agents** | Any model through the Vercel AI SDK: hosted providers and self-hosted ones (Ollama, vLLM, anything OpenAI-compatible). An in-app assistant, agent runs, agentic workflows, and an approvals queue |
+| **Authorisations for agents** | Agents act only through scoped tools. Risky actions wait for a person's approval, every action is in the audit log, and everything is undoable |
+| **Admin** | Organisation settings, invites, roles and a permissions matrix, single sign-on, two-factor, sessions, audit log |
+| **Analytics** | Dashboard builder, report builder, saved metrics, scheduled exports |
+
+**How it will ship**
+
+- **Server kits.** Each module from here on ships real server code alongside its screens. Recipes
+  alone can't hold secrets, OAuth callbacks, webhooks or model calls. Supabase and Postgres come first.
+- **AI layer:** the Vercel AI SDK, so one interface covers 20+ hosted providers and any
+  OpenAI-compatible self-hosted model.
+- **Setup by agent.** A business app template plus a setup playbook the agent follows end to end:
+  accounts the owner creates, then auth, modules, brand and demo data wired by the agent.
+- **Compliance.** Payroll, e-invoicing and tax filing are regulated per country. They need specialist
+  review before they ship, and may stay out.
+
+## 14. Decisions and open questions
 
 Decided on 28 Nov 2026:
 
-- **Data Table is free.**
-- **App Shell is free.** Every component is free; watch free-to-paid conversion.
+- **Data Table splits** (28 Nov): a free Data Table (sort, paging, phone layout) and a Pro Data Grid (grouping, saved views, column choices, bulk actions, inline edit).
+- **App Shell is free.** Eight power components are Pro (§2); the rest are free. Watch free-to-paid conversion.
+- **Pro components ship from the paid registry, not the MIT `ui/` package.** Chart and Month Grid, built as MIT on a private branch, move before anything goes public.
 - **Sign in and Dashboard are the two free screens.**
 - **Pro launches with Dispatch and the field app,** not straight after phase 2.
 - **Payments: Stripe.**
+- **The full business suite** (CRM, finance, operations, integrations, AI and agents, admin, analytics) is reserved for phases after 5; see §13.
+- **Lifetime scope:** every licence covers phases 1–5. The first 100 buyers (the launch pool) also get the full suite for life; later buyers get it as a separate purchase, priced later. Public roadmap at `#roadmap`, target months shown as targets.
+- **AI layer:** Vercel AI SDK. **Server code:** shipped as server kits with each module from the suite onwards.
 
 Still open:
 

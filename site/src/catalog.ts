@@ -36,7 +36,7 @@ export interface CatalogItem {
 
 export const LAYERS: { id: Layer; label: string; blurb: string }[] = [
   { id: 'theme', label: 'Theme', blurb: 'One place to change the look.' },
-  { id: 'component', label: 'Components', blurb: 'Every component is free, on desk and phone.' },
+  { id: 'component', label: 'Components', blurb: 'The basics are free. The power pieces are Pro. On desk and phone.' },
   { id: 'motion', label: 'Motion', blurb: 'Built-in motion ships with the components. Standalone effects come later.' },
   { id: 'block', label: 'Blocks', blurb: 'Layout blocks are free. Blocks wired to data are Pro.' },
   { id: 'screen', label: 'Screens', blurb: 'Screens that work, each with a backend recipe. Two are free.' },
@@ -72,8 +72,8 @@ const MOTION_STATUS: Record<string, Status> = {
   'Overlay enter and exit': 'built',
 };
 
-const comp = (group: string, name: string, description: string, status: Status, origin: Origin) =>
-  item('component', 'free', 1, name, description, status, origin, { group });
+const comp = (group: string, name: string, description: string, status: Status, origin: Origin, tier: Tier = 'free') =>
+  item('component', tier, 1, name, description, status, origin, { group });
 
 const PHASE_1: CatalogItem[] = [
   item('theme', 'free', 1, 'Tokens + brand config',
@@ -103,23 +103,24 @@ const PHASE_1: CatalogItem[] = [
   comp('Forms', 'Number Input', 'A number, with steps and limits.', 'built', 'new'),
   comp('Forms', 'PIN Input', 'A short code, one box per digit.', 'built', 'new'),
 
-  // Data and overlays (5)
+  // Data and overlays (6)
   comp('Data and overlays', 'Toaster', 'Brief messages that say what just happened, with Undo.', 'built', 'engine'),
   comp('Data and overlays', 'Dialog + Drawer', 'A centred dialog and a side panel.', 'built', 'mixed'),
-  comp('Data and overlays', 'Chart', 'Bars, lines, areas, pie and donut, sparkline and meter from one component.', 'built', 'repo'),
-  comp('Data and overlays', 'Data Table', 'A table with sorting, grouping, column choices and saved views.', 'built', 'repo'),
-  comp('Data and overlays', 'Month Grid', 'A month calendar that shows items on each day.', 'built', 'repo'),
+  comp('Data and overlays', 'Chart', 'Bars, lines, areas, pie and donut, sparkline and meter from one component.', 'built', 'repo', 'pro'),
+  comp('Data and overlays', 'Data Table', 'A table with sorting, paging and a phone layout.', 'built', 'repo'),
+  comp('Data and overlays', 'Data Grid', 'The Data Table plus grouping, saved views, column choices, bulk actions and inline edit.', 'planned', 'repo', 'pro'),
+  comp('Data and overlays', 'Month Grid', 'A month calendar that shows items on each day.', 'built', 'repo', 'pro'),
 
   // App frame (4)
   comp('App frame', 'App Shell', 'Sidebar, top bar, phone tab bar and account menu.', 'built', 'prototype'),
-  comp('App frame', 'Command Menu', 'Search and jump to anything from the keyboard.', 'built', 'prototype'),
-  comp('App frame', 'Stepper Form', 'A long form split into steps.', 'built', 'prototype'),
-  comp('App frame', 'Upload', 'Choose or drop files, with progress.', 'built', 'engine'),
+  comp('App frame', 'Command Menu', 'Search and jump to anything from the keyboard.', 'built', 'prototype', 'pro'),
+  comp('App frame', 'Stepper Form', 'A long form split into steps.', 'built', 'prototype', 'pro'),
+  comp('App frame', 'Upload', 'Choose or drop files, with progress.', 'built', 'engine', 'pro'),
 
   // Phone (3)
-  comp('Phone', 'Bottom Sheet', 'A panel that slides up from the bottom of a phone screen.', 'built', 'engine'),
+  comp('Phone', 'Bottom Sheet', 'A panel that slides up from the bottom of a phone screen.', 'built', 'engine', 'pro'),
   comp('Phone', 'List Row', 'A touch-sized row for phone lists.', 'built', 'engine'),
-  comp('Phone', 'Pull to Refresh', 'Pull a list down to reload it.', 'built', 'engine'),
+  comp('Phone', 'Pull to Refresh', 'Pull a list down to reload it.', 'built', 'engine', 'pro'),
 
   // Built-in motion (5)
   ...([

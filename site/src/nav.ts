@@ -74,6 +74,7 @@ export const SEARCH: SearchItem[] = [
   ...DOCS.map((d): SearchItem => ({ href: `#docs-${d.id}`, label: d.title, kind: 'Docs' })),
   ...DS_PAGES.map((d): SearchItem => ({ href: `#ds-${d.id}`, label: d.title, kind: 'Design system', keywords: d.blurb })),
   { href: '#library', label: 'Library', kind: 'Page', keywords: 'catalog components screens blocks' },
+  { href: '#roadmap', label: 'Roadmap', kind: 'Page', keywords: 'plan future phases coming soon lifetime' },
   { href: '#pricing', label: 'Pricing', kind: 'Page', keywords: 'pro buy plans' },
   { href: '#licence', label: 'Licence', kind: 'Page', keywords: 'license terms' },
   { href: '#top', label: 'Home', kind: 'Page' },

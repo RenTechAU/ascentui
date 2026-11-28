@@ -64,8 +64,10 @@ function LiveCard({ item }: { item: CatalogItem }) {
         <p>{p.description}</p>
       </div>
       <div className="lc-foot">
-        <Badge tone="success">Free</Badge>
-        <CopyButton className="copy-btn lc-copy" text={installCommand(p.install)} label={`Copy the install command for ${item.name}`} />
+        <Badge tone={item.tier === 'free' ? 'success' : 'purple'}>{item.tier === 'free' ? 'Free' : 'Pro'}</Badge>
+        {item.tier === 'free' && (
+          <CopyButton className="copy-btn lc-copy" text={installCommand(p.install)} label={`Copy the install command for ${item.name}`} />
+        )}
       </div>
     </article>
   );
@@ -103,6 +105,22 @@ function Row({ item }: { item: CatalogItem }) {
 }
 
 type Built = 'all' | 'built' | 'planned';
+
+// Screens are shown by the app they build, as affectUI names its screens. Display only: catalog modules and slugs stay put.
+const APP_OF: Record<string, string> = {
+  CRM: 'CRM', Dispatch: 'Dispatch', 'Field app': 'Field app', Phone: 'Field app',
+  'Quotes + payments': 'Finance', 'Assets + warranty': 'Products and warranty',
+  'Sign-in and account': 'Admin', 'App basics': 'Admin', Brand: 'Admin', AI: 'AI',
+};
+const APP_ORDER = ['CRM', 'Dispatch', 'Field app', 'Finance', 'Products and warranty', 'Admin', 'AI'];
+function byApp(rows: CatalogItem[]) {
+  const groups = new Map<string, CatalogItem[]>();
+  for (const r of rows) {
+    const app = APP_OF[r.module ?? ''] ?? 'Other';
+    groups.set(app, [...(groups.get(app) ?? []), r]);
+  }
+  return [...groups].sort(([a], [b]) => (APP_ORDER.indexOf(a) + 99) % 99 - (APP_ORDER.indexOf(b) + 99) % 99);
+}
 const isBuilt = (i: CatalogItem) => i.status !== 'planned';
 
 export function Library({ items, section: fromRoute }: { items: CatalogItem[]; section: SectionId | null }) {
@@ -131,58 +149,42 @@ export function Library({ items, section: fromRoute }: { items: CatalogItem[]; s
         <div className="sec-head">
           <h1>Library</h1>
           <p>
-            Business components, screens and blocks. Every component is free; screens that work are Pro. {all.total} items
+            Business components, screens and blocks. The basic components are free; power pieces and screens that work are Pro. {all.total} items
             in the catalog, {builtCount} built so far.
           </p>
         </div>
 
-        <div className="lib-filters" role="group" aria-label="Filters">
-          <div className="lib-filter">
-            <span className="lib-filter-label" id="f-section">Section</span>
-            <SegmentedControl
-              aria-labelledby="f-section"
-              size="sm"
-              value={section}
-              onChange={pickSection}
-              options={[
-                { value: 'all', label: 'All', count: all.total },
-                ...SECTIONS.map((s) => ({ value: s.id, label: layerInfo(s.layer).label, count: items.filter((i) => i.layer === s.layer).length })),
-              ]}
-            />
-          </div>
-          <div className="lib-filter-row">
-            <div className="lib-filter">
-              <span className="lib-filter-label" id="f-tier">Tier</span>
+        <div className="lib-filters">
+          <nav className="lib-tabs" aria-label="Section">
+            {[{ id: 'all' as const, label: 'All', count: all.total }, ...SECTIONS.map((s) => ({ id: s.id, label: layerInfo(s.layer).label, count: items.filter((i) => i.layer === s.layer).length }))].map((t) => (
+              <button key={t.id} type="button" className="lib-tab" aria-pressed={section === t.id} onClick={() => pickSection(t.id)}>
+                {t.label} <small>{t.count}</small>
+              </button>
+            ))}
+          </nav>
+          <div className="lib-tools" role="group" aria-label="Filters">
+            <label className="lib-select">
+              <span>Tier</span>
+              <select value={tier} onChange={(e) => setTier(e.target.value as 'all' | Tier)}>
+                <option value="all">All</option>
+                <option value="free">Free ({countItems(inSection).free})</option>
+                <option value="pro">Pro ({countItems(inSection).pro})</option>
+              </select>
+            </label>
+            <label className="lib-select">
+              <span>Status</span>
+              <select value={built} onChange={(e) => setBuilt(e.target.value as Built)}>
+                <option value="all">All</option>
+                <option value="built">Built ({inSection.filter(isBuilt).length})</option>
+                <option value="planned">Planned ({inSection.filter((i) => !isBuilt(i)).length})</option>
+              </select>
+            </label>
+            <p className="lib-count" aria-live="polite">
+              {now.total} of {all.total} · {now.free} free · {now.pro} Pro
+            </p>
+            <div className="lib-view">
               <SegmentedControl
-                aria-labelledby="f-tier"
-                size="sm"
-                value={tier}
-                onChange={setTier}
-                options={[
-                  { value: 'all', label: 'All' },
-                  { value: 'free', label: 'Free', count: countItems(inSection).free },
-                  { value: 'pro', label: 'Pro', count: countItems(inSection).pro },
-                ]}
-              />
-            </div>
-            <div className="lib-filter">
-              <span className="lib-filter-label" id="f-built">Status</span>
-              <SegmentedControl
-                aria-labelledby="f-built"
-                size="sm"
-                value={built}
-                onChange={setBuilt}
-                options={[
-                  { value: 'all', label: 'All' },
-                  { value: 'built', label: 'Built', count: inSection.filter(isBuilt).length },
-                  { value: 'planned', label: 'Planned', count: inSection.filter((i) => !isBuilt(i)).length },
-                ]}
-              />
-            </div>
-            <div className="lib-filter lib-view">
-              <span className="lib-filter-label" id="f-view">View</span>
-              <SegmentedControl
-                aria-labelledby="f-view"
+                aria-label="View"
                 size="sm"
                 value={view}
                 onChange={setView}
@@ -192,9 +194,6 @@ export function Library({ items, section: fromRoute }: { items: CatalogItem[]; s
           </div>
         </div>
 
-        <p className="lib-count" aria-live="polite">
-          Showing {now.total} of {all.total}: {now.free} free, {now.pro} Pro
-        </p>
 
         {layers.map((layer) => {
           const rows = shown.filter((i) => i.layer === layer.id);
@@ -209,7 +208,16 @@ export function Library({ items, section: fromRoute }: { items: CatalogItem[]; s
                 <span>{c.total} {c.total === 1 ? 'item' : 'items'} · {c.free} free · {c.pro} Pro</span>
               </div>
               <p className="small">{layer.blurb}</p>
-              {view === 'grid' ? (
+              {layer.id === 'screen' ? (
+                byApp(rows).map(([app, list]) => (
+                  <div className="lib-app" key={app}>
+                    <h3>{app} <small>{list.length}</small></h3>
+                    {view === 'grid'
+                      ? <div className="lc-grid lc-grid-plan">{list.map((i) => previewBySlug(i.slug) ? <LiveCard key={i.slug} item={i} /> : <PlanCard key={i.slug} item={i} />)}</div>
+                      : <ul className="lib-list">{list.map((i) => <Row key={i.slug} item={i} />)}</ul>}
+                  </div>
+                ))
+              ) : view === 'grid' ? (
                 <>
                   {live.length > 0 && <div className="lc-grid">{live.map((i) => <LiveCard key={i.slug} item={i} />)}</div>}
                   {rest.length > 0 && <div className="lc-grid lc-grid-plan">{rest.map((i) => <PlanCard key={i.slug} item={i} />)}</div>}
