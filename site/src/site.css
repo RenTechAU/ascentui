@@ -559,15 +559,46 @@ a.sb-link:hover,button.sb-link:hover{background:var(--accent-soft);color:var(--i
 @keyframes ub-roll{to{transform:translateX(-50%)}}
 @media (prefers-reduced-motion:reduce){.ub-track{animation:none;flex-wrap:wrap;width:auto;justify-content:center}.ub-set[aria-hidden]{display:none}.ub-view{-webkit-mask-image:none;mask-image:none}}
 
-/* ---- Hero sync: the cursor taps Arrived, the desk row follows ---- */
-.sc-next{position:relative}
-.sc-cta{transition:transform var(--asc-duration) var(--asc-ease),background var(--asc-duration)}
-.sc-cta[data-press]{transform:scale(.96)}
-.sc-cursor{position:absolute;right:-6px;bottom:-26px;opacity:0;transition:right .8s var(--asc-ease),bottom .8s var(--asc-ease),opacity .3s,transform .15s;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))}
-.sc-cursor[data-at="cta"]{right:42%;bottom:14px;opacity:1}
+/* ---- Hero flow: open a case in the record panel, send it, it lands on the phone ---- */
+@media (max-width:1179px){.sc-desk{position:relative}}
+.sc-app{transition:grid-template-columns var(--asc-duration-slow) var(--asc-ease);grid-template-columns:132px minmax(0,1fr) 0}
+.sc-app[data-panel]{grid-template-columns:132px minmax(0,1fr) 220px}
+.sc-app[data-panel] .sc-who{display:none}
+.sc-app[data-panel] .sc-row{grid-template-columns:64px minmax(0,1fr) 24px 88px}
+.sc-head em{font-style:normal;color:var(--dim);font-weight:400}
+.sc-row{transition:background .3s,transform .12s}
+.sc-row[data-open]{background:var(--accent-soft);box-shadow:inset 2px 0 0 var(--ink)}
+.sc-row[data-press]{transform:scale(.985)}
+.sc-panel{min-width:0;overflow:hidden;border-left:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column}
+.sc-panel-head{display:flex;justify-content:space-between;align-items:center;gap:8px;height:40px;padding:0 12px;border-bottom:1px solid var(--line);white-space:nowrap;color:var(--ink)}
+.sc-panel-head span{color:var(--dim);font-size:14px}
+.sc-panel-body{display:flex;flex-direction:column;gap:10px;padding:12px;min-width:196px}
+.sc-tags{display:flex;gap:6px}
+.sc-dl{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;margin:0}
+.sc-dl dt{color:var(--dim)}
+.sc-dl dd{margin:0;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sc-field{display:flex;flex-direction:column;gap:3px}
+.sc-field small{color:var(--dim);font-size:11px}
+.sc-field div{height:28px;display:flex;align-items:center;padding:0 8px;border:1px solid var(--line2);border-radius:6px;color:var(--ink);transition:box-shadow var(--asc-duration)}
+.sc-field[data-focus] div{box-shadow:0 0 0 2px var(--aui-focus)}
+.sc-ph{color:var(--dim)}
+.sc-send{text-align:center;padding:7px;border-radius:6px;background:var(--accent-soft);color:var(--dim);font-weight:500;transition:background var(--asc-duration),color var(--asc-duration),transform .12s}
+.sc-send[data-ready]{background:var(--ink);color:var(--bg)}
+.sc-send[data-press]{transform:scale(.96)}
+.sc-toast{position:absolute;right:14px;bottom:14px;background:var(--ink);color:var(--bg);border-radius:8px;padding:7px 12px;font-weight:500;opacity:0;translate:0 8px;transition:opacity var(--asc-duration-slow),translate var(--asc-duration-slow) var(--asc-ease)}
+.sc-toast[data-show]{opacity:1;translate:0 0}
+.sc-cursor{position:absolute;z-index:5;transition:left .8s var(--asc-ease),top .8s var(--asc-ease),opacity .3s,transform .12s;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))}
 .sc-cursor[data-press]{transform:scale(.85)}
-.sc-row{transition:background .6s}
-.sc-row[data-flash]{background:color-mix(in srgb,var(--asc-success) 14%,transparent)}
+.sc-new{animation:sc-new .5s var(--asc-ease)}
+.sc-new{background:color-mix(in srgb,var(--asc-success) 10%,transparent);margin:0 -12px;padding:0 12px}
+@keyframes sc-new{from{opacity:0;translate:0 -10px}}
+.sc-push{position:absolute;left:10px;right:10px;top:34px;z-index:3;display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,var(--bg2) 88%,transparent);backdrop-filter:blur(8px);border:1px solid var(--line2);box-shadow:0 10px 30px -12px rgba(0,0,0,.6);opacity:0;translate:0 -16px;transition:opacity .35s,translate .35s var(--asc-ease)}
+.sc-push[data-show]{opacity:1;translate:0 0;animation:sc-push-hide 0s 1.8s forwards}
+.sc-push b{color:var(--ink)}
+.sc-push span{color:var(--muted)}
+@keyframes sc-push-hide{to{opacity:0;translate:0 -16px}}
+@media (max-width:700px){.sc-app,.sc-app[data-panel]{grid-template-columns:minmax(0,1fr) 0}.sc-app[data-panel]{grid-template-columns:minmax(0,1fr) 190px}.sc-app[data-panel] .sc-row{grid-template-columns:minmax(0,1fr) 22px 80px}.sc-app[data-panel] .sc-row code{display:none}}
+@media (prefers-reduced-motion:reduce){.sc-app,.sc-cursor,.sc-push,.sc-toast{transition:none!important;animation:none!important}}
 
 /* ---- See it work: six components playing what they do ---- */
 .ft-tabs{display:flex;flex-wrap:wrap;gap:4px 20px;border-bottom:1px solid var(--line);margin-bottom:20px}

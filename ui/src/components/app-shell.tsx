@@ -7,12 +7,15 @@
  * It switches by its own width, not the window's, so it also works inside a preview or a panel.
  * Router-agnostic: links take an href (and any link component, such as Next's), or an onSelect.
  * You say which item is current; the shell marks it for sight and for screen readers.
+ * The record panel: pass `panel` and the record opens docked on the right of the screen, beside the
+ * list it came from, resizable, closed with × or Escape. On a phone it opens full screen over the
+ * list, with Back; the list stays mounted, so its scroll position is kept.
  * AccountMenu is the usual account slot: an avatar that opens a menu.
  * Built from IconButton, Drawer, Avatar and MenuButton. Reads the shared theme (@ascentui/tokens).
  */
 import {
   useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties, type ElementType, type FocusEvent,
-  type MouseEvent, type PointerEvent, type ReactNode,
+  type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode,
 } from "react";
 import { Avatar } from "./avatar";
 import { Drawer } from "./dialog";
@@ -30,6 +33,10 @@ ${s} .asc-shell__menu{display:inline-flex}
 ${s} .asc-shell__tabs{display:grid}
 ${s} .asc-shell__top{padding-left:var(--asc-space-8)}
 ${s} .asc-shell__main{padding:var(--asc-space-16) var(--asc-space-12)}
+${s} .asc-shell__grip{display:none}
+${s} .asc-shell__panel{position:absolute;inset:0;z-index:40;width:auto;border-left:0;animation-name:asc-shell-page-in}
+${s} .asc-shell__panel-close{display:none}
+${s} .asc-shell__panel-back{display:inline-flex}
 `;
 
 const css = `@layer asc {
@@ -72,6 +79,25 @@ const css = `@layer asc {
 .asc-shell__actions:empty,.asc-shell__search:empty{display:none}
 .asc-shell__main{flex:1;min-height:0;overflow-y:auto;overscroll-behavior-y:contain;box-sizing:border-box;padding:var(--asc-space-24)}
 .asc-shell__main:focus{outline:none}
+.asc-shell__work{position:relative;display:flex;flex:1;min-height:0;min-width:0}
+.asc-shell__panel[data-over]{position:absolute;top:0;right:0;bottom:0;z-index:30;box-shadow:var(--asc-shadow-pop)}
+.asc-shell__grip[data-over]{display:none}
+.asc-shell__work>.asc-shell__main{flex:1;min-width:0}
+.asc-shell__grip{position:relative;flex:none;width:9px;margin:0 -4px;z-index:2;cursor:col-resize;touch-action:none;outline:none}
+.asc-shell__grip::after{content:"";position:absolute;inset:0 4px;background:transparent;transition:background var(--asc-duration)}
+.asc-shell__grip:hover::after,.asc-shell__grip[data-dragging]::after{background:var(--asc-border-strong)}
+.asc-shell__grip:focus-visible::after{inset:0 3px;background:var(--asc-focus)}
+.asc-shell__panel{display:flex;flex-direction:column;flex:none;box-sizing:border-box;width:var(--pw);border-left:1px solid var(--asc-border);max-width:100%;min-height:0;background:var(--asc-surface);animation:asc-shell-panel-in var(--asc-duration-slow) var(--asc-ease)}
+.asc-shell__panel-head{display:flex;align-items:center;gap:var(--asc-space-8);box-sizing:border-box;flex:none;height:calc(var(--asc-control-lg) + var(--asc-space-16));padding:0 var(--asc-space-8) 0 var(--asc-space-16);border-bottom:1px solid var(--asc-border)}
+.asc-shell__panel-title{flex:1;min-width:0;margin:0;overflow:hidden;font:600 var(--asc-text-sm)/var(--asc-leading-sm) var(--asc-font);white-space:nowrap;text-overflow:ellipsis}
+.asc-shell__panel-title:focus{outline:none}
+.asc-shell__panel-title:focus-visible{outline:2px solid var(--asc-focus);outline-offset:2px;border-radius:var(--asc-radius-sm)}
+.asc-shell__panel-back{display:none;align-items:center;gap:var(--asc-space-4);flex:none;min-height:var(--asc-control-md);margin-left:calc(var(--asc-space-8) * -1);padding:0 var(--asc-space-8);border:0;border-radius:var(--asc-radius);background:none;color:var(--asc-ink);font:500 var(--asc-text-sm)/var(--asc-leading-sm) var(--asc-font);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.asc-shell__panel-back svg{width:16px;height:16px}
+.asc-shell__panel-back:focus-visible{outline:2px solid var(--asc-focus);outline-offset:-2px}
+.asc-shell__panel-body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior-y:contain;box-sizing:border-box;padding:var(--asc-space-16)}
+@keyframes asc-shell-panel-in{from{opacity:0;translate:var(--asc-space-16) 0}}
+@keyframes asc-shell-page-in{from{translate:100% 0}}
 .asc-shell__tabs{display:none;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);flex:none;margin:0;padding:0 var(--asc-space-4) env(safe-area-inset-bottom);list-style:none;border-top:1px solid var(--asc-border);background:var(--asc-surface)}
 .asc-shell__tab{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--asc-space-2);box-sizing:border-box;width:100%;min-height:calc(var(--asc-control-md) + var(--asc-space-16));padding:var(--asc-space-6) var(--asc-space-2);border:0;background:none;color:var(--asc-muted);font:500 var(--asc-text-xs)/var(--asc-leading-xs) var(--asc-font);text-decoration:none;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color var(--asc-duration)}
 .asc-shell__tab svg{width:20px;height:20px}
@@ -130,6 +156,9 @@ export type AppShellLabels = {
   collapse: string;
   expand: string;
   content: string;
+  closePanel: string;
+  back: string;
+  resize: string;
 };
 
 const LABELS: AppShellLabels = {
@@ -141,6 +170,9 @@ const LABELS: AppShellLabels = {
   collapse: "Collapse sidebar",
   expand: "Expand sidebar",
   content: "Content",
+  closePanel: "Close",
+  back: "Back",
+  resize: "Resize panel",
 };
 
 export type AppShellProps = {
@@ -174,6 +206,16 @@ export type AppShellProps = {
   onCollapsedChange?: (collapsed: boolean) => void;
   /** Opt in to remembering the rail choice in this browser, under this key */
   storageKey?: string;
+  /** A record, docked on the right beside the screen (full screen on a phone). Leave out to close it */
+  panel?: ReactNode;
+  /** The panel's heading, e.g. "CASE-1042 · Harbour Flats" */
+  panelTitle?: ReactNode;
+  /** What the panel shows, e.g. the record's id. When it changes, focus moves to the panel's heading */
+  panelId?: string;
+  /** Runs on ×, Back or Escape. Close the panel here, e.g. by leaving the record's address */
+  onPanelClose?: () => void;
+  /** The panel's width in px on a desk. It can be dragged, or resized with the arrow keys, between min and max */
+  panelWidth?: { default?: number; min?: number; max?: number };
   /** auto picks by the shell's own width (phone under 640px). desk or phone forces one */
   layout?: "auto" | "desk" | "phone";
   /** The element links render as, such as Next's Link. Gets href, className, aria-current and children */
@@ -196,6 +238,8 @@ const Svg = ({ d }: { d: string }) => (
 const MENU = "M2.5 4.5h11M2.5 8h11M2.5 11.5h11";
 const PANEL = "M2.5 3h11v10h-11zM6 3v10";
 const MORE = "M3.5 8h.01M8 8h.01M12.5 8h.01";
+const CLOSE = "M4 4l8 8M12 4l-8 8";
+const BACK = "M10 3L5 8l5 5";
 
 const nf = new Intl.NumberFormat();
 const countText = (n: number) => (n > 99 ? `${nf.format(99)}+` : nf.format(n));
@@ -268,7 +312,7 @@ function NavLink({ item, active, kind, Link, onChosen, tip }: LinkProps) {
 export function AppShell({
   brand, brandMark, nav, current, isActive, tabs, title, search, actions, account, sidebarFooter, children,
   collapsed, defaultCollapsed = false, onCollapsedChange, storageKey, layout = "auto", linkComponent = "a",
-  landmarks = true, labels: labelsIn, className, style,
+  landmarks = true, labels: labelsIn, className, style, panel, panelTitle, panelId, onPanelClose, panelWidth,
 }: AppShellProps) {
   const labels = { ...LABELS, ...labelsIn };
   const id = useId();
@@ -279,6 +323,66 @@ export function AppShell({
   const [inner, setInner] = useState(defaultCollapsed);
   const rail = collapsed ?? inner;
   const [tip, setTip] = useState<{ label: string; x: number; y: number } | null>(null);
+  const [narrow, setNarrow] = useState(layout === "phone");
+  const isPhone = layout === "phone" || (layout === "auto" && narrow);
+  const pw = { default: 440, min: 360, max: 640, ...panelWidth };
+  const [width, setWidth] = useState(pw.default);
+  const panelHead = useRef<HTMLHeadingElement>(null);
+  const opener = useRef<HTMLElement | null>(null);
+  const drag = useRef<{ x: number; w: number } | null>(null);
+  const [dragging, setDragging] = useState(false);
+  const open = panel != null;
+  // When docking would leave the screen narrower than this, the panel floats over it instead
+  const MIN_SCREEN = 320;
+  const work = useRef<HTMLDivElement>(null);
+  const [room, setRoom] = useState(Infinity);
+  useEffect(() => {
+    const el = work.current;
+    if (!el || typeof ResizeObserver !== "function") return;
+    const ro = new ResizeObserver(() => setRoom(el.clientWidth));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  const clamp = (w: number) => Math.round(Math.min(pw.max, Math.max(pw.min, w)));
+
+  // The remembered panel width, like the rail
+  useLayoutEffect(() => {
+    if (!storageKey) return;
+    try {
+      const v = Number(localStorage.getItem(`${storageKey}:panel`));
+      if (v) setWidth(clamp(v));
+    } catch {
+      /* not available: the default width is used */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storageKey]);
+  const keepWidth = (w: number) => {
+    setWidth(w);
+    if (storageKey)
+      try {
+        localStorage.setItem(`${storageKey}:panel`, String(w));
+      } catch {
+        /* private mode: this visit only */
+      }
+  };
+
+  // Opening (or showing another record) moves focus to the panel's heading; closing returns it to
+  // whatever opened the panel, if that is still on the page and focus would otherwise be lost
+  useEffect(() => {
+    if (!open) return;
+    if (!panelHead.current?.contains(document.activeElement)) {
+      const from = document.activeElement as HTMLElement | null;
+      if (from && from !== document.body && !from.closest(".asc-shell__panel")) opener.current = from;
+      panelHead.current?.focus({ preventScroll: true });
+    }
+  }, [open, panelId]);
+  useEffect(() => {
+    if (open) return;
+    const back = opener.current;
+    opener.current = null;
+    const lost = document.activeElement === document.body || document.activeElement == null;
+    if (back?.isConnected && lost) back.focus({ preventScroll: true });
+  }, [open]);
 
   // The remembered rail choice is read after the first paint, so server and browser agree
   useLayoutEffect(() => {
@@ -299,6 +403,7 @@ export function AppShell({
     if (!el || typeof ResizeObserver !== "function") return;
     const ro = new ResizeObserver(() => {
       if (layout !== "phone" && el.clientWidth >= PHONE) setDrawer(false);
+      setNarrow(el.clientWidth < PHONE);
     });
     ro.observe(el);
     return () => ro.disconnect();
@@ -350,6 +455,30 @@ export function AppShell({
       </div>
     ));
 
+  const onGripKey = (e: KeyboardEvent<HTMLDivElement>) => {
+    const step = e.shiftKey ? 64 : 16;
+    const next =
+      e.key === "ArrowLeft" ? width + step : e.key === "ArrowRight" ? width - step : e.key === "Home" ? pw.max : e.key === "End" ? pw.min : null;
+    if (next == null) return;
+    e.preventDefault();
+    keepWidth(clamp(next));
+  };
+  const onGripDown = (e: PointerEvent<HTMLDivElement>) => {
+    if (e.button !== 0) return;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    drag.current = { x: e.clientX, w: width };
+    setDragging(true);
+  };
+  const onGripMove = (e: PointerEvent<HTMLDivElement>) => {
+    if (drag.current) setWidth(clamp(drag.current.w - (e.clientX - drag.current.x)));
+  };
+  const onGripUp = () => {
+    if (!drag.current) return;
+    drag.current = null;
+    setDragging(false);
+    keepWidth(width);
+  };
+
   const Nav = landmarks ? "nav" : "div";
   const Header = landmarks ? "header" : "div";
   const Main = landmarks ? "main" : "div";
@@ -395,19 +524,69 @@ export function AppShell({
               <div className="asc-shell__actions">{actions}</div>
               {account}
             </Header>
-            <Main
-              ref={(n: HTMLElement | null) => {
-                mainRef.current = n;
-              }}
-              id={`${id}-main`}
-              className="asc-shell__main"
-              tabIndex={-1}
-              role={landmarks ? undefined : "region"}
-              aria-label={landmarks ? undefined : labels.content}
-            >
-              {children}
-            </Main>
-            <Nav className="asc-shell__tabs" aria-label={labels.tabs} role={landmarks ? undefined : "navigation"}>
+            <div className="asc-shell__work" ref={work}>
+              <Main
+                ref={(n: HTMLElement | null) => {
+                  mainRef.current = n;
+                }}
+                id={`${id}-main`}
+                className="asc-shell__main"
+                tabIndex={-1}
+                role={landmarks ? undefined : "region"}
+                aria-label={landmarks ? undefined : labels.content}
+                inert={(open && isPhone) || undefined}
+              >
+                {children}
+              </Main>
+              {open && (
+                <>
+                  <div
+                    className="asc-shell__grip"
+                    role="separator"
+                    aria-orientation="vertical"
+                    aria-label={labels.resize}
+                    aria-controls={`${id}-panel`}
+                    aria-valuenow={width}
+                    aria-valuemin={pw.min}
+                    aria-valuemax={pw.max}
+                    tabIndex={0}
+                    data-dragging={dragging || undefined}
+                    data-over={room - width < MIN_SCREEN || undefined}
+                    onKeyDown={onGripKey}
+                    onPointerDown={onGripDown}
+                    onPointerMove={onGripMove}
+                    onPointerUp={onGripUp}
+                    onPointerCancel={onGripUp}
+                  />
+                  <section
+                    id={`${id}-panel`}
+                    className="asc-shell__panel"
+                    style={{ "--pw": `${Math.min(width, room)}px` } as CSSProperties}
+                    data-over={(!isPhone && room - width < MIN_SCREEN) || undefined}
+                    aria-labelledby={`${id}-panel-title`}
+                    onKeyDown={(e) => {
+                      if (e.key === "Escape" && !e.defaultPrevented && onPanelClose) {
+                        e.preventDefault();
+                        onPanelClose();
+                      }
+                    }}
+                  >
+                    <div className="asc-shell__panel-head">
+                      <button type="button" className="asc-shell__panel-back" onClick={onPanelClose}>
+                        <Svg d={BACK} />
+                        {labels.back}
+                      </button>
+                      <h2 ref={panelHead} id={`${id}-panel-title`} className="asc-shell__panel-title" tabIndex={-1}>{panelTitle}</h2>
+                      {onPanelClose && (
+                        <IconButton className="asc-shell__panel-close" icon={<Svg d={CLOSE} />} label={labels.closePanel} onClick={onPanelClose} />
+                      )}
+                    </div>
+                    <div className="asc-shell__panel-body">{panel}</div>
+                  </section>
+                </>
+              )}
+            </div>
+            <Nav inert={(open && isPhone) || undefined} className="asc-shell__tabs" aria-label={labels.tabs} role={landmarks ? undefined : "navigation"}>
               {tabItems.map((item) => (
                 <NavLink key={item.id} item={item} active={activeOf(item)} kind="tab" Link={linkComponent} />
               ))}

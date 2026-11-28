@@ -3,7 +3,8 @@
  * BottomSheet: a panel that slides up from the bottom of a phone screen, for a quick action or a
  * short form without leaving the page. Drag the handle down to dismiss it; a quick flick is
  * enough. Give it snapPoints to let it rest half open and pull up to full height.
- * On a desk it falls back to a centred dialog, unless mode="sheet".
+ * In a wide space it falls back to a centred dialog, unless mode="sheet". It goes by the width of the
+ * space it is placed in, not the window's, like App Shell: inside a narrow panel or a phone frame it is a sheet.
  * It is the kit's Dialog underneath, so the page behind is out of reach, Escape and the ×
  * button close it, and focus goes back to the button that opened it. It keeps clear of the
  * phone's home bar and notch.
@@ -12,7 +13,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import { Dialog, type DialogProps } from "@ascentui/ui/components/dialog";
 
-// The sheet rules, written once and used twice: on phones in auto mode, and always in sheet mode
+// The sheet rules, written once and used twice: in a narrow space in auto mode, and always in sheet mode
 const sheet = (s: string) => `
 ${s}.asc-dlg{--w:640px;inset:auto 0 0 0;width:min(var(--w),100%);max-height:calc(100dvh - max(var(--asc-space-24),env(safe-area-inset-top)));margin:0 auto;border-radius:var(--asc-radius-lg) var(--asc-radius-lg) 0 0;translate:0 0}
 ${s}.asc-dlg[open]{animation-name:asc-sheet-in}
@@ -33,7 +34,7 @@ const css = `@layer asc {
 .asc-sheet__grip:focus-visible{outline:2px solid var(--asc-focus);outline-offset:-2px;border-radius:var(--asc-radius)}
 .asc-sheet__bar{display:block;width:36px;height:4px;border-radius:var(--asc-radius-full);background:var(--asc-border-strong)}
 .asc-sheet .asc-dlg__head{touch-action:none}
-@media (max-width:640px){${sheet(".asc-sheet--auto")}}
+${sheet(".asc-sheet--narrow")}
 ${sheet(".asc-sheet--sheet")}
 @keyframes asc-sheet-in{from{transform:translateY(100%)}}
 @keyframes asc-sheet-out{to{transform:translateY(100%)}}
@@ -45,7 +46,7 @@ export type BottomSheetProps = Omit<DialogProps, "kind" | "before"> & {
   snapPoints?: number[];
   /** Which snap point it opens at, by index. Defaults to the smallest */
   defaultSnap?: number;
-  /** auto: a sheet on phones (640px wide or less) and a centred dialog on desks. sheet: always a sheet */
+  /** auto: a sheet when the space it is placed in is 640px wide or less, a centred dialog when wider. sheet: always a sheet */
   mode?: "auto" | "sheet";
   /** Words for the handle, when it has snap points */
   expandLabel?: string;
@@ -60,6 +61,20 @@ export function BottomSheet({
   expandLabel = "Expand", collapseLabel = "Collapse", ...rest
 }: BottomSheetProps) {
   const grip = useRef<HTMLElement | null>(null);
+  const anchor = useRef<HTMLSpanElement>(null);
+  const [narrow, setNarrow] = useState(false);
+
+  // Measure the space the sheet is placed in (its parent), not the window
+  useLayoutEffect(() => {
+    if (mode !== "auto") return;
+    const space = anchor.current?.parentElement;
+    const measure = () => setNarrow((space?.clientWidth || window.innerWidth) <= 640);
+    measure();
+    if (!space || typeof ResizeObserver !== "function") return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(space);
+    return () => ro.disconnect();
+  }, [mode]);
   const snaps = snapPoints?.length ? [...snapPoints].sort((a, b) => a - b) : null;
   const [snap, setSnap] = useState(defaultSnap);
   const at = snaps ? Math.min(Math.max(snap, 0), snaps.length - 1) : 0;
@@ -227,6 +242,7 @@ export function BottomSheet({
   return (
     <>
       <style href="asc-bottom-sheet" precedence="asc">{css}</style>
+      <span ref={anchor} hidden />
       <Dialog
         {...rest}
         open={open}
@@ -240,7 +256,7 @@ export function BottomSheet({
           onClosed?.();
         }}
         before={handle}
-        className={["asc-sheet", `asc-sheet--${mode}`, className].filter(Boolean).join(" ")}
+        className={["asc-sheet", `asc-sheet--${mode}`, mode === "auto" && narrow && "asc-sheet--narrow", className].filter(Boolean).join(" ")}
       />
     </>
   );

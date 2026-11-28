@@ -140,15 +140,63 @@ function shellNav(go: (p: Page) => void): ShellGroup[] {
   ];
 }
 
-function ShellPage({ page }: { page: Page }) {
+/** The record panel's content: what a case needs on one screen, with the next step for its stage */
+function CaseRecord({ v, onChange, onArchive }: { v: Visit; onChange: (v: Visit) => void; onArchive: () => void }) {
+  const [tech, setTech] = useState(v.status === 'Open' ? '' : v.tech);
+  const dl = { display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '6px 16px', margin: 0 } as const;
+  const dt = { color: 'var(--asc-muted)' } as const;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div style={row}>
+        <Badge tone={TONE[v.status]} dot>{v.status}</Badge>
+        <Badge>{v.job.includes('service') ? 'Service' : 'Repair'}</Badge>
+      </div>
+      <dl style={dl}>
+        <dt style={dt}>Customer</dt><dd style={{ margin: 0 }}>{v.customer}</dd>
+        <dt style={dt}>Address</dt><dd style={{ margin: 0 }}>{v.address}</dd>
+        <dt style={dt}>Job</dt><dd style={{ margin: 0 }}>{v.job}</dd>
+        <dt style={dt}>Visit</dt><dd style={{ margin: 0 }}>{v.status === 'Open' ? 'Not booked' : timeFmt.format(v.start)}</dd>
+      </dl>
+      <Select
+        size="sm"
+        label="Stage"
+        value={v.status}
+        onChange={(e) => {
+          onChange({ ...v, status: e.target.value as Status });
+          toast(`Moved to ${e.target.value}`);
+        }}
+        options={(Object.keys(TONE) as Status[]).map((x) => ({ value: x, label: x }))}
+      />
+      {v.status === 'Open' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingTop: 12, borderTop: '1px solid var(--asc-border)' }}>
+          <Select size="sm" label="Technician" placeholder="Who is going?" value={tech} onChange={(e) => setTech(e.target.value)} options={TECHS.map((t) => ({ value: t, label: t }))} />
+          <Button
+            disabled={!tech}
+            onClick={() => {
+              onChange({ ...v, tech, status: 'Scheduled' });
+              toast.success(`${v.id} sent to ${tech.split(' ')[0]}`, { description: 'It is on their phone now.' });
+            }}
+          >
+            {tech ? `Send to ${tech.split(' ')[0]}` : 'Pick a technician first'}
+          </Button>
+        </div>
+      )}
+      <div style={{ paddingTop: 12, borderTop: '1px solid var(--asc-border)' }}>
+        <Button variant="ghost" size="sm" icon={<S d={IC.archive} />} onClick={onArchive}>Archive case</Button>
+      </div>
+    </div>
+  );
+}
+
+function ShellPage({ page, cases, openId, onOpen }: { page: Page; cases: Visit[]; openId: string | null; onOpen: (id: string) => void }) {
   const h = { margin: '0 0 4px', font: '600 var(--asc-text-xl)/var(--asc-leading-xl) var(--asc-font)' } as const;
   if (page === 'cases' || page === 'schedule') {
-    const list = page === 'cases' ? VISITS.slice(0, 6) : VISITS.filter((v) => isToday(v.start)).sort((a, b) => a.start - b.start);
+    const list = page === 'cases' ? cases : VISITS.filter((v) => isToday(v.start)).sort((a, b) => a.start - b.start);
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16, maxWidth: 720 }}>
         <div>
           <h2 style={h}>{PAGES[page]}</h2>
-          <p style={{ ...note, fontSize: 'var(--asc-text-sm)' }}>{page === 'cases' ? '3 cases have no technician yet.' : dayFmt.format(new Date())}</p>
+          <p style={{ ...note, fontSize: 'var(--asc-text-sm)' }}>{page === 'cases' ? 'Open a case to see it beside the list.' : dayFmt.format(new Date())}</p>
         </div>
         <List variant="card" aria-label={PAGES[page]}>
           {list.map((v) => (
@@ -158,7 +206,8 @@ function ShellPage({ page }: { page: Page }) {
               title={page === 'cases' ? v.job : v.customer}
               description={page === 'cases' ? `${v.id} · ${v.customer}` : `${timeFmt.format(v.start)} · ${v.job}`}
               trailing={<Badge tone={TONE[v.status]}>{v.status}</Badge>}
-              onClick={() => toast(`${v.id} opened`, { description: v.customer })}
+              selected={page === 'cases' && v.id === openId}
+              onClick={() => (page === 'cases' ? onOpen(v.id) : toast(`${v.id} opened`, { description: v.customer }))}
             />
           ))}
         </List>
@@ -199,7 +248,17 @@ function AppShellDemo() {
   const [page, setPage] = useState<Page>('cases');
   const [size, setSize] = useState<'desk' | 'phone'>('desk');
   const [search, setSearch] = useState(false);
-  const nav = useMemo(() => shellNav(setPage), []);
+  const [cases, setCases] = useState<Visit[]>(() => VISITS.slice(0, 6));
+  const [openId, setOpenId] = useState<string | null>(null);
+  const nav = useMemo(() => shellNav((p) => (setPage(p), setOpenId(null))), []);
+  const opened = page === 'cases' ? cases.find((c) => c.id === openId) : undefined;
+  const update = (v: Visit) => setCases((all) => all.map((c) => (c.id === v.id ? v : c)));
+  const archive = (v: Visit) => {
+    const before = cases;
+    setOpenId(null);
+    setCases((all) => all.filter((c) => c.id !== v.id));
+    toast(`${v.id} archived`, { action: { label: 'Undo', onClick: () => setCases(before) } });
+  };
   const commands: Command[] = useMemo(
     () => [
       ...(Object.keys(PAGES) as Page[]).map((p) => ({ id: `go-${p}`, label: PAGES[p], group: 'Go to', icon: <S d={IC[p]} />, onSelect: () => setPage(p) })),
@@ -226,7 +285,11 @@ function AppShellDemo() {
           brandMark={<Logo />}
           nav={nav}
           current={page}
-          title={<span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{PAGES[page]}</span>}
+          title={<span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{opened ? `${PAGES[page]} / ${opened.id}` : PAGES[page]}</span>}
+          panel={opened && <CaseRecord key={opened.id} v={opened} onChange={update} onArchive={() => archive(opened)} />}
+          panelTitle={opened && `${opened.id} · ${opened.customer}`}
+          panelId={opened?.id}
+          onPanelClose={() => setOpenId(null)}
           search={<CommandMenuTrigger onClick={() => setSearch(true)} />}
           actions={<IconButton variant="secondary" icon={<S d={IC.plus} />} label="New case" onClick={() => toast('New case started')} />}
           account={
@@ -244,11 +307,11 @@ function AppShellDemo() {
           }
           sidebarFooter={<p style={{ ...note, margin: 0 }}>Brightwater Services · Free plan</p>}
         >
-          <ShellPage page={page} />
+          <ShellPage page={page} cases={cases} openId={openId} onOpen={setOpenId} />
         </AppShell>
       </div>
       <CommandMenu open={search} onOpenChange={setSearch} commands={commands} />
-      <p style={note}>The shell picks its layout from its own width, so the Phone stage shows the tab bar and the menu drawer.</p>
+      <p style={note}>Open a case: on a desk it docks beside the list (drag its edge to resize); on the Phone stage it opens full screen with Back. The shell picks its layout from its own width.</p>
     </div>
   );
 }
@@ -801,7 +864,11 @@ const pathname = usePathname();
           { name: 'layout', type: '"auto" | "desk" | "phone"', def: '"auto"', desc: 'auto picks by the shell’s own width: the phone layout under 640px' },
           { name: 'linkComponent', type: 'ElementType', def: '"a"', desc: 'What links render as, such as Next’s Link. Items without href are buttons' },
           { name: 'landmarks', type: 'boolean', def: 'true', desc: 'header, nav and main landmarks. Turn off only when the shell sits inside another page’s main' },
-          { name: 'labels', type: 'Partial<AppShellLabels>', desc: 'The words on its controls: skip link, menu, More, collapse and expand' },
+          { name: 'panel', type: 'ReactNode', desc: 'A record, docked on the right beside the screen; full screen with Back on a phone. Leave out to close it' },
+          { name: 'panelTitle / panelId', type: 'ReactNode / string', desc: 'The panel’s heading, and what it shows. When panelId changes, focus moves to the heading' },
+          { name: 'onPanelClose', type: '() => void', desc: 'Runs on ×, Back or Escape. Close the panel here, e.g. by leaving the record’s address' },
+          { name: 'panelWidth', type: '{ default, min, max }', def: '440 / 360 / 640', desc: 'The desk width in px. Drag the edge or use the arrow keys on it; remembered with storageKey' },
+          { name: 'labels', type: 'Partial<AppShellLabels>', desc: 'The words on its controls: skip link, menu, More, collapse and expand, close, back and resize' },
         ],
       },
       {
@@ -820,7 +887,8 @@ const pathname = usePathname();
       ['Tab', 'The first Tab reaches Skip to content, which jumps past the sidebar to the screen'],
       ['Tab / Shift + Tab', 'Moves through the sidebar links, the top bar and the screen, in that order'],
       ['Enter', 'Opens the focused link, or the phone menu from its button'],
-      ['Escape', 'Closes the phone menu or the account menu, and puts focus back on its button'],
+      ['Escape', 'Closes the phone menu or the account menu, and puts focus back on its button. Inside the record panel, closes the panel'],
+      ['Arrow Left / Right', 'On the panel’s edge: makes the panel wider or narrower (Shift for bigger steps, Home and End for the limits)'],
       ['Arrow keys', 'Move through the account menu once it is open'],
     ],
     builtIn: [
@@ -1109,7 +1177,7 @@ const [loading, setLoading] = useState(false);
           { name: 'children / footer', type: 'ReactNode', desc: 'The body scrolls on its own; footer buttons go full width and keep clear of the home bar' },
           { name: 'snapPoints', type: 'number[]', desc: 'Heights it can rest at, as fractions of the screen, e.g. [0.5, 0.92]. Leave out to fit its content' },
           { name: 'defaultSnap', type: 'number', def: '0', desc: 'Which snap point it opens at, by index' },
-          { name: 'mode', type: '"auto" | "sheet"', def: '"auto"', desc: 'auto: a sheet on phones (640px or less) and a centred dialog on desks. sheet: always a sheet' },
+          { name: 'mode', type: '"auto" | "sheet"', def: '"auto"', desc: 'auto: a sheet when the space it sits in is 640px or less, a centred dialog when wider. sheet: always a sheet' },
           { name: 'dismissible', type: 'boolean', def: 'true', desc: 'Dragging down, Escape and a tap outside close it. Turn off while saving' },
           { name: 'size, hideClose, initialFocus, onClosed', type: 'as Dialog', desc: 'The rest of Dialog’s props. size sets the desk dialog’s width' },
         ],
