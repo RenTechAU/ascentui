@@ -111,7 +111,8 @@ export function Home() {
           <div className="wrap hero-in">
             <a className="pill" href="#pricing">
               <b>Free tier</b>
-              Every component is free. Screens that work are Pro →
+              <span className="pill-long">Every component is free. Screens that work are Pro →</span>
+              <span className="pill-short">Every component is free →</span>
             </a>
             <TextReveal as="h1" className="h1" text="UI for businesses" />
             <p className="lede">Business-ready React components for CRM, services, finance and AI.</p>
