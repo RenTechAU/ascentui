@@ -102,7 +102,18 @@ writeFileSync(`${out}r/index.json`, JSON.stringify({
 
 // ---------------------------------------------------------------- llms.txt and llms-full.txt
 
-const DOCS = ['introduction', 'install', 'theming', 'agents', 'loop'];
+const DOCS = ['introduction', 'install', 'theming', 'accessibility', 'agents', 'skills', 'loop', 'changelog'];
+// The design-system pages, as in site/src/nav.ts (DS_PAGES). Each shows the theme's variables live.
+const DESIGN_SYSTEM = [
+  ['colors', 'Colors', 'every colour variable in light and dark, with contrast ratios'],
+  ['typography', 'Typography', 'the typeface and type scale, and touch-screen sizes'],
+  ['radius', 'Radius', 'corner sizes'],
+  ['shadows', 'Shadows', 'control hairlines and floating shadows'],
+  ['spacing', 'Spacing', 'space steps and control heights'],
+  ['motion', 'Motion', 'easing, durations and reduced motion'],
+  ['focus', 'Focus', 'the keyboard focus ring'],
+  ['layers', 'Layers', 'the asc CSS layer and what sits above what'],
+];
 const doc = (id) => read(`site/src/docs/${id}.md`).replaceAll('{{REGISTRY}}', base).replace(/\]\(#/g, `](${base}/#`).trim();
 const title = (md) => /^#\s+(.*)$/m.exec(md)?.[1] ?? '';
 const total = countItems(CATALOG);
@@ -140,6 +151,14 @@ const llms = [
   '',
   ...DOCS.map((id) => `- [${title(doc(id))}](${base}/#docs-${id})`),
   `- [Library](${base}/#library): every item with its tier, phase and status`,
+  '',
+  '## Design system',
+  '',
+  ...DESIGN_SYSTEM.map(([id, name, what]) => `- [${name}](${base}/#ds-${id}): ${what}`),
+  `- [Theme file](${base}/r/theme.json): the tokens.css every component reads`,
+  '',
+  '## More',
+  '',
   `- [Pricing](${base}/#pricing)`,
   `- [Pro licence, draft](${base}/#licence)`,
   `- [Everything in one file](${base}/llms-full.txt)`,
@@ -184,6 +203,18 @@ const full = [
   '',
   // Push each page's headings down one level so the file keeps a single top heading.
   ...DOCS.map((id) => doc(id).replace(/^(#{1,5}) /gm, '##$1 ') + '\n'),
+  '## Design system',
+  '',
+  'Pages that show the theme variables live, read from the theme file when the site is built:',
+  '',
+  ...DESIGN_SYSTEM.map(([id, name, what]) => `- ${name} (${base}/#ds-${id}): ${what}`),
+  '',
+  '### The theme file',
+  '',
+  '```css',
+  read('tokens/src/tokens.css').trim(),
+  '```',
+  '',
   '## Pro licence (draft, not yet legal text)',
   '',
   doc('licence').replace(/^# .*\n+/, '').replace(/^(#{1,5}) /gm, '#$1 '),

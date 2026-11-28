@@ -69,14 +69,34 @@ export function inline(text: string): ReactNode[] {
 
 const LANG: Record<string, string> = { bash: 'Terminal', json: 'components.json', css: 'CSS', tsx: 'TypeScript', text: 'Prompt' };
 
+const plain = (text: string) => text.replace(/\*\*|`/g, '').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+
+/** Section headings (level 2 and 3) with ids unique on the page, for "On this page". */
+export function headings(source: string): { id: string; label: string; level: 2 | 3 }[] {
+  const used = new Map<string, number>();
+  const out: { id: string; label: string; level: 2 | 3 }[] = [];
+  for (const b of parseMarkdown(source)) {
+    if (b.kind !== 'heading' || b.level === 1) continue;
+    const label = plain(b.text);
+    const base = 'h-' + (label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'section');
+    const n = used.get(base) ?? 0;
+    used.set(base, n + 1);
+    out.push({ id: n ? `${base}-${n + 1}` : base, label, level: b.level });
+  }
+  return out;
+}
+
 export function Markdown({ source }: { source: string }) {
+  const ids = headings(source);
+  let h = 0;
   return (
     <div className="prose">
       {parseMarkdown(source).map((b, k) => {
         switch (b.kind) {
           case 'heading': {
             const Tag = (['h1', 'h2', 'h3'] as const)[b.level - 1];
-            return <Tag key={k}>{inline(b.text)}</Tag>;
+            const id = b.level === 1 ? undefined : ids[h++]?.id;
+            return <Tag key={k} id={id}>{inline(b.text)}</Tag>;
           }
           case 'para':
             return <p key={k}>{inline(b.text)}</p>;
