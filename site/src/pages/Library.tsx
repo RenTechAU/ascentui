@@ -1,11 +1,93 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { SegmentedControl } from '@/components/ui/segmented-control';
-import { LAYERS, PHASES, countItems, type CatalogItem, type Phase, type Status, type Tier } from '../catalog';
-import { previewBySlug, PREVIEWS } from '../previews';
+import { LAYERS, PHASES, countItems, type CatalogItem, type Layer, type Status, type Tier } from '../catalog';
+import { CopyButton } from '../components/CopyButton';
+import { registry } from '../nav';
+import { usePref } from '../prefs';
+import { previewBySlug } from '../previews';
+import { replaceHash, type SectionId } from '../router';
 import { Stage } from './Component';
 
 const STATUS: Record<Status, string> = { built: 'Built', 'part-built': 'Part built', planned: 'Planned' };
+
+/** Library sections in the order the page shows them, each a catalog layer. */
+export const SECTIONS: { id: SectionId; layer: Layer }[] = [
+  { id: 'components', layer: 'component' },
+  { id: 'screens', layer: 'screen' },
+  { id: 'blocks', layer: 'block' },
+  { id: 'illustrations', layer: 'illustration' },
+  { id: 'motion', layer: 'motion' },
+  { id: 'starter-apps', layer: 'starter' },
+  { id: 'agent-kit', layer: 'agent-kit' },
+  { id: 'theme', layer: 'theme' },
+];
+const layerInfo = (id: Layer) => LAYERS.find((l) => l.id === id)!;
+
+/** Where a built item without a component page is shown instead. */
+const ELSEWHERE: Record<string, string> = {
+  'tokens-and-brand-config': '#ds-colors',
+  'number-count-up': '#c-stat-card',
+  'skeleton-shimmer': '#c-skeleton-and-spinner',
+  'overlay-enter-and-exit': '#c-dialog-and-drawer',
+  'press-and-focus-feedback': '#ds-motion',
+};
+
+export const installCommand = (names: string[]) => `npx shadcn@latest add ${names.map((n) => `${registry}/r/${n}.json`).join(' ')}`;
+
+function Tags({ item }: { item: CatalogItem }) {
+  return (
+    <div className="lib-tags">
+      <Badge tone={item.tier === 'free' ? 'success' : 'purple'}>{item.tier === 'free' ? 'Free' : 'Pro'}</Badge>
+      <Badge>Phase {item.phase}</Badge>
+      <Badge tone={item.status === 'planned' ? 'neutral' : 'info'}>{STATUS[item.status]}</Badge>
+    </div>
+  );
+}
+
+/** A card with a live preview, for a built component. */
+function LiveCard({ item }: { item: CatalogItem }) {
+  const p = previewBySlug(item.slug)!;
+  const Thumb = p.Thumb ?? p.Demo;
+  return (
+    <article className="lc">
+      {/* inert: the preview is for looking at; the name is the link, and it covers the card */}
+      <div className="lc-stage" inert>
+        <Stage className="g-stage">
+          <Thumb />
+        </Stage>
+      </div>
+      <div className="lc-meta">
+        <h3 className="lc-name">
+          <a className="lc-link" href={`#c-${item.slug}`}>{item.name}</a>
+        </h3>
+        <p>{p.description}</p>
+      </div>
+      <div className="lc-foot">
+        <Badge tone="success">Free</Badge>
+        <CopyButton className="copy-btn lc-copy" text={installCommand(p.install)} label={`Copy the install command for ${item.name}`} />
+      </div>
+    </article>
+  );
+}
+
+/** A quiet card for everything without a preview yet. */
+function PlanCard({ item }: { item: CatalogItem }) {
+  const href = ELSEWHERE[item.slug];
+  const sub = item.module ?? item.group;
+  return (
+    <article className="lc lc-plan" data-status={item.status}>
+      <div className="lc-meta">
+        {sub && <small>{sub}</small>}
+        <h3 className="lc-name">
+          {href ? <a className="lc-link" href={href}>{item.name}</a> : item.name}
+        </h3>
+        <p>{item.description}</p>
+      </div>
+      <Tags item={item} />
+    </article>
+  );
+}
 
 function Row({ item }: { item: CatalogItem }) {
   return (
@@ -15,95 +97,111 @@ function Row({ item }: { item: CatalogItem }) {
         {(item.module ?? item.group) && <small>{item.module ?? item.group}</small>}
       </div>
       <p>{item.description}</p>
-      <div className="lib-tags">
-        <Badge tone={item.tier === 'free' ? 'success' : 'purple'}>{item.tier === 'free' ? 'Free' : 'Pro'}</Badge>
-        <Badge>Phase {item.phase}</Badge>
-        <Badge tone={item.status === 'planned' ? 'neutral' : 'info'}>{STATUS[item.status]}</Badge>
-      </div>
+      <Tags item={item} />
     </li>
   );
 }
 
-export function Library({ items }: { items: CatalogItem[]; section?: string | null }) {
+type Built = 'all' | 'built' | 'planned';
+const isBuilt = (i: CatalogItem) => i.status !== 'planned';
+
+export function Library({ items, section: fromRoute }: { items: CatalogItem[]; section: SectionId | null }) {
+  const [section, setSection] = useState<'all' | SectionId>(fromRoute ?? 'all');
   const [tier, setTier] = useState<'all' | Tier>('all');
-  const [phase, setPhase] = useState<'all' | `${Phase}`>('all');
+  const [built, setBuilt] = useState<Built>('all');
+  const [view, setView] = usePref<'grid' | 'list'>('asc-site-library-view', 'grid', ['grid', 'list']);
+
+  // The sidebar and the address can pick a section too.
+  useEffect(() => setSection(fromRoute ?? 'all'), [fromRoute]);
+  const pickSection = (s: 'all' | SectionId) => {
+    setSection(s);
+    replaceHash(s === 'all' ? 'library' : `library-${s}`);
+  };
 
   const all = countItems(items);
-  const shown = items.filter((i) => (tier === 'all' || i.tier === tier) && (phase === 'all' || String(i.phase) === phase));
+  const inSection = items.filter((i) => section === 'all' || SECTIONS.find((s) => s.id === section)?.layer === i.layer);
+  const shown = inSection.filter((i) => (tier === 'all' || i.tier === tier) && (built === 'all' || (built === 'built') === isBuilt(i)));
   const now = countItems(shown);
-  const built = items.filter((i) => i.status !== 'planned').length;
+  const builtCount = items.filter(isBuilt).length;
+  const layers = SECTIONS.filter((s) => section === 'all' || s.id === section).map((s) => layerInfo(s.layer));
 
   return (
     <main id="main">
-      <section className="wrap sec page">
+      <section className="wrap sec page lib">
         <div className="sec-head">
-          <h1>The library</h1>
+          <h1>Library</h1>
           <p>
-            Every component is free. Screens that work are Pro. The full catalog is {all.total} items: {all.free} free
-            and {all.pro} Pro, shipping in five phases.
-          </p>
-          <p className="small">
-            AscentUI is in pre-release. {built} of {all.total} items are built or part built today; the rest are planned.
+            Business components, screens and blocks. Every component is free; screens that work are Pro. {all.total} items
+            in the catalog, {builtCount} built so far.
           </p>
         </div>
 
-        <section className="gallery-wrap" aria-labelledby="ready">
-          <div className="lib-layer-head">
-            <h2 id="ready">Ready to use</h2>
-            <span>{PREVIEWS.length} components, live. Open one for code, props and install.</span>
+        <div className="lib-filters" role="group" aria-label="Filters">
+          <div className="lib-filter">
+            <span className="lib-filter-label" id="f-section">Section</span>
+            <SegmentedControl
+              aria-labelledby="f-section"
+              size="sm"
+              value={section}
+              onChange={pickSection}
+              options={[
+                { value: 'all', label: 'All', count: all.total },
+                ...SECTIONS.map((s) => ({ value: s.id, label: layerInfo(s.layer).label, count: items.filter((i) => i.layer === s.layer).length })),
+              ]}
+            />
           </div>
-          <div className="gallery">
-            {PREVIEWS.map((p) => {
-              const Thumb = p.Thumb ?? p.Demo;
-              return (
-                <a key={p.slug} className="g-card" href={`#c-${p.slug}`}>
-                  {/* inert: the preview inside is for looking at; the whole card is the link */}
-                  <div inert>
-                    <Stage className="g-stage">
-                      <Thumb />
-                    </Stage>
-                  </div>
-                  <div className="g-meta">
-                    <span>{p.name}</span>
-                    <small>{p.description}</small>
-                  </div>
-                </a>
-              );
-            })}
+          <div className="lib-filter-row">
+            <div className="lib-filter">
+              <span className="lib-filter-label" id="f-tier">Tier</span>
+              <SegmentedControl
+                aria-labelledby="f-tier"
+                size="sm"
+                value={tier}
+                onChange={setTier}
+                options={[
+                  { value: 'all', label: 'All' },
+                  { value: 'free', label: 'Free', count: countItems(inSection).free },
+                  { value: 'pro', label: 'Pro', count: countItems(inSection).pro },
+                ]}
+              />
+            </div>
+            <div className="lib-filter">
+              <span className="lib-filter-label" id="f-built">Status</span>
+              <SegmentedControl
+                aria-labelledby="f-built"
+                size="sm"
+                value={built}
+                onChange={setBuilt}
+                options={[
+                  { value: 'all', label: 'All' },
+                  { value: 'built', label: 'Built', count: inSection.filter(isBuilt).length },
+                  { value: 'planned', label: 'Planned', count: inSection.filter((i) => !isBuilt(i)).length },
+                ]}
+              />
+            </div>
+            <div className="lib-filter lib-view">
+              <span className="lib-filter-label" id="f-view">View</span>
+              <SegmentedControl
+                aria-labelledby="f-view"
+                size="sm"
+                value={view}
+                onChange={setView}
+                options={[{ value: 'grid', label: 'Cards' }, { value: 'list', label: 'List' }]}
+              />
+            </div>
           </div>
-        </section>
-
-        <div className="lib-filters">
-          <SegmentedControl
-            aria-label="Filter by tier"
-            value={tier}
-            onChange={setTier}
-            options={[
-              { value: 'all', label: 'All', count: all.total },
-              { value: 'free', label: 'Free', count: all.free },
-              { value: 'pro', label: 'Pro', count: all.pro },
-            ]}
-          />
-          <SegmentedControl
-            aria-label="Filter by phase"
-            value={phase}
-            onChange={setPhase}
-            options={[
-              { value: 'all', label: 'All phases' },
-              ...PHASES.map((p) => ({ value: `${p.id}` as const, label: `Phase ${p.id}`, ariaLabel: `Phase ${p.id}: ${p.name}` })),
-            ]}
-          />
         </div>
 
         <p className="lib-count" aria-live="polite">
           Showing {now.total} of {all.total}: {now.free} free, {now.pro} Pro
-          {phase !== 'all' && <> · Phase {phase}: {PHASES.find((p) => String(p.id) === phase)?.name}</>}
         </p>
 
-        {LAYERS.map((layer) => {
+        {layers.map((layer) => {
           const rows = shown.filter((i) => i.layer === layer.id);
           if (rows.length === 0) return null;
           const c = countItems(rows);
+          const live = rows.filter((i) => previewBySlug(i.slug));
+          const rest = rows.filter((i) => !previewBySlug(i.slug));
           return (
             <section className="lib-layer" key={layer.id} aria-labelledby={`layer-${layer.id}`}>
               <div className="lib-layer-head">
@@ -111,9 +209,14 @@ export function Library({ items }: { items: CatalogItem[]; section?: string | nu
                 <span>{c.total} {c.total === 1 ? 'item' : 'items'} · {c.free} free · {c.pro} Pro</span>
               </div>
               <p className="small">{layer.blurb}</p>
-              <ul className="lib-list">
-                {rows.map((i) => <Row key={i.slug} item={i} />)}
-              </ul>
+              {view === 'grid' ? (
+                <>
+                  {live.length > 0 && <div className="lc-grid">{live.map((i) => <LiveCard key={i.slug} item={i} />)}</div>}
+                  {rest.length > 0 && <div className="lc-grid lc-grid-plan">{rest.map((i) => <PlanCard key={i.slug} item={i} />)}</div>}
+                </>
+              ) : (
+                <ul className="lib-list">{rows.map((i) => <Row key={i.slug} item={i} />)}</ul>
+              )}
             </section>
           );
         })}
@@ -130,7 +233,7 @@ export function Library({ items }: { items: CatalogItem[]; section?: string | nu
                   <tr key={p.id}><td>{p.id}. {p.name}</td><td>{p.theme}</td><td className="num">{c.free}</td><td className="num">{c.pro}</td></tr>
                 );
               })}
-              <tr><td>Total</td><td className="num">{all.total}</td><td className="num">{all.free}</td><td className="num">{all.pro}</td></tr>
+              <tr><td>Total</td><td>{all.total} items</td><td className="num">{all.free}</td><td className="num">{all.pro}</td></tr>
             </tbody>
           </table>
         </div>
