@@ -2,7 +2,7 @@ import { Markdown } from '../md';
 
 export function Licence({ source, company }: { source: string; company: string | null }) {
   return (
-    <main>
+    <main id="main">
       <div className="wrap page narrow">
         <p className="note">
           <strong>Draft, not yet legal text.</strong> This page describes the intended terms in plain words. It has not been

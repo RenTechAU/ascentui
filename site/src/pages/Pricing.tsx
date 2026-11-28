@@ -18,7 +18,7 @@ export function Pricing({ checkout }: { checkout: CheckoutClient }) {
   };
 
   return (
-    <main>
+    <main id="main">
       <section className="wrap sec page">
         <div className="sec-head">
           <h1>Pay once. Build as many as you like.</h1>

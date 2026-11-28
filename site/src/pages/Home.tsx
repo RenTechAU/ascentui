@@ -98,7 +98,7 @@ export function Home() {
 
   return (
     <>
-      <main>
+      <main id="main">
         <section className="hero">
           <div className="flank l" aria-hidden="true">
             <DispatchCard />

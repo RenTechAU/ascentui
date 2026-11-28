@@ -9,13 +9,8 @@ export function Docs({ pages, current, registryBase }: { pages: DocPage[]; curre
   const prev = pages[index - 1];
   const next = pages[index + 1];
   return (
-    <main>
+    <main id="main">
       <div className="wrap docs page">
-        <nav className="docs-nav" aria-label="Docs">
-          {pages.map((p) => (
-            <a key={p.id} href={`#docs-${p.id}`} aria-current={p.id === page.id ? 'page' : undefined}>{p.title}</a>
-          ))}
-        </nav>
         <article className="docs-body">
           {registryBase == null && page.source.includes('<your-domain>') && (
             <p className="note">

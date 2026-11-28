@@ -2,7 +2,6 @@ import { useState, type ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import { CodeBlock } from '@/components/ui/code-block';
 import { SegmentedControl } from '@/components/ui/segmented-control';
-import { CATALOG } from '../catalog';
 import { previewBySlug, PREVIEWS, type Preview } from '../previews';
 
 type Theme = 'light' | 'dark';
@@ -13,32 +12,6 @@ export function Stage({ theme = 'light', children, className = 'stage' }: { them
     <div className={className} data-theme={theme}>
       {children}
     </div>
-  );
-}
-
-/** Components in the side list: every catalog component, the ones with a preview as links. */
-function SideNav({ current }: { current: string }) {
-  const groups = new Map<string, { slug: string; name: string; live: boolean }[]>();
-  for (const c of CATALOG.filter((i) => i.layer === 'component')) {
-    const list = groups.get(c.group ?? 'Other') ?? [];
-    list.push({ slug: c.slug, name: c.name, live: !!previewBySlug(c.slug) });
-    groups.set(c.group ?? 'Other', list);
-  }
-  return (
-    <nav className="comp-nav" aria-label="Components">
-      {[...groups].map(([group, items]) => (
-        <div key={group} className="comp-nav-group">
-          <p>{group}</p>
-          {items.map((i) =>
-            i.live ? (
-              <a key={i.slug} href={`#c-${i.slug}`} aria-current={i.slug === current ? 'page' : undefined}>{i.name}</a>
-            ) : (
-              <span key={i.slug} title="Planned">{i.name}</span>
-            ),
-          )}
-        </div>
-      ))}
-    </nav>
   );
 }
 
@@ -174,9 +147,8 @@ function Page({ p, registry }: { p: Preview; registry: string }) {
 export function ComponentPage({ slug, registry }: { slug: string; registry: string }) {
   const p = previewBySlug(slug);
   return (
-    <main>
+    <main id="main">
       <div className="wrap comp page">
-        <SideNav current={slug} />
         {p ? (
           <Page key={p.slug} p={p} registry={registry} />
         ) : (

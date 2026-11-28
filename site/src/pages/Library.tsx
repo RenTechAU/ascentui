@@ -24,7 +24,7 @@ function Row({ item }: { item: CatalogItem }) {
   );
 }
 
-export function Library({ items }: { items: CatalogItem[] }) {
+export function Library({ items }: { items: CatalogItem[]; section?: string | null }) {
   const [tier, setTier] = useState<'all' | Tier>('all');
   const [phase, setPhase] = useState<'all' | `${Phase}`>('all');
 
@@ -34,7 +34,7 @@ export function Library({ items }: { items: CatalogItem[] }) {
   const built = items.filter((i) => i.status !== 'planned').length;
 
   return (
-    <main>
+    <main id="main">
       <section className="wrap sec page">
         <div className="sec-head">
           <h1>The library</h1>
