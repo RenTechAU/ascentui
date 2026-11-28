@@ -53,7 +53,11 @@ const EXTRA: Record<string, Partial<Behaviour>> = {
   'pin-input': { motion: [noMotion] },
   'month-grid': { motion: ['Days ease their background on hover and selection over the theme’s short duration; nothing slides.'] },
   chart: { responsive: ['It fills the width of its container and redraws when that changes, so it works in a card, a page or a phone.'] },
-  'data-table': { motion: ['Hover colours and the row buttons fade in, and group arrows turn, over the theme’s short duration. With less motion asked for, they change at once.'] },
+  'data-table': { motion: ['Hover colours and the open-row mark ease in over the theme’s short duration, and sort arrows turn. With less motion asked for, they change at once.'] },
+  'data-grid': {
+    motion: ['Hover colours, the open-row mark and the row buttons fade in, and group and sort arrows turn, over the theme’s short duration. With less motion asked for, they change at once.'],
+    responsive: ['On a narrow screen the grid scrolls sideways inside its own box and the header stays in view. On touch screens checkboxes, row buttons and editors are 44px tall, and one tap edits a cell.'],
+  },
   'segmented-control': {},
   'switch-and-checkbox': { responsive: ['On touch screens the whole row grows to a 44px tap target. The look stays the same.'] },
 };

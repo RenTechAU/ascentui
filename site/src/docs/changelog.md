@@ -2,6 +2,12 @@
 
 What changed, newest first. AscentUI is in pre-release: nothing is published to npm or a public registry yet.
 
+## 28 November 2026: Data Table and Data Grid
+
+- **Data Table** (free) now does sorting, paging, loading and empty states, and opening a record: click a row or press Enter, and the open row stays marked while a side panel shows it. Arrow keys move between rows. `onRowClick` is now `onOpen`, with `openId`.
+- **Data Grid** (Pro) is new: everything the table does, plus grouping, saved views, column choices, selection with bulk actions, and editing cells in place with checks before saving.
+- Grouping, saved views, column choices, selection, row buttons and `useTableStorage` moved from the Data Table to the Data Grid.
+
 ## 28 November 2026: free vs Pro, and the roadmap
 
 - Free vs Pro changed: the basics are free; eight power components are Pro (Data Grid, Chart, Month Grid, Upload, Command Menu, Stepper Form, Bottom Sheet, Pull to Refresh). The Data Table splits into a free Data Table and a Pro Data Grid.

@@ -423,7 +423,7 @@ function Focus() {
 const LAYER_USE: Record<string, string> = {
   'tooltip.tsx': 'The hint bubble, above nearby content',
   'combo-box.tsx': 'The open list, above the fields below it',
-  'data-table.tsx': 'The Columns and Group menus (30), the sticky header (2), column resize handles (1)',
+  'data-table.tsx': 'The sticky header (2)',
   'toaster.tsx': 'Toasts, above everything on the page; inside an open dialog they move into it',
   'checkbox.tsx': 'The tick, above its box',
   'switch.tsx': 'The thumb, above its track',

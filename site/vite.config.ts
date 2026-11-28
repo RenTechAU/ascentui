@@ -15,7 +15,8 @@ export default defineConfig({
       async load(id) {
         if (!id.endsWith('?proimports')) return null;
         const code = await readFile(id.slice(0, -'?proimports'.length), 'utf8');
-        const lines = code.split('\n').filter((l) => /^import .* from /.test(l)).join('\n');
+        // Whole import statements, including ones that run over several lines
+        const lines = (code.match(/^import\b[^;]*?\bfrom\s+['"][^'"]+['"];?/gm) ?? []).join('\n');
         return `export default ${JSON.stringify(lines)};`;
       },
     },

@@ -3,7 +3,8 @@ import { Badge } from '@kit/badge';
 import { Button } from '@kit/button';
 import { Card } from '@kit/card';
 import { Chart, type ChartDatum, type ChartKind } from '@pro/chart';
-import { DataTable, type Column, type SavedView } from '@kit/data-table';
+import { DataGrid, type GridColumn, type SavedView } from '@pro/data-grid';
+import { DataTable, focusTableRow, type Column } from '@kit/data-table';
 import dataTableSrc from '@kit/data-table.tsx?raw';
 import { Dialog, Drawer, useConfirm } from '@kit/dialog';
 import dialogSrc from '@kit/dialog.tsx?raw';
@@ -16,7 +17,7 @@ import { TextArea } from '@kit/text-area';
 import { TextField } from '@kit/text-field';
 import { Toaster, toast } from '@kit/toaster';
 import toasterSrc from '@kit/toaster.tsx?raw';
-import { useMemo, useState, type CSSProperties, type ReactNode } from 'react';
+import { useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { Archive, Check, Copy, Pencil, Plus, Search, Trash } from './icons';
 import type { Preview } from './types';
 
@@ -318,57 +319,62 @@ function ChartThumb() {
 
 // ---------------------------------------------------------------- Data Table
 
-const caseColumns = (open: (c: Case) => void): Column<Case>[] => [
-  {
-    key: 'id', label: 'Case', width: '92px', sortValue: (c) => c.id,
-    // The case number is a real button too, so the row can be opened without a mouse
-    render: (c) => <button type="button" style={linkBtn} onClick={(e) => { e.stopPropagation(); open(c); }}>{c.id}</button>,
-  },
+const caseColumns: Column<Case>[] = [
+  { key: 'id', label: 'Case', width: '92px', sortValue: (c) => c.id, render: (c) => <span style={{ fontWeight: 500 }}>{c.id}</span> },
   { key: 'customer', label: 'Customer', width: '1.2fr', minWidth: 110, render: (c) => <Ellipsis>{c.customer}</Ellipsis>, sortValue: (c) => c.customer },
   { key: 'job', label: 'Job', width: '1.6fr', minWidth: 130, render: (c) => <Ellipsis>{c.job}</Ellipsis>, sortValue: (c) => c.job },
   { key: 'status', label: 'Status', width: '128px', render: (c) => <Badge tone={TONE[c.status]} dot>{c.status}</Badge>, sortValue: (c) => STATUSES.indexOf(c.status) },
-  { key: 'tech', label: 'Technician', width: '1fr', minWidth: 110, optional: true, defaultHidden: true, render: (c) => <Ellipsis>{c.tech}</Ellipsis>, sortValue: (c) => c.tech },
   { key: 'due', label: 'Due', width: '68px', render: (c) => fmtDay(c.due), sortValue: (c) => c.due },
-  { key: 'priority', label: 'Priority', width: '88px', optional: true, defaultHidden: true, render: (c) => c.priority, sortValue: (c) => ['Low', 'Normal', 'High'].indexOf(c.priority) },
-  { key: 'amount', label: 'Amount', width: '96px', align: 'right', optional: true, render: (c) => money.format(c.amount), sortValue: (c) => c.amount },
+  { key: 'amount', label: 'Amount', width: '96px', align: 'right', render: (c) => money.format(c.amount), sortValue: (c) => c.amount },
 ];
-const linkBtn: CSSProperties = { padding: 0, border: 0, background: 'none', color: 'inherit', font: 'inherit', fontWeight: 500, cursor: 'pointer', textDecoration: 'underline', textDecorationColor: 'var(--asc-border-strong)', textUnderlineOffset: 3 };
 const Ellipsis = ({ children }: { children: ReactNode }) => (
   <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{children}</span>
 );
-const SEED_VIEWS: SavedView[] = [
-  { id: 'by-tech', name: 'By technician', cols: ['id', 'customer', 'job', 'status', 'tech', 'due'], group: 'tech', sort: { key: 'due', dir: 'asc' } },
-];
+const EmptyMessage = ({ title, text, action }: { title: string; text?: string; action?: ReactNode }) => (
+  <EmptyState size="sm" title={title} description={text} action={action} />
+);
+
+/** The record behind a row: status badges, the facts, and a stage people can change */
+function CaseFacts({ c, onStage }: { c: Case; onStage: (s: Status) => void }) {
+  const line = (k: string, v: ReactNode, num?: boolean) => (
+    <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, padding: '8px 0', borderBottom: '1px solid var(--asc-border)' }}>
+      <span style={{ color: 'var(--asc-muted)' }}>{k}</span>
+      <span style={{ textAlign: 'right', fontVariantNumeric: num ? 'tabular-nums' : undefined }}>{v}</span>
+    </div>
+  );
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div style={row}>
+        <Badge tone={TONE[c.status]} dot>{c.status}</Badge>
+        <Badge tone={c.priority === 'High' ? 'danger' : 'neutral'}>{c.priority} priority</Badge>
+      </div>
+      <div>
+        {line('Customer', c.customer)}
+        {line('Technician', c.tech)}
+        {line('Due', fmtDay(c.due))}
+        {line('Amount', money.format(c.amount), true)}
+      </div>
+      <Select label="Stage" value={c.status} onChange={(e) => onStage(e.target.value as Status)} options={STATUSES.map((s) => ({ value: s, label: s }))} />
+    </div>
+  );
+}
 
 function DataTableDemo() {
   const [all, setAll] = useState(CASES);
   const [q, setQ] = useState('');
   const [state, setState] = useState<'ready' | 'loading' | 'empty'>('ready');
-  const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [views, setViews] = useState(SEED_VIEWS);
-  const [open, setOpen] = useState<Case | null>(null);
-  const [drawer, setDrawer] = useState(false);
-  const show = (c: Case) => {
-    setOpen(c);
-    setDrawer(true);
-  };
-  const columns = useMemo(() => caseColumns(show), []);
+  const [openId, setOpenId] = useState<string | null>(null);
+  const open = all.find((c) => c.id === openId) ?? null;
   const text = q.trim().toLowerCase();
-  const rows = state === 'empty' ? [] : all.filter((c) => !text || `${c.id} ${c.customer} ${c.job} ${c.tech}`.toLowerCase().includes(text));
-
-  const archive = (keys: string[], clear: () => void) => {
-    const gone = all.filter((c) => keys.includes(c.id));
+  const rows = state === 'empty' ? [] : all.filter((c) => !text || `${c.id} ${c.customer} ${c.job}`.toLowerCase().includes(text));
+  const setStage = (s: Status) => {
+    if (!open) return;
     const before = all;
-    setAll(all.filter((c) => !keys.includes(c.id)));
-    clear();
-    toast.success(`${gone.length} ${gone.length === 1 ? 'case' : 'cases'} archived`, { undo: () => setAll(before) });
+    setAll(all.map((c) => (c.id === open.id ? { ...c, status: s } : c)));
+    toast.success(`${open.id} moved to ${s}`, { undo: () => setAll(before) });
   };
-  const markDone = (keys: string[], clear: () => void) => {
-    const before = all;
-    setAll(all.map((c) => (keys.includes(c.id) ? { ...c, status: 'Done' as const } : c)));
-    clear();
-    toast.success(`${keys.length} marked done`, { undo: () => setAll(before) });
-  };
+  // The drawer hands focus back to the row it was opened from; focusTableRow is there for your own panels
+  const close = () => setOpenId(null);
 
   return (
     <div style={{ ...col(880), width: '100%' }}>
@@ -382,30 +388,13 @@ function DataTableDemo() {
       <DataTable
         label="Cases"
         rows={rows}
-        columns={columns}
+        columns={caseColumns}
         getRowKey={(c) => c.id}
-        rowLabel={(c) => `${c.id}, ${c.customer}`}
-        onRowClick={show}
+        onOpen={(c) => setOpenId(c.id)}
+        openId={openId}
         loading={state === 'loading'}
         pageSize={10}
         maxHeight="min(70vh, 520px)"
-        groups={[{ key: 'status', label: 'Status', groupOf: (c) => c.status }, { key: 'tech', label: 'Technician', groupOf: (c) => c.tech }]}
-        selection={{ selected, onChange: setSelected }}
-        bulkActions={(keys, clear) => (
-          <>
-            <Button size="sm" variant="secondary" icon={<Check />} onClick={() => markDone(keys, clear)}>Mark done</Button>
-            <Button size="sm" variant="secondary" icon={<Archive />} onClick={() => archive(keys, clear)}>Archive</Button>
-          </>
-        )}
-        rowActions={(c) => (
-          <>
-            <IconButton size="sm" icon={<Pencil />} label={`Open ${c.id}`} onClick={() => show(c)} />
-            <IconButton size="sm" icon={<Archive />} label={`Archive ${c.id}`} onClick={() => archive([c.id], () => setSelected((s) => { const n = new Set(s); n.delete(c.id); return n; }))} />
-          </>
-        )}
-        rowActionsWidth="64px"
-        views={views}
-        onViewsChange={setViews}
         empty={
           q ? (
             <EmptyMessage title={`No cases match “${q}”`} action={<Button size="sm" variant="secondary" onClick={() => setQ('')}>Clear search</Button>} />
@@ -414,21 +403,171 @@ function DataTableDemo() {
           )
         }
       />
-      <Drawer open={drawer} onOpenChange={setDrawer} title={open?.job ?? ''} description={open ? `${open.id} · ${open.customer}` : undefined} footer={<Button variant="secondary" onClick={() => setDrawer(false)}>Close</Button>}>
-        {open && <CaseDetail c={open} />}
+      <p style={note}>Click a row, or move with the arrow keys and press Enter. The open row stays marked while the panel shows it.</p>
+      <Drawer open={!!open} onOpenChange={(o) => !o && close()} title={open?.job ?? ''} description={open ? `${open.id} · ${open.customer}` : undefined} footer={<Button variant="secondary" onClick={close}>Close</Button>}>
+        {open && <CaseFacts c={open} onStage={setStage} />}
       </Drawer>
     </div>
   );
 }
-const EmptyMessage = ({ title, text, action }: { title: string; text?: string; action?: ReactNode }) => (
-  <EmptyState size="sm" title={title} description={text} action={action} />
-);
 
 function DataTableThumb() {
-  const cols = caseColumns(() => {}).filter((c) => ['customer', 'status'].includes(c.key));
+  const cols = caseColumns.filter((c) => ['customer', 'status'].includes(c.key));
   return (
     <div style={{ width: 250 }}>
-      <DataTable label="Cases" toolbar={false} rows={CASES.slice(0, 3)} columns={cols.map((c) => ({ ...c, minWidth: 60, optional: false }))} getRowKey={(c) => c.id} maxHeight="none" />
+      <DataTable label="Cases" rows={CASES.slice(0, 3)} columns={cols.map((c) => ({ ...c, minWidth: 60 }))} getRowKey={(c) => c.id} openId={CASES[1]!.id} maxHeight="none" />
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------- Data Grid
+
+const gridColumns: GridColumn<Case>[] = [
+  { key: 'id', label: 'Case', width: '92px', sortValue: (c) => c.id, render: (c) => <span style={{ fontWeight: 500 }}>{c.id}</span> },
+  { key: 'customer', label: 'Customer', width: '1.2fr', minWidth: 110, render: (c) => <Ellipsis>{c.customer}</Ellipsis>, sortValue: (c) => c.customer },
+  {
+    key: 'job', label: 'Job', width: '1.6fr', minWidth: 140, render: (c) => <Ellipsis>{c.job}</Ellipsis>, sortValue: (c) => c.job,
+    edit: { value: (c) => c.job },
+  },
+  { key: 'status', label: 'Status', width: '128px', render: (c) => <Badge tone={TONE[c.status]} dot>{c.status}</Badge>, sortValue: (c) => STATUSES.indexOf(c.status) },
+  {
+    key: 'tech', label: 'Technician', width: '1fr', minWidth: 120, optional: true, render: (c) => <Ellipsis>{c.tech}</Ellipsis>, sortValue: (c) => c.tech,
+    edit: { value: (c) => c.tech, type: 'select', options: TECHS.map((t) => ({ value: t, label: t })) },
+  },
+  { key: 'due', label: 'Due', width: '68px', render: (c) => fmtDay(c.due), sortValue: (c) => c.due },
+  { key: 'priority', label: 'Priority', width: '88px', optional: true, defaultHidden: true, render: (c) => c.priority, sortValue: (c) => ['Low', 'Normal', 'High'].indexOf(c.priority) },
+  {
+    key: 'amount', label: 'Amount', width: '104px', align: 'right', optional: true, render: (c) => money.format(c.amount), sortValue: (c) => c.amount,
+    edit: { value: (c) => c.amount.toFixed(2), type: 'number' },
+  },
+];
+const SEED_VIEWS: SavedView[] = [
+  { id: 'by-tech', name: 'By technician', cols: ['id', 'customer', 'job', 'status', 'tech', 'due'], group: 'tech', sort: { key: 'due', dir: 'asc' } },
+];
+const checkCell = (value: string, _c: Case, key: string) => {
+  if (key === 'job' && !value.trim()) return 'Describe the job';
+  if (key === 'amount') {
+    const t = value.replace(/[$,\s]/g, '');
+    if (!/^-?\d+(\.\d{1,2})?$/.test(t)) return 'Enter an amount, like 240.00';
+    if (Number(t) < 0) return 'The amount can’t be below zero';
+  }
+  return null;
+};
+
+function DataGridDemo() {
+  const [all, setAll] = useState(CASES);
+  const [q, setQ] = useState('');
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [views, setViews] = useState(SEED_VIEWS);
+  const [openId, setOpenId] = useState<string | null>(null);
+  const panel = useRef<HTMLElement>(null);
+  const open = all.find((c) => c.id === openId) ?? null;
+  const text = q.trim().toLowerCase();
+  const rows = all.filter((c) => !text || `${c.id} ${c.customer} ${c.job} ${c.tech}`.toLowerCase().includes(text));
+
+  const change = (keys: string[], patch: Partial<Case>) => setAll((a) => a.map((c) => (keys.includes(c.id) ? { ...c, ...patch } : c)));
+  const archive = (keys: string[], clear: () => void) => {
+    const before = all;
+    setAll(all.filter((c) => !keys.includes(c.id)));
+    if (openId && keys.includes(openId)) setOpenId(null);
+    clear();
+    toast.success(`${keys.length} ${keys.length === 1 ? 'case' : 'cases'} archived`, { undo: () => setAll(before) });
+  };
+  const markDone = (keys: string[], clear: () => void) => {
+    const before = all;
+    change(keys, { status: 'Done' });
+    clear();
+    toast.success(`${keys.length} marked done`, { undo: () => setAll(before) });
+  };
+  // The caller owns the data: the grid hands over the new value, and the rows change here
+  const saveCell = (c: Case, key: string, value: string) => {
+    change([c.id], key === 'amount' ? { amount: Number(value.replace(/[$,\s]/g, '')) } : { [key]: value.trim() });
+    toast.success(`${c.id} saved`);
+  };
+  const openCase = (c: Case) => {
+    setOpenId(c.id);
+    // On a narrow screen the panel sits under the grid: bring it into view
+    requestAnimationFrame(() => {
+      const el = panel.current;
+      if (el && el.getBoundingClientRect().top > window.innerHeight - 80) el.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    });
+  };
+  const close = () => {
+    const id = openId;
+    setOpenId(null);
+    if (id) requestAnimationFrame(() => focusTableRow(id));
+  };
+
+  return (
+    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 16, width: '100%', maxWidth: 1120, minWidth: 0 }}>
+      <Toaster />
+      <div style={{ ...col(820), flex: '1 1 520px', width: 'auto' }}>
+        <div style={{ width: 'min(100%, 260px)' }}>
+          <TextField label="Search cases" hideLabel type="search" size="sm" prefix={<Search />} placeholder="Search cases" value={q} onChange={(e) => setQ(e.target.value)} />
+        </div>
+        <DataGrid
+          label="Cases"
+          rows={rows}
+          columns={gridColumns}
+          getRowKey={(c) => c.id}
+          rowLabel={(c) => `${c.id}, ${c.customer}`}
+          onOpen={openCase}
+          openId={openId}
+          pageSize={10}
+          maxHeight="min(70vh, 560px)"
+          groups={[{ key: 'status', label: 'Status', groupOf: (c) => c.status }, { key: 'tech', label: 'Technician', groupOf: (c) => c.tech }]}
+          selection={{ selected, onChange: setSelected }}
+          bulkActions={(keys, clear) => (
+            <>
+              <Button size="sm" variant="secondary" icon={<Check />} onClick={() => markDone(keys, clear)}>Mark done</Button>
+              <Button size="sm" variant="secondary" icon={<Archive />} onClick={() => archive(keys, clear)}>Archive</Button>
+            </>
+          )}
+          rowActions={(c) => <IconButton size="sm" icon={<Archive />} label={`Archive ${c.id}`} onClick={() => archive([c.id], () => setSelected((s) => { const n = new Set(s); n.delete(c.id); return n; }))} />}
+          rowActionsWidth="40px"
+          onCellEdit={saveCell}
+          validate={checkCell}
+          views={views}
+          onViewsChange={setViews}
+          empty={<EmptyMessage title={`No cases match “${q}”`} action={<Button size="sm" variant="secondary" onClick={() => setQ('')}>Clear search</Button>} />}
+        />
+        <p style={note}>Open a case by clicking its row or pressing Enter: it shows beside the list. Double-click a job, technician or amount to change it, or press Enter on it (arrow right from a row). Enter saves, Escape puts it back.</p>
+      </div>
+      {open && (
+        <aside
+          ref={panel}
+          aria-label={`Case ${open.id}`}
+          style={{ flex: '1 1 280px', maxWidth: 'min(100%, 380px)', minWidth: 0, boxSizing: 'border-box', display: 'flex', flexDirection: 'column', gap: 16, padding: 16, borderRadius: 'var(--asc-radius-lg)', background: 'var(--asc-surface)', boxShadow: 'var(--asc-shadow-control)' }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
+            <div style={{ minWidth: 0 }}>
+              <p style={{ margin: 0, fontWeight: 500 }}>{open.job}</p>
+              <p style={note}>{open.id} · {open.customer}</p>
+            </div>
+            <Button size="sm" variant="secondary" onClick={close}>Close</Button>
+          </div>
+          <CaseFacts c={open} onStage={(s) => { change([open.id], { status: s }); toast.success(`${open.id} moved to ${s}`); }} />
+        </aside>
+      )}
+    </div>
+  );
+}
+
+function DataGridThumb() {
+  const cols = gridColumns.filter((c) => ['customer', 'status'].includes(c.key)).map((c) => ({ ...c, minWidth: 60, optional: false, edit: undefined }));
+  const picked = useMemo(() => new Set([CASES[1]!.id]), []);
+  return (
+    <div style={{ width: 260 }}>
+      <DataGrid
+        label="Cases"
+        toolbar={false}
+        rows={CASES.slice(0, 3)}
+        columns={cols}
+        getRowKey={(c) => c.id}
+        selection={{ selected: picked, onChange: () => {} }}
+        bulkActions={() => <Button size="sm" variant="secondary" tabIndex={-1}>Assign</Button>}
+        maxHeight="none"
+      />
     </div>
   );
 }
@@ -741,7 +880,7 @@ return <>{/* … */}{confirmDialog}</>;` },
     slug: 'data-table',
     name: 'Data Table',
     group: G,
-    description: 'A list of records with sorting, column choices, saved views, grouping, selection with bulk actions and paging. Loading and empty states included.',
+    description: 'A table with sorting, paging and a phone layout. Click a row to open its record beside the list; the open row stays marked.',
     install: ['data-table'],
     sources: [{ file: 'data-table.tsx', code: dataTableSrc }],
     Demo: DataTableDemo,
@@ -752,27 +891,16 @@ const columns: Column<Case>[] = [
   { key: "id", label: "Case", width: "104px", render: (c) => c.id, sortValue: (c) => c.id },
   { key: "customer", label: "Customer", render: (c) => c.customer, sortValue: (c) => c.customer },
   { key: "status", label: "Status", render: (c) => <Badge tone={tone[c.status]}>{c.status}</Badge> },
-  { key: "amount", label: "Amount", align: "right", optional: true, render: (c) => money.format(c.amount), sortValue: (c) => c.amount },
+  { key: "amount", label: "Amount", align: "right", render: (c) => money.format(c.amount), sortValue: (c) => c.amount },
 ];
 
-<DataTable label="Cases" rows={cases} columns={columns} getRowKey={(c) => c.id} onRowClick={openCase} />`,
+<DataTable label="Cases" rows={cases} columns={columns} getRowKey={(c) => c.id} onOpen={(c) => setOpenId(c.id)} openId={openId} />`,
     examples: [
-      { title: 'Selection with a bulk action and Undo', code: `const [selected, setSelected] = useState(new Set<string>());
+      { title: 'Open a record in a side panel', code: `const [openId, setOpenId] = useState<string | null>(null);
 
-<DataTable
-  …
-  selection={{ selected, onChange: setSelected }}
-  bulkActions={(keys, clear) => (
-    <Button size="sm" variant="secondary" onClick={() => { archive(keys); clear(); toast.success(\`\${keys.length} archived\`, { undo: () => restore(keys) }); }}>
-      Archive
-    </Button>
-  )}
-/>` },
-      { title: 'Keep views and column choices', code: `// In this browser only
-<DataTable {...useTableStorage("cases")} … />
-
-// Or on your server, per person
-<DataTable views={views} onViewsChange={saveViews} defaultLayout={layout} onLayoutChange={saveLayout} … />` },
+<DataTable … onOpen={(c) => setOpenId(c.id)} openId={openId} />
+<CasePanel id={openId} onClose={() => { focusTableRow(openId!); setOpenId(null); }} />` },
+      { title: 'Keep the sort', code: `<DataTable sort={sort} onSortChange={setSort} … />` },
       { title: 'Loading and empty', code: `<DataTable loading={isLoading} empty={<EmptyState title="No cases yet" action={<Button>New case</Button>} />} … />` },
     ],
     props: [
@@ -782,56 +910,150 @@ const columns: Column<Case>[] = [
           { name: 'label', type: 'string', desc: 'What it lists, e.g. "Cases". Names the table for screen readers' },
           { name: 'rows', type: 'T[]', desc: 'The rows to show, already searched and filtered by your screen' },
           { name: 'columns', type: 'Column<T>[]', desc: 'See Column below' },
-          { name: 'getRowKey', type: '(row) => string | number', desc: 'A stable id per row' },
-          { name: 'rowLabel', type: '(row) => string', desc: 'Names a row for screen readers, e.g. on its checkbox' },
-          { name: 'onRowClick', type: '(row) => void', desc: 'Opens a row. Rows become focusable and Enter opens them' },
-          { name: 'selection', type: '{ selected: Set<string>, onChange }', desc: 'Adds a checkbox column. You own the set' },
-          { name: 'bulkActions', type: '(keys, clear) => ReactNode', desc: 'Shown in a bar while rows are selected' },
-          { name: 'rowActions / rowActionsWidth', type: '(row) => ReactNode / string', def: '– / "96px"', desc: 'Buttons at the end of each row, shown on hover and focus, always on touch' },
-          { name: 'groups', type: '{ key, label, groupOf }[]', desc: 'Ways to group rows, offered in a Group menu. Groups fold' },
+          { name: 'getRowKey', type: '(row) => string | number', desc: 'A stable id per row. Rows carry it as data-row-id' },
+          { name: 'onOpen', type: '(row) => void', desc: 'Opens a record. A click on the row, or Enter or Space on it. Not a click on a button inside it' },
+          { name: 'openId', type: 'string | number | null', desc: 'The open record’s key. Its row is marked and announced as current' },
+          { name: 'sort / defaultSort / onSortChange', type: 'Sort | null', desc: 'The sort, controlled or not' },
           { name: 'loading / loadingRows', type: 'boolean / number', def: 'false / 5', desc: 'Placeholder rows while loading' },
           { name: 'empty', type: 'ReactNode', def: '"Nothing to show yet"', desc: 'Text, or your own EmptyState' },
           { name: 'pageSize', type: 'number', def: '25', desc: 'Rows per page. Paging hides when it all fits' },
           { name: 'maxHeight', type: 'CSS length', def: '"70vh"', desc: 'The box scrolls past this, header in view. "none" lets the page scroll' },
-          { name: 'views / onViewsChange', type: 'SavedView[] / (views) => void', desc: 'Saved views. Left out, they last for this visit' },
-          { name: 'layout / defaultLayout / onLayoutChange', type: 'TableLayout', desc: 'Hidden columns, order, widths, sort, group and view' },
-          { name: 'toolbar', type: 'boolean', def: 'true', desc: 'The bar with views, Group and Columns. Off for a small fixed table' },
         ],
       },
       {
         component: 'Column',
         rows: [
-          { name: 'key / label', type: 'string', desc: 'A stable key (views refer to it) and the heading' },
+          { name: 'key / label', type: 'string', desc: 'A stable key and the heading' },
           { name: 'render', type: '(row) => ReactNode', desc: 'What the cell shows' },
           { name: 'width', type: 'string', def: '"1fr"', desc: '"1fr", "2fr" or "120px". fr columns share the room left' },
           { name: 'minWidth', type: 'number', def: '96', desc: 'An fr column’s floor before the table scrolls sideways' },
           { name: 'align', type: '"left" | "right"', def: '"left"', desc: 'right for numbers and money' },
           { name: 'sortValue', type: '(row) => string | number', desc: 'Makes the heading sort. Empty values go last' },
-          { name: 'optional / defaultHidden', type: 'boolean', desc: 'Can be hidden from the Columns menu / starts hidden' },
         ],
       },
+      {
+        component: 'focusTableRow',
+        rows: [{ name: '(id, within?)', type: '(string | number, ParentNode) => boolean', desc: 'Puts focus back on a row, e.g. when your side panel closes' }],
+      },
     ],
-    when: ['A list of records people scan, sort and act on: cases, customers, invoices', 'Acting on many rows at once'],
-    whenNot: ['A list on a phone: use List Row, with the same data', 'A handful of facts about one record: use a Card', 'Comparing a trend: use a Chart'],
+    when: ['A list of records people scan, sort and open: cases, customers, invoices', 'A list beside a panel that shows the record you picked'],
+    whenNot: ['Grouping, saved views, picking columns, acting on many rows or editing in place: use the Data Grid (Pro)', 'A list on a phone: use List Row, with the same data', 'A handful of facts about one record: use a Card'],
     keyboard: [
-      ['Tab', 'Moves through the toolbar, the headings, the checkboxes and the rows'],
+      ['Tab', 'Moves to the headings, then into the rows (one stop for all of them)'],
       ['Enter or Space on a heading', 'Sorts up, then down, then back'],
-      ['Arrow Left / Right on a column edge', 'Narrows or widens the column (Shift for bigger steps); Enter resets it'],
-      ['Enter on a row', 'Opens it'],
-      ['Space on a checkbox', 'Selects the row'],
-      ['Columns menu', 'Tick to show or hide; the arrow buttons move a column earlier or later'],
+      ['Arrow Up / Down, Home / End', 'Moves between rows'],
+      ['Enter or Space on a row', 'Opens it'],
     ],
     builtIn: [
-      'Nothing is saved behind your back. Views and column choices come in and go out through props, so you decide whether they live in the browser or on your server.',
-      'Hidden columns are stored as the ones switched off, so a column you add next month shows up for everyone instead of staying invisible.',
-      '"Select all" means the rows on this page. Ticking one box while looking at 10 rows never selects 5,000.',
-      'Sorting, grouping and paging work on the whole list, not just the page in view, so page 2 really is what comes after page 1.',
+      'The open row stays marked while its record is showing, and screen readers hear it as the current row. Moving to another row and opening it moves the mark.',
+      'A click on a button or link inside a row does its own job and does not open the row. Selecting text in a row does not open it either.',
+      'The rows are one Tab stop, and the arrow keys move between them, so getting past a long table takes one key press, not fifty.',
+      'Every row carries its id, so your panel can hand focus back to the row it came from when it closes.',
+      'Sorting and paging work on the whole list, not just the page in view, so page 2 really is what comes after page 1.',
       'Deleting or archiving a row keeps you on the page you were on; a new search starts again from page 1.',
       'Numbers use equal-width digits and right alignment, so amounts line up down the column.',
       'On a narrow screen the table scrolls sideways inside its own box; the page never does. The header stays in view as you scroll down.',
-      'Everything you can do with a mouse has a keyboard way: columns are resized with the arrow keys and reordered from the Columns menu.',
       'Headings tell screen readers how the table is sorted, and sorting is announced.',
       'Loading shows placeholder rows in the shape of the table; no rows shows a clear empty state with the one action that fills it.',
+    ],
+  },
+  {
+    slug: 'data-grid',
+    name: 'Data Grid',
+    group: G,
+    description: 'The Data Table plus grouping, saved views, column choices, selection with bulk actions, and editing cells in place. Records open beside the list.',
+    install: ['data-grid'],
+    sources: [],
+    Demo: DataGridDemo,
+    Thumb: DataGridThumb,
+    usage: `import { DataGrid, type GridColumn } from "@/components/ui/data-grid";
+
+const columns: GridColumn<Case>[] = [
+  { key: "id", label: "Case", width: "104px", render: (c) => c.id, sortValue: (c) => c.id },
+  { key: "job", label: "Job", render: (c) => c.job, edit: { value: (c) => c.job } },
+  { key: "tech", label: "Technician", optional: true, render: (c) => c.tech,
+    edit: { value: (c) => c.tech, type: "select", options: techs } },
+  { key: "amount", label: "Amount", align: "right", render: (c) => money.format(c.amount),
+    edit: { value: (c) => String(c.amount), type: "number" } },
+];
+
+<DataGrid
+  label="Cases" rows={cases} columns={columns} getRowKey={(c) => c.id}
+  onOpen={(c) => setOpenId(c.id)} openId={openId}
+  onCellEdit={(c, key, value) => api.updateCase(c.id, { [key]: value })}
+  validate={(value, c, key) => (key === "job" && !value.trim() ? "Describe the job" : null)}
+/>`,
+    examples: [
+      { title: 'Selection with a bulk action and Undo', code: `const [selected, setSelected] = useState(new Set<string>());
+
+<DataGrid
+  …
+  selection={{ selected, onChange: setSelected }}
+  bulkActions={(keys, clear) => (
+    <Button size="sm" variant="secondary" onClick={() => { archive(keys); clear(); toast.success(\`\${keys.length} archived\`, { undo: () => restore(keys) }); }}>
+      Archive
+    </Button>
+  )}
+/>` },
+      { title: 'Group, and keep views and column choices', code: `<DataGrid groups={[{ key: "status", label: "Status", groupOf: (c) => c.status }]} {...useTableStorage("cases")} … />
+
+// Or on your server, per person
+<DataGrid views={views} onViewsChange={saveViews} defaultLayout={layout} onLayoutChange={saveLayout} … />` },
+      { title: 'Save an edit to your API', code: `// Return the promise: the cell shows it saving, and a rejection keeps the editor open with its message
+onCellEdit={async (c, key, value) => {
+  const saved = await api.updateCase(c.id, { [key]: value });
+  setCases((all) => all.map((x) => (x.id === saved.id ? saved : x)));
+}}` },
+    ],
+    props: [
+      {
+        component: 'DataGrid',
+        rows: [
+          { name: 'label, rows, getRowKey', type: '', desc: 'As the Data Table' },
+          { name: 'columns', type: 'GridColumn<T>[]', desc: 'A Data Table column plus optional, defaultHidden and edit' },
+          { name: 'onOpen / openId', type: '(row) => void / string | null', desc: 'As the Data Table: open a record beside the list, and mark its row' },
+          { name: 'rowLabel', type: '(row) => string', desc: 'Names a row for screen readers, e.g. on its checkbox and its editors' },
+          { name: 'groups', type: '{ key, label, groupOf }[]', desc: 'Ways to group rows, offered in a Group menu. Groups fold' },
+          { name: 'selection', type: '{ selected: Set<string>, onChange }', desc: 'Adds a checkbox column. You own the set' },
+          { name: 'bulkActions', type: '(keys, clear) => ReactNode', desc: 'Shown in a bar while rows are selected' },
+          { name: 'rowActions / rowActionsWidth', type: '(row) => ReactNode / string', def: '– / "96px"', desc: 'Buttons at the end of each row, shown on hover and focus, always on touch' },
+          { name: 'onCellEdit', type: '(row, key, value) => void | Promise', desc: 'Saves a cell edited in place. You change the rows. A rejected promise keeps the editor open' },
+          { name: 'validate', type: '(value, row, key) => string | null', desc: 'Refuses a value with a short reason, shown under the cell' },
+          { name: 'views / onViewsChange', type: 'SavedView[] / (views) => void', desc: 'Saved views. Left out, they last for this visit' },
+          { name: 'layout / defaultLayout / onLayoutChange', type: 'TableLayout', desc: 'Hidden columns, order, widths, sort, group and view' },
+          { name: 'toolbar', type: 'boolean', def: 'true', desc: 'The bar with views, Group and Columns. Off for a small fixed grid' },
+          { name: 'loading, empty, pageSize, maxHeight', type: '', desc: 'As the Data Table' },
+        ],
+      },
+      {
+        component: 'GridColumn',
+        rows: [
+          { name: 'optional / defaultHidden', type: 'boolean', desc: 'Can be hidden from the Columns menu / starts hidden' },
+          { name: 'edit', type: '{ value, type?, options? }', desc: 'Makes the cell editable: the starting text, and a text, number or select field' },
+        ],
+      },
+    ],
+    when: ['A working list people sort, group, save views of and act on in bulk', 'Quick fixes to a field without opening the record: a technician, an amount'],
+    whenNot: ['A plain list to sort and open: the free Data Table is enough', 'Changing many fields of one record: open it in a panel or a form'],
+    keyboard: [
+      ['Tab', 'Moves through the toolbar, the headings, then into the rows (one stop)'],
+      ['Arrow Up / Down', 'Moves between rows'],
+      ['Enter or Space on a row', 'Opens it'],
+      ['Arrow Right on a row', 'Moves into its editable cells; Left and Right move between them'],
+      ['Enter or F2 on a cell', 'Edits it. Enter saves, Escape puts it back, Tab saves and moves on'],
+      ['Space on a checkbox', 'Selects the row'],
+      ['Arrow Left / Right on a column edge', 'Narrows or widens the column (Shift for bigger steps); Enter resets it'],
+    ],
+    builtIn: [
+      'Nothing is saved behind your back. Views, column choices and edits come in and go out through props, so you decide whether they live in the browser or on your server.',
+      'An edit is checked before it is saved. A refused value keeps the editor open with the reason under it, and screen readers hear the reason.',
+      'If your save fails, the editor stays open with what was typed, so nothing is lost.',
+      'A click on an editable cell never opens the row by mistake; double-click edits. On touch screens a single tap edits, since there is no double-click.',
+      'Hidden columns are stored as the ones switched off, so a column you add next month shows up for everyone instead of staying invisible.',
+      '"Select all" means the rows on this page. Ticking one box while looking at 10 rows never selects 5,000.',
+      'Grouping, sorting and paging work on the whole list. A group that runs onto the next page says "continued".',
+      'Everything you can do with a mouse has a keyboard way: columns are resized with the arrow keys and reordered from the Columns menu.',
+      'The open row stays marked while its record shows beside the list, also when it is selected.',
       'Row buttons appear on hover and keyboard focus, and are always visible on touch screens, where there is no hover.',
     ],
   },
