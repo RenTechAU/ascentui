@@ -1,12 +1,10 @@
 {
   "name": "@ascentui/ui",
   "version": "0.1.0",
-  "description": "AscentUI free building blocks: data table, combo box, chart, month grid, form kit (MIT)",
+  "description": "AscentUI components (MIT). Each is one file with its styles inside; they all read the shared theme in @ascentui/tokens.",
   "license": "MIT",
   "type": "module",
-  "sideEffects": [
-    "**/*.css"
-  ],
+  "sideEffects": false,
   "files": [
     "dist",
     "src",
@@ -19,7 +17,10 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./base.css": "./dist/base.css"
+    "./components/*": {
+      "types": "./dist/components/*.d.ts",
+      "default": "./dist/components/*.js"
+    }
   },
   "scripts": {
     "build": "rm -rf dist && tsc -p tsconfig.build.json && node ../scripts/copy-css.mjs src dist",
@@ -28,19 +29,13 @@
   },
   "peerDependencies": {
     "@ascentui/tokens": "^0.1.0",
-    "react": ">=18",
-    "recharts": "^2.12.7"
-  },
-  "peerDependenciesMeta": {
-    "recharts": {
-      "optional": true
-    }
+    "react": ">=19",
+    "react-dom": ">=19"
   },
   "devDependencies": {
-    "@types/react": "^18.3.3",
-    "react": "^18.3.1",
-    "recharts": "^2.12.7",
-    "react-dom": "^18.3.1",
-    "@types/react-dom": "^18.3.0"
+    "@types/react": "^19.1.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "@types/react-dom": "^19.1.0"
   }
 }

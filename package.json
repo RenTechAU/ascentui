@@ -6,8 +6,10 @@
   "workspaces": [
     "tokens",
     "ui",
+    "pro",
     "modules/*",
-    "site"
+    "site",
+    "platform"
   ],
   "engines": {
     "node": ">=20"
@@ -15,9 +17,12 @@
   "scripts": {
     "build": "npm run build --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
-    "pack": "npm run build && mkdir -p dist-packs && npm pack -w @ascentui/tokens -w @ascentui/ui --pack-destination dist-packs"
+    "pack": "npm run build && mkdir -p dist-packs && npm pack -w @ascentui/tokens -w @ascentui/ui --pack-destination dist-packs",
+    "test": "npm run test --workspaces --if-present"
   },
   "devDependencies": {
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0"
   }
 }

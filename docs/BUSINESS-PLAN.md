@@ -1,6 +1,6 @@
 # AscentUI business plan
 
-Drafted 2026-11-28. Status: proposal for review. Companion to `CATALOG.md` (what we ship) and
+Drafted 2026-11-28, updated the same day after decisions (§8). Status: working plan. Companion to `CATALOG.md` (what we ship) and
 `PLAN.md` (how we build). Revenue figures are targets built from stated assumptions, not forecasts.
 
 ## 1. The goal
@@ -16,9 +16,9 @@ things that matter before investing further: people find it, and people pay for 
 | Milestone | Date | Measure |
 | --- | --- | --- |
 | Free tier public | 22 Dec 2026 | Site live, every free item installs with one command |
-| First sale | 15 Feb 2027 | Checkout works end to end; one stranger pays |
-| **100 customers** | **30 Apr 2027** | **Launch offer sold out** |
-| 400 customers | 30 Nov 2027 | Year-one target, about USD 126,000 in total (§5) |
+| Pro launch and first sale | 29 Mar 2027 | The loop plus Dispatch and field app are done; one stranger pays |
+| **100 customers** | **30 Apr 2027** | **Launch offer sold out**, about one month after Pro launches |
+| 400 customers | 30 Nov 2027 | About USD 126,000 in total (§5) |
 
 ## 2. What we sell
 
@@ -49,7 +49,7 @@ shadcn ecosystem and registry directories, and inside the agents themselves thro
 2. **Screens come with a backend recipe.** Contract, mock, agent guide and checks. No other kit
    tells the agent how to make the screen real and then tests that it did.
 3. **Taken from a running business.** The rules for money, roles and undo come from Hutch.
-4. **Free is generous on purpose.** Every component is free, so agents and people install us by
+4. **Free is generous on purpose.** The 24 basic components are free, so agents and people install us by
    default. Pro is the step from parts to a working app.
 
 Closest comparison: affectUI (USD 249 / 699, 255 items, AI-agent interfaces, no backend). We are
@@ -60,13 +60,13 @@ smaller, cheaper at launch, and aimed at operations software instead of AI produ
 **Prices (USD, one-time):** Individual 149 for the first 100 buyers, then 299. Team (10 seats)
 399 for the first 100, then 699. The 100 is one pool across both plans.
 
-**Year-one target**
+**Sales target**
 
 | | Customers | Mix assumed | Revenue |
 | --- | --- | --- | --- |
-| Launch offer (to 30 Apr 2027) | 100 | 85 Individual, 15 Team | 18,650 |
+| Launch offer (29 Mar to 30 Apr 2027) | 100 | 85 Individual, 15 Team | 18,650 |
 | Regular price (May to Nov 2027) | 300 | 255 Individual, 45 Team | 107,700 |
-| **Year one** | **400** | | **126,350** |
+| **To 30 Nov 2027** | **400** | | **126,350** |
 
 Assumption behind 300 more: about 43 sales a month for seven months. At a 2% visitor-to-buyer
 rate that needs roughly 2,150 pricing-page visitors a month. That traffic is the thing to build,
@@ -101,12 +101,13 @@ upgrades for major versions). That is a decision for mid-2027, noted in §9.
 | When | Phase | Result |
 | --- | --- | --- |
 | 28 Nov to 5 Dec 2026 | **Setup and design language** | Accounts created, ownership settled, colour, type and shape signed off |
-| 6 to 22 Dec | **Phase 1: core** | 31 components, theme, agent kit, website with docs. Free tier public on 22 Dec |
-| 4 Jan to 12 Feb 2027 | **Phase 2: the working loop** | Sign-in, list, record, form, dashboard, on desk and phone. Checkout live. **Pro launches 15 Feb** |
-| 15 Feb to 30 Apr | **Phase 3a: dispatch and field app** + selling | The first industry screens. 100 customers by 30 Apr |
-| May to Jun | **Phase 3b: CRM, quotes + payments, assets** | Regular price in effect |
-| Jul | **Phase 4: illustration, motion, Brand Studio, AI screen** | Reach and polish |
-| Aug to Sep | **Phase 5: deployable app** | Reference server and starter apps |
+| 6 to 22 Dec | **Phase 1: core** | 32 components (24 free, 8 Pro), theme, agent kit, website with docs. Free tier public on 22 Dec |
+| 4 Jan to 12 Feb 2027 | **Phase 2: the working loop** | Sign-in, list, record, form, dashboard, on desk and phone. Checkout tested |
+| 15 Feb to 26 Mar | **Phase 3a: dispatch and field app** | The first industry screens. **Pro launches 29 Mar** |
+| Apr to Jun | **Phase 3b: CRM, quotes + payments, assets** + selling | 100 customers by 30 Apr |
+| Jul to Aug | **Phase 4: illustration, motion, Brand Studio, AI screen** | Regular price in effect. Reach and polish |
+| Sep to Oct | **Phase 5: deployable app** | Reference server and starter apps |
+| 2028 onwards | **Future phases: the full business suite** | CRM, finance, operations, integrations, AI agents, admin and analytics, by demand (`CATALOG.md` §13) |
 
 The dates assume design reviews turn around within two or three days. Design sign-off is the
 step most likely to slip the plan, because it is the one that needs you.
@@ -121,25 +122,36 @@ step most likely to slip the plan, because it is the one that needs you.
 - [ ] **npm:** reserve the `@ascentui` scope
 - [ ] **Hosting:** create the Vercel project and connect the repo
 - [ ] **Database and sign-in:** create the Supabase project
-- [ ] **Payments:** decide Stripe or Shopify, then create the account (see note)
+- [ ] **Payments:** create the Stripe account (decided: Stripe)
 - [ ] **Who sells:** which company takes the money, and the tax position on overseas digital sales (accountant)
 - [ ] **Email:** a sending domain for receipts and sign-in links
 
-Note on payments: Stripe Checkout is the simpler fit for two one-time products. It has no
-monthly fee and is what affectUI uses. Shopify adds a monthly plan and a storefront we don't
-need, but makes sense if you already run one and want sales in one place.
+Why Stripe: no monthly fee, lower card rates than Shopify for overseas buyers, and it is what
+affectUI uses. Steps are in `docs/SETUP.md`.
 
-**Yours: decisions**
+**Decided on 28 Nov 2026**
 
-- [ ] Design language: light or dark first, accent colour, corner shape, density
-- [ ] Data Table and App Shell stay free (`CATALOG.md` §13)
-- [ ] Launch after phase 2, or wait for dispatch
-- [ ] Team launch price confirmed at 399
+- [x] Payments: Stripe
+- [x] App Shell and a basic Data Table are free; eight power components are Pro (Data Grid, Chart, Month Grid, Upload, Command Menu, Stepper Form, Bottom Sheet, Pull to Refresh)
+- [x] Pro launches with Dispatch and the field app, not straight after phase 2
+- [x] Design: light theme first; readable grey for secondary text; phones use 44px controls and 15px text
+- [x] Design parameters reuse affectUI's (colour, 13px type, 24/28/32 controls, 5/7/10 corners)
+- [x] Team launch price 399, then 699
+
+**Yours: still to decide**
+
+- [x] Refunds: full refund if a Pro item doesn't work as described and isn't fixed within 14 days (as affectUI)
+- [x] Goal stays 100 customers by 30 April 2027, about a month after the Pro launch
+- [x] Long-term aim: set up a whole business system (CRM, finance, operations, AI) by directing a coding agent. Reserved for future phases, after phase 5
+- [x] Lifetime covers phases 1–5; the first 100 also get the full suite for life (the roadmap is the launch hook)
+- [x] AI through the Vercel AI SDK (hosted and self-hosted models); server kits ship with each future module
+- [ ] Which illustrations to make, and which are free (phase 4)
+- [ ] Licence gaps: open-source apps that include Pro items, seat transfers, more than 10 seats
 
 **Build: phase 1 (agents)**
 
 - [ ] Design tokens and theme, light and dark
-- [ ] 31 components in one-file style, each with docs and a live preview
+- [ ] 32 components in one-file style, each with docs and a live preview
 - [ ] Agent kit: conventions guide, `llms.txt`, MCP docs server
 - [ ] Website: landing, library, docs, pricing, licence
 - [ ] Install registry; every free item installs with one command into a blank app
@@ -163,9 +175,10 @@ need, but makes sense if you already run one and want sales in one place.
 | Risk | What we do about it |
 | --- | --- |
 | **Ownership of the Hutch code is unsettled** | First item on the checklist. Nothing goes public before it is signed |
-| **Free is enough** and few upgrade | Watch free-to-paid from the first week. The lever is moving a block or the phone screens, not the components |
+| **Free is enough** and few upgrade (more likely now the App Shell is free) | Watch free-to-paid from the first week. The lever is moving a block or the phone screens, not the components |
 | **Agents get good enough** to build the loop unaided | Our value moves to the checks and the business rules, which are knowledge, not code |
 | **A bigger kit adds backends** | Stay narrow: operations software, desk plus phone, rules from a real business |
 | **One-time pricing runs dry** | Decide the second product by mid-2027 |
+| **One month to sell 100** after a 29 March launch is tight | Line up beta users and the launch post before launch day; the free tier is public from December to build an audience first |
 | **Design reviews slow the build** | Keep each review small and visual; agents continue on agreed parts meanwhile |
 | **Traffic** never reaches about 2,000 pricing visits a month | Free tier is the marketing; if installs are low by February, the problem is reach, not price |

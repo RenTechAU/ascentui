@@ -1,43 +1,170 @@
-/* @ascentui/tokens — the design variables every AscentUI component reads.
-   Lifted from Hutch's admin console. Override any of these on :root to theme. */
-:root{
-  --bg:#ffffff; --page:#f4f3ee; --surface:#ffffff; --surface2:#faf9f5; --surface3:#f1f0ea; --surface3-hi:#e6e4dc;
-  --border:rgba(0,0,0,0.09); --border2:rgba(0,0,0,0.15);
-  --text:#1b1b1a; --muted:#6c6c68; --dim:#9b9b96;
-  --accent:#0f9d8a; --accent-dim:#e3f4f0; --accent-dim2:#d2ece6;
-  --danger:#c43d2f; --danger-dim:#fbecea; --danger-dim2:#f6dcd8;
-  --warn:#9a6a07; --warn-dim:#faf0d8;
-  --ok:#2f7d4f; --ok-dim:#e9f4ec;
-  --purple:#5a47b0; --purple-dim:#eceafa;
-  /* Named here for the `deal` notification category (0116). The value was
-     already in the sheet four times as a literal, and in mobile.css under
-     this name — this is the same colour, finally spelled once. */
-  --blue:#3a6ea5; --blue-dim:#e7eef7;
-  --radius:10px;
-  --mono:'Geist Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+/* @ascentui/tokens: the one file every AscentUI component reads.
+ *
+ * Change a value here and every component follows. Components never hard-code a colour, size or
+ * speed; they only read these variables. Values follow affectUI's clean style (colour, 13px text,
+ * 24/28/32px controls, 5/7/10px corners, half-pixel hairlines) so the two sit together without a seam.
+ *
+ * Four things are handled here once, so no component has to repeat them:
+ *   1. Light and dark: put class="dark" or data-theme="dark" on <html> (or any wrapper).
+ *   2. Phones: on touch screens controls grow to 44px and text to 15px, a comfortable tap size.
+ *   3. Reduced motion: if someone has asked their device for less motion, every transition stops.
+ *   4. Native controls: color-scheme tells the browser to draw scrollbars and date pickers to match.
+ *
+ * Everything sits in the CSS layer `asc`, and components put their styles in it too. Styles you
+ * write yourself, outside any layer, always win, so you never need !important to adjust a component.
+ */
+@layer asc {
+  :root,
+  [data-theme="light"] {
+    color-scheme: light;
 
-  /* The console's one easing curve. Borrowed rather than invented: mobile.css
-     already moves everything on cubic-bezier(0.2, 0.8, 0.2, 1), so pointing the
-     desktop sheet at the same curve means the two shells share a motion
-     vocabulary instead of each having their own. See the block below. */
-  --ease:cubic-bezier(.2,.8,.2,1);
+    /* Ground: the page, then surfaces on it, then washes on surfaces */
+    --asc-page: #f7f7f8;
+    --asc-surface: #ffffff;
+    --asc-subtle: rgba(0, 0, 0, 0.03);
+    --asc-subtle-strong: rgba(0, 0, 0, 0.06);
 
-  /* form controls — see the block below. --ctl-h is the one height every
-     text-ish control renders at; the -sm/-xs steps are for denser contexts,
-     which rescale by re-pointing --ctl-h rather than by repadding by hand. */
-  --ctl-h:40px;      /* forms: modals, drawers, side panels */
-  --ctl-h-sm:34px;   /* toolbars + inline edits — matches .btn */
-  --ctl-h-xs:28px;   /* dense rows: workflow builder, $ breakdowns */
-  --ctl-px:12px;
-  --ctl-r:9px;
-  --ctl-fs:13.5px;
-  --ctl-caret:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236c6c68' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-}
-/* The same iOS focus-zoom rule as the login gate, applied at the token instead
-   of at one control: under 16px Safari zooms the page in on focus and leaves it
-   there, so on a touch tablet running the desktop console EVERY field did it.
-   Re-pointing --ctl-fs is the whole fix — that is what a token is for, and it is
-   why the baseline never hardcodes a size. Fine pointers keep 13.5. */
-@media (pointer:coarse){
-  :root{--ctl-fs:16px}
+    /* Lines */
+    --asc-border: rgba(0, 0, 0, 0.06);
+    --asc-border-strong: rgba(0, 0, 0, 0.1);
+
+    /* Text. ink and muted pass 4.5:1 for reading; faint and placeholder are for icons and empty inputs */
+    --asc-ink: rgba(0, 0, 0, 0.88);
+    --asc-muted: rgba(0, 0, 0, 0.61);
+    --asc-faint: rgba(0, 0, 0, 0.45);
+    --asc-placeholder: rgba(0, 0, 0, 0.27);
+
+    /* Action */
+    --asc-primary: rgba(0, 0, 0, 0.88);
+    --asc-on-primary: #fcfcfc;
+    --asc-focus: rgba(0, 96, 226, 0.7);
+
+    /* Status: strong tone for text and icons, soft tone for the ground behind them.
+       Light values are affectUI's, darkened just enough to pass 4.5:1 on their soft ground and the page. */
+    --asc-success: #1a7845;
+    --asc-success-soft: #00a43319;
+    --asc-warning: #a05500;
+    --asc-warning-soft: #ff9c0029;
+    --asc-danger: #c0310a;
+    --asc-danger-soft: #f52b0018;
+    --asc-info: #0c6abb;
+    --asc-info-soft: #008ff519;
+
+    /* Hues for charts, dots and avatars. Never for text */
+    --asc-hue-blue: #4fb0fe;
+    --asc-hue-green: #5fc88a;
+    --asc-hue-amber: #e8b000;
+    --asc-hue-red: #f04438;
+    --asc-hue-purple: #a651f0;
+
+    /* Shadows: controls get a half-pixel hairline with a faint lift instead of a border */
+    --asc-shadow-control: 0 0 0 0.5px rgba(0, 0, 0, 0.06), 0 1px 1px -1px rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --asc-shadow-control-hover: 0 0 0 0.5px rgba(0, 0, 0, 0.1), 0 1px 1px -1px rgba(0, 0, 0, 0.12), 0 1px 3px 0 rgba(0, 0, 0, 0.07);
+    --asc-shadow-pop: 0 0 0 0.5px rgba(0, 0, 0, 0.08), 0 12px 32px rgba(0, 0, 0, 0.14);
+
+    /* The dimmed page behind a dialog or drawer */
+    --asc-backdrop: rgba(0, 0, 0, 0.32);
+  }
+
+  .dark,
+  [data-theme="dark"] {
+    color-scheme: dark;
+    --asc-page: #111113;
+    --asc-surface: #1c1c1e;
+    --asc-subtle: rgba(255, 255, 255, 0.04);
+    --asc-subtle-strong: rgba(255, 255, 255, 0.08);
+    --asc-border: rgba(255, 255, 255, 0.08);
+    --asc-border-strong: rgba(255, 255, 255, 0.2);
+    --asc-ink: rgba(255, 255, 255, 0.9);
+    --asc-muted: rgba(255, 255, 255, 0.62);
+    --asc-faint: rgba(255, 255, 255, 0.46);
+    --asc-placeholder: rgba(255, 255, 255, 0.3);
+    --asc-primary: rgba(255, 255, 255, 0.9);
+    --asc-on-primary: #161618;
+    --asc-focus: rgba(77, 141, 255, 0.8);
+    --asc-success: #5fc88a;
+    --asc-success-soft: #00f04a1f;
+    --asc-warning: #ffb35c;
+    --asc-warning-soft: #fb6a0025;
+    --asc-danger: #ff8a7a;
+    --asc-danger-soft: #ff35232b;
+    --asc-info: #70b8ff;
+    --asc-info-soft: #0077ff3a;
+    --asc-hue-green: #7dcf9f;
+    --asc-hue-amber: #e6c24d;
+    --asc-hue-red: #ff6b5f;
+    --asc-hue-purple: #b98af0;
+    --asc-shadow-control: 0 0 0 0.5px rgba(255, 255, 255, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+    --asc-shadow-control-hover: 0 0 0 0.5px rgba(255, 255, 255, 0.2), 0 1px 3px 0 rgba(0, 0, 0, 0.5);
+    --asc-shadow-pop: 0 0 0 0.5px rgba(255, 255, 255, 0.12), 0 12px 32px rgba(0, 0, 0, 0.6);
+    --asc-backdrop: rgba(0, 0, 0, 0.6);
+  }
+
+  /* Everything that is the same in both themes */
+  :root {
+    --asc-font: "Inter", "InterVariable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --asc-font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+
+    /* Type: size / line height pairs */
+    --asc-text-xs: 12px;
+    --asc-leading-xs: 16px;
+    --asc-text-sm: 13px; /* body text in apps */
+    --asc-leading-sm: 20px;
+    --asc-text-md: 15px;
+    --asc-leading-md: 22px;
+    --asc-text-lg: 16px;
+    --asc-text-xl: 24px;
+    --asc-leading-xl: 30px;
+
+    /* Controls: one height scale for buttons, inputs and selects, so a row of them always lines up */
+    --asc-control-sm: 24px;
+    --asc-control-md: 28px;
+    --asc-control-lg: 32px;
+    --asc-control-text: 13px;
+    /* Inputs read their own size: below 16px, iPhones zoom the page when a field is tapped */
+    --asc-input-text: 13px;
+
+    /* Space */
+    --asc-space-2: 2px;
+    --asc-space-4: 4px;
+    --asc-space-6: 6px;
+    --asc-space-8: 8px;
+    --asc-space-12: 12px;
+    --asc-space-16: 16px;
+    --asc-space-24: 24px;
+
+    /* Corners */
+    --asc-radius-sm: 5px;
+    --asc-radius: 7px;
+    --asc-radius-lg: 10px;
+    --asc-radius-full: 999px;
+
+    /* Motion */
+    --asc-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --asc-duration: 140ms;
+    --asc-duration-slow: 240ms;
+  }
+
+  /* Touch screens: bigger targets and text. Same look, easier to hit with a thumb */
+  @media (pointer: coarse) {
+    :root {
+      --asc-control-sm: 36px;
+      --asc-control-md: 44px;
+      --asc-control-lg: 44px;
+      --asc-control-text: 15px;
+      --asc-input-text: 16px;
+      --asc-text-sm: 15px;
+      --asc-leading-sm: 22px;
+      --asc-text-xs: 13px;
+      --asc-leading-xs: 18px;
+    }
+  }
+
+  /* Less motion when asked for. Components use these durations, so one switch covers all of them */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --asc-duration: 0ms;
+      --asc-duration-slow: 0ms;
+    }
+  }
 }
