@@ -30,7 +30,7 @@ export function Docs({ pages, current, registryBase }: { pages: DocPage[]; curre
               {next && <a href={`#docs-${next.id}`}>{next.title} →</a>}
             </div>
           </article>
-          <Toc key={page.id} items={toc} />
+          <Toc key={`toc-${page.id}`} items={toc} />
         </div>
       </div>
     </main>

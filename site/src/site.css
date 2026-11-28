@@ -284,7 +284,7 @@ a.sb-link:hover,button.sb-link:hover{background:var(--accent-soft);color:var(--i
 /* ---- Search palette (inside the kit's Dialog) ---- */
 .palette .asc-dlg__body{padding-bottom:0}
 .palette-input{box-sizing:border-box;width:100%;height:40px;padding:0 12px;border:0;border-radius:var(--asc-radius);background:var(--asc-subtle-strong);color:var(--asc-ink);font:400 var(--asc-input-text) var(--asc-font);outline:none}
-.palette-input:focus-visible{outline:2px solid var(--asc-focus);outline-offset:1px}
+.palette-input:focus-visible{outline:2px solid var(--asc-focus);outline-offset:-2px}
 .palette-list{list-style:none;margin:8px 0 0;padding:0;max-height:min(52vh,420px);overflow-y:auto;overscroll-behavior:contain}
 .palette-list ul{list-style:none;margin:0;padding:0}
 .palette-head{padding:10px 8px 4px;font-size:var(--asc-text-xs);font-weight:600;color:var(--asc-faint)}

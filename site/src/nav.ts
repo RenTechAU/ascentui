@@ -93,7 +93,7 @@ export function search(query: string): SearchItem[] {
     if (name.startsWith(q)) score = 0;
     else if (words.some((w) => w.startsWith(q))) score = 1;
     else if (name.includes(q)) score = 2;
-    else if (fold(`${s.kind} ${s.hint ?? ''} ${s.keywords ?? ''}`).includes(q)) score = 3;
+    else if (fold(`${s.kind} ${s.hint ?? ''} ${s.keywords ?? ''}`).split(/[^a-z0-9]+/).some((w) => w.startsWith(q)) && q.length > 2) score = 3;
     if (score >= 0) scored.push([score + (s.soon ? 0.5 : 0), s]);
   }
   return scored.sort((a, b) => a[0] - b[0]).map(([, s]) => s);

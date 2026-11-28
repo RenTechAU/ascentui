@@ -78,6 +78,8 @@ export function replaceHash(name: string) {
   if (window.location.hash === next) return;
   try {
     history.replaceState(history.state, '', next);
+    // Let the router (and the sidebar's current link) follow. A filter change does not scroll.
+    window.dispatchEvent(new HashChangeEvent('hashchange'));
   } catch {
     // Some sandboxed frames refuse; the filter still works, only the address does not follow.
   }

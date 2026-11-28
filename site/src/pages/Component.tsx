@@ -104,7 +104,7 @@ function Installation({ p, registry }: { p: Preview; registry: string }) {
                   <code>{f}</code>
                 </span>
               ))}
-              .{extra.length > 0 && ` ${p.name} is built from ${extra.join(', ')}, which ${extra.length === 1 ? 'it imports' : 'it imports'} from "./".`} The
+              .{extra.length > 0 && ` ${p.name} is built from ${extra.join(', ')}, which it imports from "./".`} The
               Code view above shows {p.sources.length === 1 ? 'the file' : 'each file'}, and Copy code copies {p.sources.length === 1 ? 'it' : 'them all'}.
             </li>
             <li>Import it where you need it. Its styles come inside the file, so there is no CSS to wire up. It needs React 19.</li>

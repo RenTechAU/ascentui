@@ -534,7 +534,7 @@ export function DesignSystem({ current }: { current: DsId }) {
               {next && <a href={`#ds-${next.id}`}>{next.title} →</a>}
             </div>
           </article>
-          <Toc key={current} items={toc} />
+          <Toc key={`toc-${current}`} items={toc} />
         </div>
       </div>
     </main>
