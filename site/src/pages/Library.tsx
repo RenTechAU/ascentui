@@ -131,7 +131,7 @@ export function Library({ items, section: fromRoute }: { items: CatalogItem[]; s
         <div className="sec-head">
           <h1>Library</h1>
           <p>
-            Business components, screens and blocks. Every component is free; screens that work are Pro. {all.total} items
+            Business components, screens and blocks. The basic components are free; power pieces and screens that work are Pro. {all.total} items
             in the catalog, {builtCount} built so far.
           </p>
         </div>

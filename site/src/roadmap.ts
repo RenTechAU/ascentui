@@ -17,8 +17,8 @@ export interface RoadmapStep {
 export const ROADMAP: RoadmapStep[] = [
   {
     id: 'core', phase: 1, stage: 'now', title: 'Core components', target: 'December 2026',
-    summary: 'Every component, free. The theme, light and dark, phones, and the agent kit.',
-    points: ['31 components on one shared theme', 'Light and dark, phone sizing and reduced motion built in', 'Install with the shadcn CLI or by asking your coding agent'],
+    summary: '32 components: 24 free basics and 8 Pro power pieces. The theme, light and dark, phones, and the agent kit.',
+    points: ['Free: buttons, forms, dialogs, toasts, a data table and the app shell', 'Pro: Data Grid, Chart, Month Grid, Upload, Command Menu, Stepper Form, Bottom Sheet, Pull to Refresh', 'Install with the shadcn CLI or by asking your coding agent'],
   },
   {
     id: 'loop', phase: 2, stage: 'next', title: 'The working loop', target: 'February 2027',

@@ -34,13 +34,13 @@ export function Plans({
       <div className="plan">
         <div className="plan-name">Free</div>
         <div className="plan-price">$0</div>
-        <p>Every component, the theme and the agent kit, MIT licensed. Includes the data table and the app shell.</p>
+        <p>24 components, the theme and the agent kit, MIT licensed. Includes the app shell and a data table.</p>
         <Button className="round" variant="secondary" onClick={onFree}>Browse the library</Button>
       </div>
       <div className="plan best">
         <div className="plan-name">Individual</div>
         <Price plan={PRICES.individual} />
-        <p>Lifetime access to every Pro screen and its backend recipe, for one person. Everything added later is included.</p>
+        <p>Lifetime access to the power components and every Pro screen with its backend recipe, for one person. Everything added later is included.</p>
         <Button className="light" loading={busy === 'individual'} onClick={() => onBuy('individual')}>Get all-access</Button>
       </div>
       <div className="plan">

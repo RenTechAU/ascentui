@@ -49,7 +49,7 @@ shadcn ecosystem and registry directories, and inside the agents themselves thro
 2. **Screens come with a backend recipe.** Contract, mock, agent guide and checks. No other kit
    tells the agent how to make the screen real and then tests that it did.
 3. **Taken from a running business.** The rules for money, roles and undo come from Hutch.
-4. **Free is generous on purpose.** Every component is free, so agents and people install us by
+4. **Free is generous on purpose.** The 24 basic components are free, so agents and people install us by
    default. Pro is the step from parts to a working app.
 
 Closest comparison: affectUI (USD 249 / 699, 255 items, AI-agent interfaces, no backend). We are
@@ -101,7 +101,7 @@ upgrades for major versions). That is a decision for mid-2027, noted in §9.
 | When | Phase | Result |
 | --- | --- | --- |
 | 28 Nov to 5 Dec 2026 | **Setup and design language** | Accounts created, ownership settled, colour, type and shape signed off |
-| 6 to 22 Dec | **Phase 1: core** | 31 components, theme, agent kit, website with docs. Free tier public on 22 Dec |
+| 6 to 22 Dec | **Phase 1: core** | 32 components (24 free, 8 Pro), theme, agent kit, website with docs. Free tier public on 22 Dec |
 | 4 Jan to 12 Feb 2027 | **Phase 2: the working loop** | Sign-in, list, record, form, dashboard, on desk and phone. Checkout tested |
 | 15 Feb to 26 Mar | **Phase 3a: dispatch and field app** | The first industry screens. **Pro launches 29 Mar** |
 | Apr to Jun | **Phase 3b: CRM, quotes + payments, assets** + selling | 100 customers by 30 Apr |
@@ -132,7 +132,7 @@ affectUI uses. Steps are in `docs/SETUP.md`.
 **Decided on 28 Nov 2026**
 
 - [x] Payments: Stripe
-- [x] Data Table and App Shell are free; every component is free
+- [x] App Shell and a basic Data Table are free; eight power components are Pro (Data Grid, Chart, Month Grid, Upload, Command Menu, Stepper Form, Bottom Sheet, Pull to Refresh)
 - [x] Pro launches with Dispatch and the field app, not straight after phase 2
 - [x] Design: light theme first; readable grey for secondary text; phones use 44px controls and 15px text
 - [x] Design parameters reuse affectUI's (colour, 13px type, 24/28/32 controls, 5/7/10 corners)
@@ -151,7 +151,7 @@ affectUI uses. Steps are in `docs/SETUP.md`.
 **Build: phase 1 (agents)**
 
 - [ ] Design tokens and theme, light and dark
-- [ ] 31 components in one-file style, each with docs and a live preview
+- [ ] 32 components in one-file style, each with docs and a live preview
 - [ ] Agent kit: conventions guide, `llms.txt`, MCP docs server
 - [ ] Website: landing, library, docs, pricing, licence
 - [ ] Install registry; every free item installs with one command into a blank app

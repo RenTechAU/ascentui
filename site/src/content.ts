@@ -37,11 +37,11 @@ export const PITCH: { title: string; body: string }[] = [
 export const PRICING_FAQ: { q: string; a: string; tbc?: boolean }[] = [
   {
     q: 'What am I buying?',
-    a: 'Lifetime access to every Pro item: screens that work and data blocks wired to data, each with a backend recipe your agent can follow. You get the source, in your own project, to keep and change. Pro items added in later phases are included.',
+    a: 'Lifetime access to every Pro item: the power components, screens that work and data blocks wired to data, each with a backend recipe your agent can follow. You get the source, in your own project, to keep and change. Pro items added in later phases are included.',
   },
   {
     q: 'What is free?',
-    a: 'Every component, the theme and the agent kit, under the MIT licence, plus two screens: Sign in and Dashboard. You do not need an account to use them.',
+    a: '24 components, the theme and the agent kit, under the MIT licence, plus two screens: Sign in and Dashboard. You do not need an account to use them. The power pieces (Data Grid, Chart, Month Grid, Upload, Command Menu, Stepper Form, Bottom Sheet, Pull to Refresh) are Pro.',
   },
   {
     q: 'Do I pay once?',
