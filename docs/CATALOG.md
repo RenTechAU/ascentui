@@ -288,6 +288,7 @@ Decided on 28 Nov 2026:
 - **Pro launches with Dispatch and the field app,** not straight after phase 2.
 - **Payments: Stripe.**
 - **The full business suite** (CRM, finance, operations, integrations, AI and agents, admin, analytics) is reserved for phases after 5; see §13.
+- **Lifetime scope:** every licence covers phases 1–5. The first 100 buyers (the launch pool) also get the full suite for life; later buyers get it as a separate purchase, priced later. Public roadmap at `#roadmap`, target months shown as targets.
 - **AI layer:** Vercel AI SDK. **Server code:** shipped as server kits with each module from the suite onwards.
 
 Still open:

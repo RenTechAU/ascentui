@@ -487,3 +487,4 @@ a.sb-link:hover,button.sb-link:hover{background:var(--accent-soft);color:var(--i
 .rm-step[data-stage="future"] .rm-body{border:1px dashed var(--line2);border-radius:12px;padding:16px}
 .rm-cta{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;border-top:1px solid var(--line);padding-top:24px}
 .rm-cta p{color:var(--muted);margin-right:auto}
+.rm-note{color:var(--ink)!important;font-weight:500}

@@ -12,8 +12,8 @@ export function Roadmap() {
         <div className="sec-head">
           <h1>Roadmap</h1>
           <p>
-            What is built, what comes next, and where AscentUI is heading. A lifetime licence includes everything on this
-            page as it ships, with no further payment.
+            What is built, what comes next, and where AscentUI is heading. Every lifetime licence includes phases 1 to 5 as
+            they ship. The first 100 buyers also get the full business suite for life, with no further payment.
           </p>
           <p className="small">Dates are targets and may move. Built counts update as each item ships.</p>
         </div>
@@ -35,6 +35,9 @@ export function Roadmap() {
                     )}
                   </div>
                   <h2>{s.phase ? `${s.phase}. ` : ''}{s.title}</h2>
+                  {s.stage === 'future' && (
+                    <p className="rm-note">Included for life for the first 100 buyers. Priced separately for everyone after.</p>
+                  )}
                   <p>{s.summary}</p>
                   {p && p.total > 0 && (
                     <div className="rm-bar" role="img" aria-label={`${p.built} of ${p.total} built`}>
@@ -49,7 +52,7 @@ export function Roadmap() {
         </ol>
 
         <div className="rm-cta">
-          <p>Buy once and every phase above is yours as it ships.</p>
+          <p>Buy once: phases 1 to 5 are yours as they ship. Be one of the first 100 and the full suite is too.</p>
           <Button className="light" onClick={goTo('pricing')}>See pricing</Button>
           <Button className="round" variant="secondary" onClick={goTo('library')}>Browse what is built</Button>
         </div>

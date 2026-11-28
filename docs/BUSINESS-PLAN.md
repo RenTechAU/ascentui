@@ -143,6 +143,7 @@ affectUI uses. Steps are in `docs/SETUP.md`.
 - [x] Refunds: full refund if a Pro item doesn't work as described and isn't fixed within 14 days (as affectUI)
 - [x] Goal stays 100 customers by 30 April 2027, about a month after the Pro launch
 - [x] Long-term aim: set up a whole business system (CRM, finance, operations, AI) by directing a coding agent. Reserved for future phases, after phase 5
+- [x] Lifetime covers phases 1–5; the first 100 also get the full suite for life (the roadmap is the launch hook)
 - [x] AI through the Vercel AI SDK (hosted and self-hosted models); server kits ship with each future module
 - [ ] Which illustrations to make, and which are free (phase 4)
 - [ ] Licence gaps: open-source apps that include Pro items, seat transfers, more than 10 seats

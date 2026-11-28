@@ -24,8 +24,8 @@ export function Pricing({ checkout }: { checkout: CheckoutClient }) {
           <h1>Pay once. Build as many as you like.</h1>
           <p>No subscription. Use it in your own projects and your clients'.</p>
           <p className="small">
-            Lifetime means every phase on the <a href="#roadmap">roadmap</a> as it ships: business screens, deployable
-            apps and the full business suite after them.
+            Lifetime covers phases 1 to 5 on the <a href="#roadmap">roadmap</a> as they ship. The first 100 buyers also get
+            the full business suite for life.
           </p>
           <p className="small">{PRO_STATUS}</p>
         </div>
