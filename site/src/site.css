@@ -334,3 +334,32 @@ a.sb-link:hover,button.sb-link:hover{background:var(--accent-soft);color:var(--i
 .copy-btn:hover{color:var(--ink);border-color:var(--line2)}
 .copy-btn:focus-visible{outline:2px solid var(--aui-focus);outline-offset:2px}
 .copy-btn[data-state="done"]{color:var(--ink)}
+
+/* ---- "On this page" and component pages ---- */
+.with-toc{display:grid;grid-template-columns:minmax(0,1fr);gap:48px;align-items:start}
+.toc{display:none}
+@media (min-width:1280px){
+  .with-toc{grid-template-columns:minmax(0,1fr) 196px}
+  .toc{display:block;position:sticky;top:80px;max-height:calc(100vh - 100px);overflow:auto;font-size:.85rem}
+}
+.toc-head{color:var(--ink);font-weight:600;margin-bottom:8px}
+.toc ul{list-style:none;margin:0;padding:0 0 0 1px;border-left:1px solid var(--line);display:flex;flex-direction:column}
+.toc li[data-level="3"] a{padding-left:24px}
+.toc a{display:block;padding:4px 0 4px 12px;margin-left:-1px;border-left:1px solid transparent;color:var(--muted)}
+.toc a[aria-current="location"]{color:var(--ink);border-left-color:var(--ink)}
+.toc a:focus-visible{outline:2px solid var(--aui-focus);outline-offset:0}
+.comp-body{max-width:none}
+.comp-sec h2{scroll-margin-top:72px}
+.comp-toolbar-end{margin-left:auto;display:inline-flex;gap:8px;align-items:center}
+.comp-toolbar .copy-btn{height:32px;padding:0 12px;border-radius:999px;background:transparent}
+.crumbs a{color:var(--muted)}
+.crumbs [aria-current]{color:var(--ink)}
+.install-panel{display:flex;flex-direction:column;gap:14px}
+.install-steps{display:flex;flex-direction:column;gap:12px}
+.steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:10px;color:var(--muted)}
+.prose ul.related,.related{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.comp-sec .related{padding:0}
+.related a{display:flex;flex-direction:column;gap:4px;height:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--ink);text-decoration:none}
+.related a:hover{border-color:var(--line2);color:var(--ink)}
+.related small{color:var(--muted);font-size:.85rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+@media (max-width:640px){.comp-toolbar-end{margin-left:0}}

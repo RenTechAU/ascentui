@@ -14,6 +14,7 @@ export function CopyButton({
   children,
   className = 'copy-btn',
   title,
+  'aria-describedby': describedBy,
 }: {
   /** What goes on the clipboard; a function is called at the moment of copying */
   text: string | (() => string);
@@ -23,6 +24,7 @@ export function CopyButton({
   children?: ReactNode;
   className?: string;
   title?: string;
+  'aria-describedby'?: string;
 }) {
   const [state, setState] = useState<'idle' | 'done' | 'failed'>('idle');
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -35,7 +37,7 @@ export function CopyButton({
   };
   return (
     <>
-    <button type="button" className={className} aria-label={children ? undefined : label} title={title ?? (children ? undefined : label)} onClick={copy} data-state={state}>
+    <button type="button" aria-describedby={describedBy} className={className} aria-label={children ? undefined : label} title={title ?? (children ? undefined : label)} onClick={copy} data-state={state}>
       <Icon done={state === 'done'} />
       {children && <span>{state === 'done' ? 'Copied' : children}</span>}
     </button>
